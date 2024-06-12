@@ -13,14 +13,6 @@ fi
 
 docker build -t $THIS_DOCKER_CONTAINER_NAME .
 
-#if [ ! "$(docker ps -q -f name=$THIS_DOCKER_CONTAINER_NAME)" == "" ]; then
-#    docker stop $THIS_DOCKER_CONTAINER_NAME
-#fi
-
-#if [ "$(docker ps -aq -f status=exited -f name=$THIS_DOCKER_CONTAINER_NAME)" ]; then
-#    docker rm $THIS_DOCKER_CONTAINER_NAME
-#fi
-
 if [ ! -d $SHARED_CACHES_DIR_PATH ]; then
     mkdir -p $SHARED_CACHES_DIR_PATH
 fi
@@ -39,5 +31,4 @@ docker run -it --gpus all --rm \
     --name $THIS_DOCKER_CONTAINER_NAME \
     -v $SHARED_CACHES_DIR_PATH/$THIS_DOCKER_CONTAINER_NAME:/root/.cache \
     -v $WORKDIR_PATH:/workspace \
-    -w /workspace \
     $THIS_DOCKER_CONTAINER_NAME

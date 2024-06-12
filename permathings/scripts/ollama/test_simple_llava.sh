@@ -1,3 +1,8 @@
+THIS_MODEL="llava:34b-v1.6"
+DIR_SUFFIX="llava_34b_1.6"
+
+THIS_MODEL="llava-phi3"
+DIR_SUFFIX="phi3"
 
 THIS_DIR_PATH=$(dirname $(realpath $0))
 SCRIPTS_DIR_PATH=$(dirname $THIS_DIR_PATH)
@@ -13,12 +18,12 @@ if [ ! -d $EPHEMERAL_INPUTS_DIR_PATH ]; then
     mkdir -p $EPHEMERAL_INPUTS_DIR_PATH
 fi
 
-TEST_DATA_CACHE_FOLDER_PATH=$EPHEMERAL_INPUTS_DIR_PATH/ollama_simple_test_data
+TEST_DATA_CACHE_FOLDER_PATH=$EPHEMERAL_INPUTS_DIR_PATH/ollama_simple_test_data_$DIR_SUFFIX
 if [ ! -d $TEST_DATA_CACHE_FOLDER_PATH ]; then
     mkdir -p $TEST_DATA_CACHE_FOLDER_PATH
 fi
 
-OUTPUT_DATA_CACHE_FOLDER_PATH=$EPHEMERAL_OUTPUTS_DIR_PATH/ollama_simple_test_output
+OUTPUT_DATA_CACHE_FOLDER_PATH=$EPHEMERAL_OUTPUTS_DIR_PATH/ollama_simple_test_output_$DIR_SUFFIX
 if [ ! -d $OUTPUT_DATA_CACHE_FOLDER_PATH ]; then
     mkdir -p $OUTPUT_DATA_CACHE_FOLDER_PATH
 fi
@@ -43,7 +48,7 @@ cd $TEST_DATA_CACHE_FOLDER_PATH
 
 for file in National_Geographic_Wallpapers/*.jpg; do
     echo "Processing $file"
-    json_string="{'model': 'llava:34b-v1.6', 'prompt': 'What is in this picture?', 'stream': False, 'images': [base64.b64encode(open('"$file"', 'rb').read()).decode('utf-8')]}).json()"
+    json_string="{'model': '$THIS_MODEL', 'prompt': 'What is in this picture?', 'stream': False, 'images': [base64.b64encode(open('"$file"', 'rb').read()).decode('utf-8')]}).json()"
     echo $json_string
     command_string="import requests, base64, json; print(json.dumps(requests.post('http://localhost:11434/api/generate', json="$json_string", indent=2))"
     response=$(python3 -c "$command_string")

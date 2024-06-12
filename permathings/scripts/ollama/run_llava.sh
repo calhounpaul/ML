@@ -1,3 +1,6 @@
+THIS_MODEL="llava:34b-v1.6"
+
+#THIS_MODEL="llava-phi3"
 
 THIS_DIR_PATH=$(dirname $(realpath $0))
 SCRIPTS_DIR_PATH=$(dirname $THIS_DIR_PATH)
@@ -15,4 +18,4 @@ docker rm /ollama
 docker run -d --rm --gpus all \
     -v $OLLAMA_CACHE_FOLDER_PATH:/root/.ollama -p 11434:11434 --name ollama ollama/ollama
 
-docker exec ollama ollama run llava:34b-v1.6
+docker exec ollama ollama run $THIS_MODEL
