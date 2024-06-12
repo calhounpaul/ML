@@ -14,4 +14,6 @@ RUN python3 -m pip install --no-cache-dir transformers huggingface_hub
 RUN python3 -m pip install --no-cache-dir outlines
 RUN python3 -m pip install --no-cache-dir pydantic
 RUN python3 -m pip install --no-cache-dir protobuf
+RUN python3 -m pip install --no-cache-dir accelerate
+RUN python3 -m pip install --no-cache-dir bitsandbytes
 WORKDIR /workspace
