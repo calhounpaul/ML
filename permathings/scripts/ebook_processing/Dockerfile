@@ -16,4 +16,6 @@ RUN python3 -m pip install --no-cache-dir pydantic
 RUN python3 -m pip install --no-cache-dir protobuf
 RUN python3 -m pip install --no-cache-dir accelerate
 RUN python3 -m pip install --no-cache-dir bitsandbytes
+RUN python3 -m pip install --no-cache-dir sentence-splitter
+RUN python3 -m pip install --no-cache-dir Unidecode
 WORKDIR /workspace

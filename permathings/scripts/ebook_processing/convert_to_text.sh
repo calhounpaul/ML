@@ -11,5 +11,17 @@ fi
 
 for INPUT_EBOOK_PATH in $INPUT_EBOOKS_DIR_PATH/*.azw; do
     OUTPUT_EBOOK_PATH=$(echo $INPUT_EBOOK_PATH | sed 's/\.azw$/\.txt/')
-    ebook-convert $INPUT_EBOOK_PATH $OUTPUT_EBOOK_PATH --enable-heuristics --replace-scene-breaks SCENE__BREAK
+    if [ -f $OUTPUT_EBOOK_PATH ]; then
+        continue
+    fi
+    ebook-convert $INPUT_EBOOK_PATH $OUTPUT_EBOOK_PATH --enable-heuristics --replace-scene-breaks SCENE__BREAK__SCENE__BREAK
+done
+
+
+for INPUT_EBOOK_PATH in $INPUT_EBOOKS_DIR_PATH/*.epub; do
+    OUTPUT_EBOOK_PATH=$(echo $INPUT_EBOOK_PATH | sed 's/\.epub$/\.txt/')
+    if [ -f $OUTPUT_EBOOK_PATH ]; then
+        continue
+    fi
+    ebook-convert $INPUT_EBOOK_PATH $OUTPUT_EBOOK_PATH --enable-heuristics --replace-scene-breaks SCENE__BREAK__SCENE__BREAK
 done
