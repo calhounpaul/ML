@@ -93,13 +93,6 @@ def get_secret(secret_name):
     else:
         return decrypt_with_hwid(secret)
 
-if __name__ == '__main__':
-    print("get_current_hwid: ", get_current_hwid())
-    print("get_hwid_sha3: ", get_hwid_sha3())
-    #print("get_secrets_if_exist: ", get_secrets_if_exist())
-    print("validate_hwid: ", validate_hwid())
-    print("encrypt_with_hwid: ", encrypt_with_hwid("test"))
-    print("decrypt_with_hwid: ", decrypt_with_hwid(encrypt_with_hwid("test")))
-    #for secret_name in DEFAULT_SECRETS:
-    #    secret_val = get_secret(secret_name)
-    #    print(f"{secret_name}: {secret_val}")
+def get_all_defaults():
+    for secret_name in DEFAULT_SECRETS:
+        get_secret(secret_name)
