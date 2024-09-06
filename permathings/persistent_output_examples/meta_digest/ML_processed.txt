@@ -1,0 +1,1921 @@
+Repository: ML
+
+File Structure:
+ML-main/
+    .gitignore
+    README.md
+    permathings/
+        prereqs/
+            0_install_cuda_12.5.sh
+            1_install_docker_engine.sh
+            3_install_other.sh
+            2_install_nvidia_container_toolkit.sh
+            all.sh
+        libs/
+            selenium_tools.py
+            docker_tools.py
+            secretary.py
+        scripts/
+            OpenDevin/
+                run.sh
+            textgen_webui/
+                build_docker.sh
+                run.sh
+            stable_diffusion_3/
+                run.sh
+            tformers_template/
+                Dockerfile
+                run.sh
+            segmentation/
+                SAM/
+                    Dockerfile
+                    run.sh
+                    workspace/
+                        outputs.txt
+                        screenshot.png
+                        out.png
+                        test1.py
+                        automask.py
+                segment-caption-anything/
+                    Dockerfile
+                    run_docker.sh
+                    grab_weights.sh
+                    workspace/
+                        run.sh
+                OpenAdapt/
+                    Dockerfile
+                    run_docker.sh
+                    grab_weights.sh
+                    workspace/
+                        run.sh
+                segment-track-anything/
+                    Dockerfile
+                    run_docker.sh
+                    grab_weights.sh
+            ollama/
+                describe_screenshot.sh
+                screenshot.png.json
+                run_llava.sh
+                test_simple_llava.sh
+                screenshot.png
+                run_web_bundle.sh
+                example_output/
+                    0825wallpaper-4_1280.jpg.json
+                    0824wallpaper-2_1600.jpg.json
+                    0825wallpaper-2_1280.jpg.json
+                    0824wallpaper-4_1600.jpg.json
+                    0817wallpaper-8_1600.jpg.json
+                    0817wallpaper-6_1600.jpg.json
+                    0818wallpaper-3_1280.jpg.json
+                    0825wallpaper-14_1280.jpg.json
+                    0818wallpaper-7_1280.jpg.json
+                    0825wallpaper-9_1280.jpg.json
+                    0831wallpaper-11_1600.jpg.json
+                    0817wallpaper-7_1600.jpg.json
+                    0818wallpaper-12_1280.jpg.json
+                    0817wallpaper-1_1600.jpg.json
+                    0818wallpaper-11_1280.jpg.json
+                    0825wallpaper-15_1280.jpg.json
+                    0818wallpaper-14_1280.jpg.json
+                    0818wallpaper-4_1280.jpg.json
+                    0831wallpaper-7_1600.jpg.json
+                    0811wallpaper-5_1280.jpg.json
+                    0811wallpaper-8_1280.jpg.json
+                    0811wallpaper-10_1280.jpg.json
+                    0824wallpaper-9_1600.jpg.json
+                    0831wallpaper-3_1600.jpg.json
+                    0817wallpaper-9_1600.jpg.json
+                    0824wallpaper-7_1600.jpg.json
+                    0831wallpaper-13_1600.jpg.json
+                    0824wallpaper-6_1600.jpg.json
+                    0817wallpaper-3_1600.jpg.json
+                    0825wallpaper-8_1280.jpg.json
+                    0824wallpaper-1_1600.jpg.json
+                    0825wallpaper-13_1280.jpg.json
+                    0831wallpaper-1_1600.jpg.json
+                    0825wallpaper-7_1280.jpg.json
+                    0831wallpaper-8_1600.jpg.json
+                    0817wallpaper-10_1600.jpg.json
+                    0818wallpaper-2_1280.jpg.json
+                    0811wallpaper-7_1280.jpg.json
+                    0824wallpaper-10_1600.jpg.json
+                    0811wallpaper-6_1280.jpg.json
+                    0831wallpaper-12_1600.jpg.json
+                    0825wallpaper-11_1280.jpg.json
+                    0831wallpaper-6_1600.jpg.json
+                    0825wallpaper-10_1280.jpg.json
+                    0811wallpaper-2_1280.jpg.json
+                    0825wallpaper-12_1280.jpg.json
+                    0811wallpaper-1_1280.jpg.json
+                    0824wallpaper-12_1600.jpg.json
+                    0818wallpaper-10_1280.jpg.json
+                    0831wallpaper-4_1600.jpg.json
+                    0817wallpaper-4_1600.jpg.json
+                    0818wallpaper-5_1280.jpg.json
+                    0825wallpaper-6_1280.jpg.json
+                    0811wallpaper-3_1280.jpg.json
+                    0818wallpaper-6_1280.jpg.json
+                    0825wallpaper-3_1280.jpg.json
+                    0811wallpaper-9_1280.jpg.json
+                    0825wallpaper-5_1280.jpg.json
+                    0831wallpaper-5_1600.jpg.json
+                    0818wallpaper-1_1280.jpg.json
+                    0824wallpaper-11_1600.jpg.json
+                    0831wallpaper-10_1600.jpg.json
+                    0818wallpaper-15_1280.jpg.json
+                    0818wallpaper-8_1280.jpg.json
+                    0824wallpaper-3_1600.jpg.json
+                    0818wallpaper-9_1280.jpg.json
+                    0825wallpaper-1_1280.jpg.json
+                    0831wallpaper-2_1600.jpg.json
+                    0818wallpaper-13_1280.jpg.json
+                    0817wallpaper-2_1600.jpg.json
+                    0824wallpaper-8_1600.jpg.json
+                    0831wallpaper-9_1600.jpg.json
+                    0811wallpaper-4_1280.jpg.json
+                    0824wallpaper-5_1600.jpg.json
+                    0817wallpaper-5_1600.jpg.json
+            ebook_processing/
+                Dockerfile
+                run_docker.sh
+                compile_synthetic_data.py
+                convert_to_text.sh
+                compile_synthetic_data_original.py
+                run_docker2.sh
+                workspace/
+                    test_outlines_function_split.py
+                    reduced_lines.txt
+                    test_outlines_function_celsius.py
+                    test_outlines_function_outline.py
+                    test_outlines_function_summarize.py
+                    analyze_ebooks.py
+                    download_model.py
+                    verify_swiftian.py
+            webscraping/
+                run.py
+            tts_webui/
+                build_docker.sh
+                run.sh
+            finetuning/
+                simple_ft/
+                    Dockerfile
+                    merge_run.sh
+                    Dockerfile.12.1
+                    run.sh
+                    build.sh
+                    Dockerfile.trl
+                    workdir/
+                        finetune_swift.py
+                        finetune_qlora_swift.py
+                        push.py
+                        dataset.json
+                        finetune_depr.py
+                        merge.py
+            langchain/
+                Dockerfile
+                run.sh
+            utils/
+                set_power.sh
+                init_secrets.sh
+            LLaVA-NeXT/
+                Dockerfile
+                run_docker.sh
+                workspace/
+                    run.sh
+
+File Contents:
+
+-----new_file-----
+ /.gitignore:
+ephemera/*
+*.pyc
+*.pyo
+
+-----new_file-----
+ /README.md:
+# ML
+
+
+-----new_file-----
+ ... 3 more file(s) in this folder were skipped due to folder limit.
+
+-----new_file-----
+ ... 1 more file(s) in this folder were skipped due to folder limit.
+
+-----new_file-----
+ /permathings/prereqs/0_install_cuda_12.5.sh:
+#!/bin/bash
+
+export DEBIAN_FRONTEND=noninteractive
+wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2204/x86_64/cuda-keyring_1.1-1_all.deb
+sudo dpkg -i cuda-keyring_1.1-1_all.deb
+sudo apt-get update
+sudo apt-get -y install cuda-toolkit-12-5
+sudo apt-get install -y cuda-drivers
+sudo rm cuda-keyring_1.1-1_all.deb
+
+
+-----new_file-----
+ /permathings/prereqs/1_install_docker_engine.sh:
+#!/bin/bash
+
+for pkg in docker.io docker-doc docker-compose docker-compose-v2 podman-docker containerd runc; do sudo apt-get remove $pkg; done
+
+# Add Docker's official GPG key:
+sudo apt-get update
+sudo apt-get install ca-certificates curl
+sudo install -m 0755 -d /etc/apt/keyrings
+sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+sudo chmod a+r /etc/apt/keyrings/docker.asc
+
+# Add the repository to Apt sources:
+echo \
+  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \
+  $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
+  sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+sudo apt-get update
+
+sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin -y
+
+sudo groupadd docker
+
+sudo usermod -aG docker $USER
+
+-----new_file-----
+ /permathings/libs/selenium_tools.py:
+import os, sys, json, re, time, datetime, random, string, docker, atexit
+from selenium import webdriver
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.firefox.options import Options
+from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
+from selenium.webdriver.common.by import By
+from bs4 import BeautifulSoup
+from io import BytesIO
+import tempfile
+import html2text
+
+this_modules_path = os.path.dirname(os.path.realpath(__file__))
+parent_dir = os.path.dirname(this_modules_path)
+sys.path.append(parent_dir)
+
+from docker_tools import run_docker_container
+
+def init_selenium_docker(driver_port=4444, vnc_port=7900):
+    container = run_docker_container("selenium/standalone-firefox", {f"{driver_port}/tcp": driver_port, f"{vnc_port}/tcp": vnc_port}, {}, {}, detach=True)
+    return container
+
+def stop_and_remove_selenium_docker(container):
+    container.stop()
+    container.remove()
+
+def init_selenium_driver_inside_docker(driver_port=4444):
+    options = Options()
+    driver = webdriver.Remote(command_executor=f"http://localhost:{driver_port}/wd/hub", options=options)
+    return driver
+
+def test_tools():
+    container = init_selenium_docker()
+    time.sleep(3)
+    driver = init_selenium_driver_inside_docker()
+    driver.get("https://yahoo.com")
+    time.sleep(5)
+    #print page text
+    source = driver.page_source
+    #soup = BeautifulSoup(source, "html.parser")
+    #text = soup.get_text()
+    text = html2text.html2text(source)
+    print(text)
+    stop_and_remove_selenium_docker(container)
+    print("Test done")
+
+
+-----new_file-----
+ /permathings/libs/docker_tools.py:
+import os, sys, json, re, time, datetime, random, string, docker, atexit
+
+this_modules_path = os.path.dirname(os.path.realpath(__file__))
+parent_dir = os.path.dirname(this_modules_path)
+sys.path.append(parent_dir)
+
+def run_docker_container(image_name, port_bindings, environment_vars, volumes, detach=True):
+    client = docker.from_env()
+    container = client.containers.run(image_name, detach=detach, ports=port_bindings, environment=environment_vars, volumes=volumes)
+    return container
+
+def create_docker_image_from_dockerfile(dockerfile_path, image_name, tag="latest"):
+    client = docker.from_env()
+    image, build_log = client.images.build(path=dockerfile_path, tag=f"{image_name}:{tag}")
+    return image, build_log
+
+-----new_file-----
+ ... 4 more file(s) in this folder were skipped due to folder limit.
+
+-----new_file-----
+ ... 4 more file(s) in this folder were skipped due to folder limit.
+
+-----new_file-----
+ /permathings/scripts/OpenDevin/run.sh:
+OPENDEVIN_WORKSPACE=$(pwd)/workspace
+export WORKSPACE_BASE=$(pwd)/workspace
+docker run -it --rm \
+    --pull=always \
+    -e SANDBOX_USER_ID=$(id -u) \
+    -e PERSIST_SANDBOX="true" \
+    -e SSH_PASSWORD="temp_pass" \
+    -e WORKSPACE_MOUNT_PATH=$OPENDEVIN_WORKSPACE \
+    -v $OPENDEVIN_WORKSPACE:/opt/workspace_base \
+    -v /var/run/docker.sock:/var/run/docker.sock \
+    -p 3000:3000 \
+    --add-host host.docker.internal:host-gateway \
+    -e LLM_API_KEY="ollama" \
+    -e LLM_BASE_URL="http://host.docker.internal:11434" \
+    --name opendevin-app-$(date +%Y%m%d%H%M%S) \
+    ghcr.io/opendevin/opendevin:0.6
+
+#command-r-plus:104b-q2_K
+
+-----new_file-----
+ /permathings/scripts/textgen_webui/build_docker.sh:
+#!/bin/bash
+
+THIS_DIR_PATH=$(dirname $(realpath $0))
+SCRIPTS_DIR_PATH=$(dirname $THIS_DIR_PATH)
+PERMATHINGS_DIR_PATH=$(dirname $SCRIPTS_DIR_PATH)
+LIBS_DIR_PATH=$PERMATHINGS_DIR_PATH/libs
+ML_PROJECT_DIR_PATH=$(dirname $PERMATHINGS_DIR_PATH)
+EPHEMERA_DIR_PATH=$ML_PROJECT_DIR_PATH/ephemera
+INPUTS_DIR_PATH=$EPHEMERA_DIR_PATH/inputs
+OUTPUTS_DIR_PATH=$EPHEMERA_DIR_PATH/outputs
+EBOOK_ANALYSES_DIR_PATH=$OUTPUTS_DIR_PATH/ebook_analyses
+INPUT_EBOOKS_DIR_PATH=$INPUTS_DIR_PATH/ebooks
+SHARED_CACHES_DIR_PATH=$EPHEMERA_DIR_PATH/shared_caches
+SECRETS_FILE_PATH=$EPHEMERA_DIR_PATH/secrets.json
+
+HWID=$(hwid | cut -d ' ' -f 2)
+
+cd $LIBS_DIR_PATH
+HF_TOKEN=$(python3 -c "from secretary import get_secret; print(get_secret('HF_TOKEN'))")
+cd $THIS_DIR_PATH
+
+# This script builds the vllm_server docker image
+TEXT_GET_WEBUI_CACHE_FOLDER_PATH=$SHARED_CACHES_DIR_PATH/tgwui
+if [ ! -d $TEXT_GET_WEBUI_CACHE_FOLDER_PATH ]; then
+    mkdir -p $TEXT_GET_WEBUI_CACHE_FOLDER_PATH
+fi
+
+cd $TEXT_GET_WEBUI_CACHE_FOLDER_PATH
+
+#if "vllm_server" dir is not present, create it
+if [ ! -d "tgwui_docker" ]; then
+    mkdir -p tgwui_docker
+fi
+cd tgwui_docker
+
+#remove text-generation-webui if it exists
+#if [ -d "text-generation-webui-docker" ]; then
+#    rm -rf text-generation-webui-docker
+#fi
+
+#if vllm dir is not present, clone it
+if [ ! -d "text-generation-webui" ]; then
+    git clone https://github.com/Atinoda/text-generation-webui-docker
+fi
+cd text-generation-webui-docker
+
+mv docker-compose.yml docker-compose.yml.bak
+mv docker-compose.build.yml docker-compose.yml
+
+sed -i 's/        - VERSION_TAG="v1.5"/        - VERSION_TAG="nightly"/g' docker-compose.yml
+sed -i 's/      target: default/      target: default-nvidia/g' docker-compose.yml
+
+#sed -i 's/                device_ids: \['0'\]/                device_ids: \['0', '1'\]/g' docker-compose.yml
+#HF_TOKEN=$(jq -r '.HF_TOKEN' $SECRETS_FILE_PATH) docker compose up --build
+#run compose build detach with secrets
+HF_TOKEN=$HF_TOKEN docker compose up --build -d
+
+-----new_file-----
+ /permathings/scripts/textgen_webui/run.sh:
+#!/bin/bash
+
+THIS_DIR_PATH=$(dirname $(realpath $0))
+SCRIPTS_DIR_PATH=$(dirname $THIS_DIR_PATH)
+PERMATHINGS_DIR_PATH=$(dirname $SCRIPTS_DIR_PATH)
+LIBS_DIR_PATH=$PERMATHINGS_DIR_PATH/libs
+ML_PROJECT_DIR_PATH=$(dirname $PERMATHINGS_DIR_PATH)
+EPHEMERA_DIR_PATH=$ML_PROJECT_DIR_PATH/ephemera
+INPUTS_DIR_PATH=$EPHEMERA_DIR_PATH/inputs
+OUTPUTS_DIR_PATH=$EPHEMERA_DIR_PATH/outputs
+EBOOK_ANALYSES_DIR_PATH=$OUTPUTS_DIR_PATH/ebook_analyses
+INPUT_EBOOKS_DIR_PATH=$INPUTS_DIR_PATH/ebooks
+SHARED_CACHES_DIR_PATH=$EPHEMERA_DIR_PATH/shared_caches
+SECRETS_FILE_PATH=$EPHEMERA_DIR_PATH/secrets.json
+
+cd $LIBS_DIR_PATH
+HF_TOKEN=$(python3 -c "from secretary import get_secret; print(get_secret('HF_TOKEN'))")
+
+TEXT_GEN_WEBUI_FOLDER_PATH=$SHARED_CACHES_DIR_PATH/tgwui/tgwui_docker/text-generation-webui-docker
+
+cd $TEXT_GEN_WEBUI_FOLDER_PATH
+HF_TOKEN=$HF_TOKEN docker compose up -d
+# --build -d
+
+-----new_file-----
+ /permathings/scripts/stable_diffusion_3/run.sh:
+THIS_DIR_PATH=$(dirname $(realpath $0))
+SCRIPTS_DIR_PATH=$(dirname $THIS_DIR_PATH)
+PERMATHINGS_DIR_PATH=$(dirname $SCRIPTS_DIR_PATH)
+LIBRARIES_DIR_PATH=$PERMATHINGS_DIR_PATH/libs
+ML_PROJECT_DIR_PATH=$(dirname $PERMATHINGS_DIR_PATH)
+EPHEMERA_DIR_PATH=$ML_PROJECT_DIR_PATH/ephemera
+SHARED_CACHES_DIR_PATH=$EPHEMERA_DIR_PATH/shared_caches
+HF_CACHE_FOLDER_PATH=$SHARED_CACHES_DIR_PATH/huggingface
+
+cd $LIBRARIES_DIR_PATH
+HF_TOKEN=$(python3 -c "from secretary import get_secret; print(get_secret('HF_TOKEN'))")
+cd $THIS_DIR_PATH
+
+docker run -it -p 7862:7860 --platform=linux/amd64 --gpus '"device=1"' \
+		-e HUGGING_FACE_HUB_TOKEN=$HF_TOKEN \
+        -v $HF_CACHE_FOLDER_PATH:/root/.cache/huggingface \
+	registry.hf.space/stabilityai-stable-diffusion-3-medium:latest python app.py
+
+-----new_file-----
+ /permathings/scripts/tformers_template/Dockerfile:
+FROM nvidia/cuda:11.8.0-cudnn8-devel-ubuntu20.04
+LABEL maintainer="Hugging Face"
+
+ARG DEBIAN_FRONTEND=noninteractive
+
+# Use login shell to read variables from `~/.profile` (to pass dynamic created variables between RUN commands)
+SHELL ["sh", "-lc"]
+
+# The following `ARG` are mainly used to specify the versions explicitly & directly in this docker file, and not meant
+# to be used as arguments for docker build (so far).
+
+ARG PYTORCH='2.2.1'
+# Example: `cu102`, `cu113`, etc.
+ARG CUDA='cu118'
+
+RUN apt update
+RUN apt install -y git libsndfile1-dev tesseract-ocr espeak-ng python python3-pip ffmpeg
+RUN python3 -m pip install --no-cache-dir --upgrade pip
+
+ARG REF=main
+RUN git clone https://github.com/huggingface/transformers && cd transformers && git checkout $REF
+
+RUN [ ${#PYTORCH} -gt 0 ] && VERSION='torch=='$PYTORCH'.*' ||  VERSION='torch'; echo "export VERSION='$VERSION'" >> ~/.profile
+RUN echo torch=$VERSION
+# `torchvision` and `torchaudio` should be installed along with `torch`, especial...[truncated middle 825 characters]...ng
+RUN python3 -m pip install --no-cache-dir git+https://github.com/huggingface/optimum@main#egg=optimum
+
+# Add aqlm for quantization testing
+RUN python3 -m pip install --no-cache-dir aqlm[gpu]==1.0.2
+
+# Add hqq for quantization testing
+RUN python3 -m pip install --no-cache-dir hqq
+
+# For GGUF tests
+RUN python3 -m pip install --no-cache-dir gguf
+
+# Add autoawq for quantization testing
+# >=v0.2.3 needed for compatibility with torch 2.2.1
+RUN python3 -m pip install --no-cache-dir https://github.com/casper-hansen/AutoAWQ/releases/download/v0.2.3/autoawq-0.2.3+cu118-cp38-cp38-linux_x86_64.whl
+
+# Add quanto for quantization testing
+RUN python3 -m pip install --no-cache-dir quanto
+
+# Add eetq for quantization testing
+RUN python3 -m pip install git+https://github.com/NetEase-FuXi/EETQ.git
+
+# When installing in editable mode, `transformers` is not recognized as a package.
+# this line must be added in order for python to be aware of transformers.
+RUN cd transformers && python3 setup.py develop
+
+
+-----new_file-----
+ /permathings/scripts/tformers_template/run.sh:
+THIS_DOCKER_CONTAINER_NAME="transformers-quantization-latest-gpu"
+
+THIS_DIR_PATH=$(dirname $(realpath $0))
+SCRIPTS_DIR_PATH=$(dirname $THIS_DIR_PATH)
+PERMATHINGS_DIR_PATH=$(dirname $SCRIPTS_DIR_PATH)
+ML_PROJECT_DIR_PATH=$(dirname $PERMATHINGS_DIR_PATH)
+EPHEMERA_DIR_PATH=$ML_PROJECT_DIR_PATH/ephemera
+SHARED_CACHES_DIR_PATH=$EPHEMERA_DIR_PATH/shared_caches
+
+if [ ! -f ./Dockerfile ]; then
+    wget https://raw.githubusercontent.com/huggingface/transformers/main/docker/transformers-quantization-latest-gpu/Dockerfile 
+fi
+
+docker build -t $THIS_DOCKER_CONTAINER_NAME .
+
+#if [ ! "$(docker ps -q -f name=$THIS_DOCKER_CONTAINER_NAME)" == "" ]; then
+#    docker stop $THIS_DOCKER_CONTAINER_NAME
+#fi
+
+#if [ "$(docker ps -aq -f status=exited -f name=$THIS_DOCKER_CONTAINER_NAME)" ]; then
+#    docker rm $THIS_DOCKER_CONTAINER_NAME
+#fi
+
+if [ ! -d $SHARED_CACHES_DIR_PATH ]; then
+    mkdir -p $SHARED_CACHES_DIR_PATH
+fi
+
+if [ ! -d $SHARED_CACHES_DIR_PATH/$THIS_DOCKER_CONTAINER_NAME ]; then
+    mkdir -p $SHARED_CACHES_DIR_PATH/$THIS_DOCKER_CONTAINER_NAME
+fi
+
+WORKDIR_PATH=$THIS_DIR_PATH/workspace
+
+if [ ! -d $WORKDIR_PATH ]; then
+    mkdir -p $WORKDIR_PATH
+fi
+
+docker run -it --gpus all --rm \
+    --name $THIS_DOCKER_CONTAINER_NAME \
+    -v $SHARED_CACHES_DIR_PATH/$THIS_DOCKER_CONTAINER_NAME:/root/.cache \
+    -v $WORKDIR_PATH:/workspace \
+    -w /workspace \
+    $THIS_DOCKER_CONTAINER_NAME
+
+
+-----new_file-----
+ ... 1 more file(s) in this folder were skipped due to folder limit.
+
+-----new_file-----
+ ... 1 more file(s) in this folder were skipped due to folder limit.
+
+-----new_file-----
+ ... 1 more file(s) in this folder were skipped due to folder limit.
+
+-----new_file-----
+ /permathings/scripts/ollama/describe_screenshot.sh:
+THIS_MODEL="llava:34b-v1.6"
+
+#THIS_MODEL="llava-phi3"
+
+json_string="{'model': '$THIS_MODEL', 'prompt': 'What is in this picture?', 'stream': False, 'images': [base64.b64encode(open('"screenshot.png"', 'rb').read()).decode('utf-8')]}).json()"
+echo $json_string
+command_string="import requests, base64, json; print(json.dumps(requests.post('http://localhost:11434/api/generate', json="$json_string", indent=2))"
+response=$(python3 -c "$command_string")
+echo $response | jq . > screenshot.png.json
+
+
+-----new_file-----
+ /permathings/scripts/ollama/screenshot.png.json:
+{
+  "model": "llava:34b-v1.6",
+  "created_at": "2024-06-11T14:56:49.970430224Z",
+  "response": "The image shows a webpage for a digital storage unit converter. It appears to be a tool that allows users to convert between different units of data storage, such as megabytes (MB), gigabytes (GB), terabytes (TB), and other related terms. The page includes instructions or tips on how to use the calculator, which are written in smaller text below the main conversion area. There's a button labeled \"Calculate\" that presumably performs the data storage conversion when clicked. The interface is simple and seems to be designed for quick calculations of digital storage sizes.",
+  "done": true,
+  "done_reason": "stop",
+  "context": [
+    1581,
+    59705,
+    622,
+    59593,
+    5858,
+    46826,
+    10707,
+    144,
+    59666,
+    59705,
+    622,
+    59593,
+    701,
+    46826,
+    144,
+    59666,
+    59705,
+    622,
+    59593,
+    5858,
+    46826,
+    3903,
+    144,
+    5697,
+    620,
+    594,
+    7...[truncated middle 507 characters]... 4267,
+    6382,
+    662,
+    9812,
+    59604,
+    97,
+    19267,
+    4267,
+    6382,
+    662,
+    6021,
+    59604,
+    97,
+    5019,
+    4267,
+    6382,
+    662,
+    25151,
+    59604,
+    97,
+    597,
+    924,
+    3691,
+    2818,
+    98,
+    707,
+    2943,
+    3849,
+    9745,
+    705,
+    7610,
+    632,
+    1040,
+    592,
+    1149,
+    567,
+    41675,
+    97,
+    878,
+    678,
+    3738,
+    594,
+    4908,
+    2641,
+    2723,
+    567,
+    1740,
+    13078,
+    2259,
+    98,
+    1889,
+    59610,
+    59575,
+    562,
+    6197,
+    15815,
+    1529,
+    13525,
+    16643,
+    59592,
+    639,
+    25946,
+    16331,
+    567,
+    1394,
+    6526,
+    13078,
+    950,
+    30663,
+    98,
+    707,
+    6780,
+    620,
+    2812,
+    597,
+    2833,
+    592,
+    629,
+    4060,
+    631,
+    2741,
+    9830,
+    593,
+    5439,
+    6526,
+    9167,
+    98
+  ],
+  "total_duration": 45721774587,
+  "load_duration": 3763409,
+  "prompt_eval_duration": 9237577000,
+  "eval_count": 126,
+  "eval_duration": 36451981000
+}
+
+
+-----new_file-----
+ ... 73 more file(s) in this folder were skipped due to folder limit.
+
+-----new_file-----
+ /permathings/scripts/ebook_processing/Dockerfile:
+FROM nvidia/cuda:12.5.0-devel-ubuntu22.04
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+RUN apt update
+RUN apt install -y git
+RUN apt install -y curl
+RUN apt install -y wget
+RUN apt install -y python3.10-full
+RUN apt install -y python3-pip python3-dev python3-venv
+RUN python3 -m pip install --no-cache-dir --upgrade pip
+RUN python3 -m pip install --no-cache-dir --upgrade mistral-inference
+RUN python3 -m pip install --no-cache-dir transformers huggingface_hub
+RUN python3 -m pip install --no-cache-dir outlines
+RUN python3 -m pip install --no-cache-dir pydantic
+RUN python3 -m pip install --no-cache-dir protobuf
+RUN python3 -m pip install --no-cache-dir accelerate
+RUN python3 -m pip install --no-cache-dir bitsandbytes
+RUN python3 -m pip install --no-cache-dir sentence-splitter
+RUN python3 -m pip install --no-cache-dir Unidecode
+WORKDIR /workspace
+
+-----new_file-----
+ /permathings/scripts/ebook_processing/run_docker.sh:
+THIS_DOCKER_CONTAINER_NAME="transformers-ebook-processing"
+
+THIS_DIR_PATH=$(dirname $(realpath $0))
+SCRIPTS_DIR_PATH=$(dirname $THIS_DIR_PATH)
+PERMATHINGS_DIR_PATH=$(dirname $SCRIPTS_DIR_PATH)
+LIBS_DIR_PATH=$PERMATHINGS_DIR_PATH/libs
+ML_PROJECT_DIR_PATH=$(dirname $PERMATHINGS_DIR_PATH)
+EPHEMERA_DIR_PATH=$ML_PROJECT_DIR_PATH/ephemera
+INPUTS_DIR_PATH=$EPHEMERA_DIR_PATH/inputs
+OUTPUTS_DIR_PATH=$EPHEMERA_DIR_PATH/outputs
+EBOOK_ANALYSES_DIR_PATH=$OUTPUTS_DIR_PATH/ebook_analyses
+INPUT_EBOOKS_DIR_PATH=$INPUTS_DIR_PATH/ebooks
+SHARED_CACHES_DIR_PATH=$EPHEMERA_DIR_PATH/shared_caches
+SECRETS_FILE_PATH=$EPHEMERA_DIR_PATH/secrets.json
+
+HWID=$(hwid | cut -d ' ' -f 2)
+
+if [ ! -d $OUTPUTS_DIR_PATH ]; then
+    mkdir -p $OUTPUTS_DIR_PATH
+fi
+if [ ! -f $EBOOK_ANALYSES_DIR_PATH ]; then
+    mkdir -p $EBOOK_ANALYSES_DIR_PATH
+fi
+
+cd $LIBS_DIR_PATH
+python3 -c "from secretary import get_secret; n=get_secret('HF_TOKEN')"
+cd $THIS_DIR_PATH
+
+HF_TOKEN_ENCRYPTED=$(jq -r '.HF_TOKEN' $SECRETS_FILE_PATH)
+
+HF_TOKEN=$(echo "$HF_TOKEN_ENCRYPTED" | openssl enc -d -aes-256-cbc -a -salt -pass pass:$HWID -pbkdf2)
+
+docker build -t $THIS_DOCKER_CONTAINER_NAME .
+
+if [ ! -d $SHARED_CACHES_DIR_PATH ]; then
+    mkdir -p $SHARED_CACHES_DIR_PATH
+fi
+
+if [ ! -d $SHARED_CACHES_DIR_PATH/$THIS_DOCKER_CONTAINER_NAME ]; then
+    mkdir -p $SHARED_CACHES_DIR_PATH/$THIS_DOCKER_CONTAINER_NAME
+fi
+
+WORKDIR_PATH=$THIS_DIR_PATH/workspace
+
+if [ ! -d $WORKDIR_PATH ]; then
+    mkdir -p $WORKDIR_PATH
+fi
+
+#echo "HF_TOKEN $HF_TOKEN"
+docker run -it --gpus '"device=0"' --rm \
+    --name $THIS_DOCKER_CONTAINER_NAME \
+    -v $SHARED_CACHES_DIR_PATH/$THIS_DOCKER_CONTAINER_NAME:/ephemeral_cache \
+    -v $WORKDIR_PATH:/workspace \
+    -e HF_TOKEN=$HF_TOKEN \
+    -v $INPUT_EBOOKS_DIR_PATH:/ebooks \
+    -v $EBOOK_ANALYSES_DIR_PATH:/ebook_analyses \
+    -w /workspace \
+    $THIS_DOCKER_CONTAINER_NAME
+
+
+-----new_file-----
+ ... 6 more file(s) in this folder were skipped due to folder limit.
+
+-----new_file-----
+ /permathings/scripts/webscraping/run.py:
+import os, sys, json, re, time, datetime, random, string, docker, atexit
+
+this_dir = os.path.dirname(os.path.abspath(__file__))
+scripts_dir = os.path.dirname(this_dir)
+permathings_dir = os.path.dirname(scripts_dir)
+root_dir = os.path.dirname(permathings_dir)
+ephemeral_dir = os.path.join(root_dir, "ephemera")
+outputs_dir = os.path.join(ephemeral_dir, "outputs")
+libs_dir = os.path.join(permathings_dir, "libs")
+sys.path.append(libs_dir)
+
+from selenium_tools import test_tools
+
+test_tools()
+
+
+-----new_file-----
+ /permathings/scripts/tts_webui/build_docker.sh:
+#!/bin/bash
+
+THIS_DIR_PATH=$(dirname $(realpath $0))
+SCRIPTS_DIR_PATH=$(dirname $THIS_DIR_PATH)
+PERMATHINGS_DIR_PATH=$(dirname $SCRIPTS_DIR_PATH)
+LIBS_DIR_PATH=$PERMATHINGS_DIR_PATH/libs
+ML_PROJECT_DIR_PATH=$(dirname $PERMATHINGS_DIR_PATH)
+EPHEMERA_DIR_PATH=$ML_PROJECT_DIR_PATH/ephemera
+INPUTS_DIR_PATH=$EPHEMERA_DIR_PATH/inputs
+OUTPUTS_DIR_PATH=$EPHEMERA_DIR_PATH/outputs
+EBOOK_ANALYSES_DIR_PATH=$OUTPUTS_DIR_PATH/ebook_analyses
+INPUT_EBOOKS_DIR_PATH=$INPUTS_DIR_PATH/ebooks
+SHARED_CACHES_DIR_PATH=$EPHEMERA_DIR_PATH/shared_caches
+SECRETS_FILE_PATH=$EPHEMERA_DIR_PATH/secrets.json
+
+HWID=$(hwid | cut -d ' ' -f 2)
+
+cd $LIBS_DIR_PATH
+HF_TOKEN=$(python3 -c "from secretary import get_secret; print(get_secret('HF_TOKEN'))")
+cd $THIS_DIR_PATH
+
+# This script builds the vllm_server docker image
+TEXT_GET_WEBUI_CACHE_FOLDER_PATH=$SHARED_CACHES_DIR_PATH/ttswui
+if [ ! -d $TEXT_GET_WEBUI_CACHE_FOLDER_PATH ]; then
+    mkdir -p $TEXT_GET_WEBUI_CACHE_FOLDER_PATH
+fi
+
+cd $TEXT_GET_WEBUI_CACHE_FOLDER_PATH
+
+#remove text-generation-webui if it exists
+#if [ -d "text-generation-webui-docker" ]; then
+#    rm -rf text-generation-webui-docker
+#fi
+
+if [ ! -d "tts-generation-webui" ]; then
+    git clone https://github.com/rsxdalv/tts-generation-webui
+fi
+cd tts-generation-webui
+
+#mv docker-compose.yml docker-compose.yml.bak
+#mv docker-compose.build.yml docker-compose.yml
+
+#sed -i 's/        - VERSION_TAG="v1.5"/        - VERSION_TAG="nightly"/g' docker-compose.yml
+#sed -i 's/      target: default/      target: default-nvidia/g' docker-compose.yml
+
+#sed -i 's/                device_ids: \['0'\]/                device_ids: \['0', '1'\]/g' docker-compose.yml
+#HF_TOKEN=$(jq -r '.HF_TOKEN' $SECRETS_FILE_PATH) docker compose up --build
+#run compose build detach with secrets
+HF_TOKEN=$HF_TOKEN docker build -t rsxdalv/tts-generation-webui .
+
+-----new_file-----
+ /permathings/scripts/tts_webui/run.sh:
+#!/bin/bash
+
+THIS_DIR_PATH=$(dirname $(realpath $0))
+SCRIPTS_DIR_PATH=$(dirname $THIS_DIR_PATH)
+PERMATHINGS_DIR_PATH=$(dirname $SCRIPTS_DIR_PATH)
+LIBS_DIR_PATH=$PERMATHINGS_DIR_PATH/libs
+ML_PROJECT_DIR_PATH=$(dirname $PERMATHINGS_DIR_PATH)
+EPHEMERA_DIR_PATH=$ML_PROJECT_DIR_PATH/ephemera
+INPUTS_DIR_PATH=$EPHEMERA_DIR_PATH/inputs
+OUTPUTS_DIR_PATH=$EPHEMERA_DIR_PATH/outputs
+EBOOK_ANALYSES_DIR_PATH=$OUTPUTS_DIR_PATH/ebook_analyses
+INPUT_EBOOKS_DIR_PATH=$INPUTS_DIR_PATH/ebooks
+SHARED_CACHES_DIR_PATH=$EPHEMERA_DIR_PATH/shared_caches
+SECRETS_FILE_PATH=$EPHEMERA_DIR_PATH/secrets.json
+
+cd $LIBS_DIR_PATH
+HF_TOKEN=$(python3 -c "from secretary import get_secret; print(get_secret('HF_TOKEN'))")
+
+TEXT_GEN_WEBUI_FOLDER_PATH=$SHARED_CACHES_DIR_PATH/ttswui/tts-generation-webui
+
+cd $TEXT_GEN_WEBUI_FOLDER_PATH
+HF_TOKEN=$HF_TOKEN docker compose up -d
+# --build -d
+
+-----new_file-----
+ ... 4 more file(s) in this folder were skipped due to folder limit.
+
+-----new_file-----
+ /permathings/scripts/langchain/Dockerfile:
+FROM transformers-quantization-latest-gpu
+
+RUN apt
+
+-----new_file-----
+ /permathings/scripts/langchain/run.sh:
+THIS_DOCKER_CONTAINER_NAME="transformers-quantization-latest-gpu"
+
+THIS_DIR_PATH=$(dirname $(realpath $0))
+SCRIPTS_DIR_PATH=$(dirname $THIS_DIR_PATH)
+PERMATHINGS_DIR_PATH=$(dirname $SCRIPTS_DIR_PATH)
+ML_PROJECT_DIR_PATH=$(dirname $PERMATHINGS_DIR_PATH)
+EPHEMERA_DIR_PATH=$ML_PROJECT_DIR_PATH/ephemera
+SHARED_CACHES_DIR_PATH=$EPHEMERA_DIR_PATH/shared_caches
+
+if [ ! -f ./Dockerfile ]; then
+    wget https://raw.githubusercontent.com/huggingface/transformers/main/docker/transformers-quantization-latest-gpu/Dockerfile 
+fi
+
+docker build -t $THIS_DOCKER_CONTAINER_NAME .
+
+if [ ! -d $SHARED_CACHES_DIR_PATH ]; then
+    mkdir -p $SHARED_CACHES_DIR_PATH
+fi
+
+if [ ! -d $SHARED_CACHES_DIR_PATH/$THIS_DOCKER_CONTAINER_NAME ]; then
+    mkdir -p $SHARED_CACHES_DIR_PATH/$THIS_DOCKER_CONTAINER_NAME
+fi
+
+WORKDIR_PATH=$THIS_DIR_PATH/workspace
+
+if [ ! -d $WORKDIR_PATH ]; then
+    mkdir -p $WORKDIR_PATH
+fi
+
+docker run -it --gpus all --rm \
+    --name $THIS_DOCKER_CONTAINER_NAME \
+    -v $SHARED_CACHES_DIR_PATH/$THIS_DOCKER_CONTAINER_NAME:/root/.cache \
+    -v $WORKDIR_PATH:/workspace \
+    $THIS_DOCKER_CONTAINER_NAME
+
+
+-----new_file-----
+ /permathings/scripts/utils/set_power.sh:
+sudo nvidia-smi -pl 220
+
+-----new_file-----
+ /permathings/scripts/utils/init_secrets.sh:
+THIS_DIR_PATH=$(dirname $(realpath $0))
+SCRIPTS_DIR_PATH=$(dirname $THIS_DIR_PATH)
+PERMATHINGS_DIR_PATH=$(dirname $SCRIPTS_DIR_PATH)
+LIBRARIES_DIR_PATH=$PERMATHINGS_DIR_PATH/libs
+ML_PROJECT_DIR_PATH=$(dirname $PERMATHINGS_DIR_PATH)
+EPHEMERA_DIR_PATH=$ML_PROJECT_DIR_PATH/ephemera
+
+if [ ! -d $EPHEMERA_DIR_PATH ]; then
+    mkdir $EPHEMERA_DIR_PATH
+fi
+
+cd $LIBRARIES_DIR_PATH
+python3 -c "from secretary import get_all_defaults; get_all_defaults()"
+cd $THIS_DIR_PATH
+
+
+-----new_file-----
+ /permathings/scripts/LLaVA-NeXT/Dockerfile:
+FROM nvidia/cuda:12.5.0-devel-ubuntu22.04
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+RUN apt update
+RUN apt install -y git
+RUN apt install -y curl
+RUN apt install -y wget
+RUN apt install -y python3.10-full
+RUN apt install -y python3-pip python3-dev python3-venv
+RUN python3 -m pip install --no-cache-dir --upgrade pip
+RUN apt install -y tesseract-ocr libtesseract-dev
+
+WORKDIR /app
+RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.3/install.sh | bash
+RUN git clone https://github.com/OpenAdaptAI/OpenAdapt.git
+WORKDIR /app/OpenAdapt
+ENV PYTHONPATH "${PYTHONPATH}:/app/OpenAdapt"
+RUN python3 -m pip install --no-cache-dir poetry
+RUN poetry install
+RUN poetry run install-dashboard
+RUN python3 -m pip install --no-cache-dir .[all]
+WORKDIR /app/OpenAdapt/openadapt
+RUN alembic upgrade head
+RUN pytest
+
+-----new_file-----
+ /permathings/scripts/LLaVA-NeXT/run_docker.sh:
+THIS_DOCKER_CONTAINER_NAME="transformers-llava-next"
+
+THIS_DIR_PATH=$(dirname $(realpath $0))
+SCRIPTS_DIR_PATH=$(dirname $(dirname $THIS_DIR_PATH))
+TEMPLATE_DIR_PATH=$SCRIPTS_DIR_PATH/tformers_template
+TEMPLATE_IMAGE_NAME="transformers-quantization-latest-gpu"
+PERMATHINGS_DIR_PATH=$(dirname $SCRIPTS_DIR_PATH)
+ML_PROJECT_DIR_PATH=$(dirname $PERMATHINGS_DIR_PATH)
+EPHEMERA_DIR_PATH=$ML_PROJECT_DIR_PATH/ephemera
+SHARED_CACHES_DIR_PATH=$EPHEMERA_DIR_PATH/shared_caches
+
+#docker build -t $TEMPLATE_IMAGE_NAME $TEMPLATE_DIR_PATH
+docker build -t $THIS_DOCKER_CONTAINER_NAME .
+
+if [ ! -d $SHARED_CACHES_DIR_PATH ]; then
+    mkdir -p $SHARED_CACHES_DIR_PATH
+fi
+
+THIS_CACHE=$SHARED_CACHES_DIR_PATH/$THIS_DOCKER_CONTAINER_NAME
+
+if [ ! -d $THIS_CACHE ]; then
+    mkdir -p $THIS_CACHE
+fi
+
+WORKDIR_PATH=$THIS_DIR_PATH/workspace
+
+if [ ! -d $WORKDIR_PATH ]; then
+    mkdir -p $WORKDIR_PATH
+fi
+
+docker kill $THIS_DOCKER_CONTAINER_NAME
+docker rm $THIS_DOCKER_CONTAINER_NAME
+sleep 2
+docker kill $THIS_DOCKER_CONTAINER_NAME
+docker rm $THIS_DOCKER_CONTAINER_NAME
+sleep 2
+
+docker run --gpus all -it --rm \
+    --name $THIS_DOCKER_CONTAINER_NAME \
+    -v $THIS_CACHE:/root/.cache \
+    -v $WORKDIR_PATH:/workspace \
+    -w /workspace \
+    -p 7860:7860 \
+    $THIS_DOCKER_CONTAINER_NAME
+
+
+-----new_file-----
+ /permathings/scripts/segmentation/SAM/Dockerfile:
+FROM transformers-quantization-latest-gpu
+
+# Install the necessary packages
+RUN apt update
+RUN apt install -y git
+RUN python3 -m pip install --no-cache-dir --upgrade pip
+RUN python3 -m pip install --no-cache-dir opencv-python
+RUN python3 -m pip install --no-cache-dir numpy
+RUN python3 -m pip install --no-cache-dir pillow
+RUN python3 -m pip install --no-cache-dir matplotlib
+
+-----new_file-----
+ /permathings/scripts/segmentation/SAM/run.sh:
+THIS_DOCKER_CONTAINER_NAME="transformers-for-sam"
+
+THIS_DIR_PATH=$(dirname $(realpath $0))
+SCRIPTS_DIR_PATH=$(dirname $(dirname $THIS_DIR_PATH))
+TEMPLATE_DIR_PATH=$SCRIPTS_DIR_PATH/tformers_template
+TEMPLATE_IMAGE_NAME="transformers-quantization-latest-gpu"
+PERMATHINGS_DIR_PATH=$(dirname $SCRIPTS_DIR_PATH)
+ML_PROJECT_DIR_PATH=$(dirname $PERMATHINGS_DIR_PATH)
+EPHEMERA_DIR_PATH=$ML_PROJECT_DIR_PATH/ephemera
+SHARED_CACHES_DIR_PATH=$EPHEMERA_DIR_PATH/shared_caches
+
+docker build -t $TEMPLATE_IMAGE_NAME $TEMPLATE_DIR_PATH
+docker build -t $THIS_DOCKER_CONTAINER_NAME .
+
+if [ ! -d $SHARED_CACHES_DIR_PATH ]; then
+    mkdir -p $SHARED_CACHES_DIR_PATH
+fi
+
+THIS_CACHE=$SHARED_CACHES_DIR_PATH/$THIS_DOCKER_CONTAINER_NAME
+
+if [ ! -d $THIS_CACHE ]; then
+    mkdir -p $THIS_CACHE
+fi
+
+WORKDIR_PATH=$THIS_DIR_PATH/workspace
+
+if [ ! -d $WORKDIR_PATH ]; then
+    mkdir -p $WORKDIR_PATH
+fi
+
+docker kill $THIS_DOCKER_CONTAINER_NAME
+docker rm $THIS_DOCKER_CONTAINER_NAME
+sleep 2
+docker kill $THIS_DOCKER_CONTAINER_NAME
+docker rm $THIS_DOCKER_CONTAINER_NAME
+sleep 2
+
+docker run --gpus all -it --rm \
+    --name $THIS_DOCKER_CONTAINER_NAME \
+    -v $THIS_CACHE:/root/.cache \
+    -v $WORKDIR_PATH:/workspace \
+    -w /workspace \
+    -p 8000:8000 \
+    $THIS_DOCKER_CONTAINER_NAME
+
+
+-----new_file-----
+ ... 3 more file(s) in this folder were skipped due to folder limit.
+
+-----new_file-----
+ /permathings/scripts/segmentation/segment-caption-anything/Dockerfile:
+FROM nvcr.io/nvidia/pytorch:23.07-py3
+
+# Install the necessary packages
+RUN apt update
+RUN apt install -y git
+RUN python3 -m pip install --no-cache-dir --upgrade pip
+
+#make debian frontend noninteractive
+ENV DEBIAN_FRONTEND=noninteractive
+
+WORKDIR /app
+RUN git clone https://github.com/xk-huang/segment-caption-anything
+WORKDIR /app/segment-caption-anything
+RUN . amlt_configs/setup.sh
+RUN python3 -m pip install --no-cache-dir -r requirements.txt
+RUN python3 -m pip install --no-cache-dir -r requirements-app.txt
+RUN apt install -y git-lfs
+
+-----new_file-----
+ /permathings/scripts/segmentation/segment-caption-anything/run_docker.sh:
+THIS_DOCKER_CONTAINER_NAME="transformers-for-captioning-sam"
+
+THIS_DIR_PATH=$(dirname $(realpath $0))
+SCRIPTS_DIR_PATH=$(dirname $(dirname $THIS_DIR_PATH))
+TEMPLATE_DIR_PATH=$SCRIPTS_DIR_PATH/tformers_template
+TEMPLATE_IMAGE_NAME="transformers-quantization-latest-gpu"
+PERMATHINGS_DIR_PATH=$(dirname $SCRIPTS_DIR_PATH)
+ML_PROJECT_DIR_PATH=$(dirname $PERMATHINGS_DIR_PATH)
+EPHEMERA_DIR_PATH=$ML_PROJECT_DIR_PATH/ephemera
+SHARED_CACHES_DIR_PATH=$EPHEMERA_DIR_PATH/shared_caches
+
+docker build -t $TEMPLATE_IMAGE_NAME $TEMPLATE_DIR_PATH
+docker build -t $THIS_DOCKER_CONTAINER_NAME .
+
+if [ ! -d $SHARED_CACHES_DIR_PATH ]; then
+    mkdir -p $SHARED_CACHES_DIR_PATH
+fi
+
+THIS_CACHE=$SHARED_CACHES_DIR_PATH/$THIS_DOCKER_CONTAINER_NAME
+
+if [ ! -d $THIS_CACHE ]; then
+    mkdir -p $THIS_CACHE
+fi
+
+WORKDIR_PATH=$THIS_DIR_PATH/workspace
+
+if [ ! -d $WORKDIR_PATH ]; then
+    mkdir -p $WORKDIR_PATH
+fi
+
+docker kill $THIS_DOCKER_CONTAINER_NAME
+docker rm $THIS_DOCKER_CONTAINER_NAME
+sleep 2
+docker kill $THIS_DOCKER_CONTAINER_NAME
+docker rm $THIS_DOCKER_CONTAINER_NAME
+sleep 2
+
+CKPTS_DIR_PATH=$SHARED_CACHES_DIR_PATH/segment-caption-anything-ollm3bv2-vg
+
+docker run --gpus all -it --rm \
+    --name $THIS_DOCKER_CONTAINER_NAME \
+    -v $THIS_CACHE:/root/.cache \
+    -v $WORKDIR_PATH:/workspace \
+    -v $CKPTS_DIR_PATH:/ckpts \
+    -w /workspace \
+    -p 7860:7860 \
+    $THIS_DOCKER_CONTAINER_NAME
+
+
+-----new_file-----
+ /permathings/scripts/segmentation/OpenAdapt/Dockerfile:
+FROM nvidia/cuda:12.5.0-devel-ubuntu22.04
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+RUN apt update
+RUN apt install -y git
+RUN apt install -y curl
+RUN apt install -y wget
+RUN apt install -y python3.10-full
+RUN apt install -y python3-pip python3-dev python3-venv
+RUN python3 -m pip install --no-cache-dir --upgrade pip
+WORKDIR /app
+RUN git clone https://github.com/LLaVA-VL/LLaVA-NeXT
+WORKDIR /app/LLaVA-NeXT
+RUN pip install -e ".[train]"
+
+-----new_file-----
+ /permathings/scripts/segmentation/OpenAdapt/run_docker.sh:
+THIS_DOCKER_CONTAINER_NAME="transformers-openadapt"
+
+THIS_DIR_PATH=$(dirname $(realpath $0))
+SCRIPTS_DIR_PATH=$(dirname $(dirname $THIS_DIR_PATH))
+TEMPLATE_DIR_PATH=$SCRIPTS_DIR_PATH/tformers_template
+TEMPLATE_IMAGE_NAME="transformers-quantization-latest-gpu"
+PERMATHINGS_DIR_PATH=$(dirname $SCRIPTS_DIR_PATH)
+ML_PROJECT_DIR_PATH=$(dirname $PERMATHINGS_DIR_PATH)
+EPHEMERA_DIR_PATH=$ML_PROJECT_DIR_PATH/ephemera
+SHARED_CACHES_DIR_PATH=$EPHEMERA_DIR_PATH/shared_caches
+
+docker build -t $THIS_DOCKER_CONTAINER_NAME .
+
+if [ ! -d $SHARED_CACHES_DIR_PATH ]; then
+    mkdir -p $SHARED_CACHES_DIR_PATH
+fi
+
+THIS_CACHE=$SHARED_CACHES_DIR_PATH/$THIS_DOCKER_CONTAINER_NAME
+
+if [ ! -d $THIS_CACHE ]; then
+    mkdir -p $THIS_CACHE
+fi
+
+WORKDIR_PATH=$THIS_DIR_PATH/workspace
+
+if [ ! -d $WORKDIR_PATH ]; then
+    mkdir -p $WORKDIR_PATH
+fi
+
+docker kill $THIS_DOCKER_CONTAINER_NAME
+docker rm $THIS_DOCKER_CONTAINER_NAME
+sleep 2
+docker kill $THIS_DOCKER_CONTAINER_NAME
+docker rm $THIS_DOCKER_CONTAINER_NAME
+sleep 2
+
+docker run --gpus all -it --rm \
+    --name $THIS_DOCKER_CONTAINER_NAME \
+    -v $THIS_CACHE:/root/.cache \
+    -v $WORKDIR_PATH:/workspace \
+    -w /workspace \
+    -p 7860:7860 \
+    $THIS_DOCKER_CONTAINER_NAME
+
+
+-----new_file-----
+ /permathings/scripts/segmentation/segment-track-anything/Dockerfile:
+FROM nvidia/cuda:12.5.0-devel-ubuntu22.04
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+RUN apt update
+RUN apt install -y git
+RUN apt install -y curl
+RUN apt install -y wget
+RUN apt install -y python3.10-full
+RUN apt install -y python3-pip python3-dev python3-venv
+RUN python3 -m pip install --no-cache-dir --upgrade pip
+RUN python3 -m pip install --no-cache-dir gradio==3.39.0 gdown
+
+-----new_file-----
+ /permathings/scripts/segmentation/segment-track-anything/run_docker.sh:
+THIS_DOCKER_CONTAINER_NAME="transformers-for-tracking-sam"
+
+THIS_DIR_PATH=$(dirname $(realpath $0))
+SCRIPTS_DIR_PATH=$(dirname $(dirname $THIS_DIR_PATH))
+TEMPLATE_DIR_PATH=$SCRIPTS_DIR_PATH/tformers_template
+TEMPLATE_IMAGE_NAME="transformers-quantization-latest-gpu"
+PERMATHINGS_DIR_PATH=$(dirname $SCRIPTS_DIR_PATH)
+ML_PROJECT_DIR_PATH=$(dirname $PERMATHINGS_DIR_PATH)
+EPHEMERA_DIR_PATH=$ML_PROJECT_DIR_PATH/ephemera
+SHARED_CACHES_DIR_PATH=$EPHEMERA_DIR_PATH/shared_caches
+
+docker build -t $TEMPLATE_IMAGE_NAME $TEMPLATE_DIR_PATH
+docker build -t $THIS_DOCKER_CONTAINER_NAME .
+
+if [ ! -d $SHARED_CACHES_DIR_PATH ]; then
+    mkdir -p $SHARED_CACHES_DIR_PATH
+fi
+
+THIS_CACHE=$SHARED_CACHES_DIR_PATH/$THIS_DOCKER_CONTAINER_NAME
+
+if [ ! -d $THIS_CACHE ]; then
+    mkdir -p $THIS_CACHE
+fi
+
+WORKDIR_PATH=$THIS_DIR_PATH/workspace
+
+if [ ! -d $WORKDIR_PATH ]; then
+    mkdir -p $WORKDIR_PATH
+fi
+
+docker kill $THIS_DOCKER_CONTAINER_NAME
+docker rm $THIS_DOCKER_CONTAINER_NAME
+sleep 2
+docker kill $THIS_DOCKER_CONTAINER_NAME
+docker rm $THIS_DOCKER_CONTAINER_NAME
+sleep 2
+
+REPO_PATH=$SHARED_CACHES_DIR_PATH/Segment-and-Track-Anything
+
+docker run --gpus all -it --rm \
+    --name $THIS_DOCKER_CONTAINER_NAME \
+    -v $THIS_CACHE:/root/.cache \
+    -v $WORKDIR_PATH:/workspace \
+    -v $REPO_PATH:/app \
+    -w /workspace \
+    -p 7860:7860 \
+    $THIS_DOCKER_CONTAINER_NAME
+
+
+-----new_file-----
+ /permathings/scripts/ollama/example_output/0825wallpaper-4_1280.jpg.json:
+{
+  "model": "llava:34b-v1.6",
+  "created_at": "2024-06-10T17:55:46.269329282Z",
+  "response": "The image shows a beautiful night scene featuring the Golden Gate Bridge in San Francisco, California. The bridge is illuminated with warm lights that contrast against the dark sky and create a striking reflection on the water below. In the foreground, there are rocks at the edge of the water, and you can see the calm ocean lapping against them under what appears to be a foggy evening atmosphere. There's also some light traffic visible on the bridge, adding to the peaceful yet active ambiance of the scene. The photo is taken from a low angle looking towards the bridge, which emphasizes its grandeur and iconic shape.",
+  "done": true,
+  "done_reason": "stop",
+  "context": [
+    1581,
+    59705,
+    622,
+    59593,
+    5858,
+    46826,
+    10707,
+    144,
+    59666,
+    59705,
+    622,
+    59593,
+    701,
+    46826,
+    144,
+    59666,
+    59705,
+    622,
+    59593,
+    5858,
+    46826,
+    39...[truncated middle 578 characters]...  14192,
+    632,
+    567,
+    2127,
+    2723,
+    98,
+    967,
+    567,
+    30626,
+    97,
+    926,
+    678,
+    19144,
+    702,
+    567,
+    5054,
+    593,
+    567,
+    2127,
+    97,
+    597,
+    641,
+    748,
+    1123,
+    567,
+    13905,
+    13467,
+    610,
+    5869,
+    1877,
+    972,
+    1189,
+    981,
+    5405,
+    592,
+    629,
+    562,
+    28405,
+    1499,
+    7360,
+    10689,
+    98,
+    1889,
+    59610,
+    59575,
+    962,
+    919,
+    1961,
+    6244,
+    9686,
+    632,
+    567,
+    10939,
+    97,
+    5952,
+    592,
+    567,
+    18696,
+    2583,
+    5114,
+    9042,
+    5587,
+    593,
+    567,
+    5753,
+    98,
+    707,
+    5631,
+    620,
+    2955,
+    742,
+    562,
+    2158,
+    7392,
+    2234,
+    4428,
+    567,
+    10939,
+    97,
+    878,
+    45444,
+    1034,
+    5584,
+    26056,
+    597,
+    21249,
+    5418,
+    98
+  ],
+  "total_duration": 63592334384,
+  "load_duration": 2071305,
+  "prompt_eval_duration": 16033200000,
+  "eval_count": 129,
+  "eval_duration": 47485901000
+}
+
+
+-----new_file-----
+ /permathings/scripts/ollama/example_output/0824wallpaper-2_1600.jpg.json:
+{
+  "model": "llava:34b-v1.6",
+  "created_at": "2024-06-10T17:40:05.68664046Z",
+  "response": "The picture shows a scenic view of an icy landscape, likely from Antarctica or the Arctic given the presence of ice and snow. In the foreground, there are small structures that could be part of a research station or huts for travelers. These structures are typically built to withstand harsh weather conditions in polar regions. The sky is clear with some high-altitude clouds, indicating it might be late afternoon due to the angle of sunlight on the ice surface. The overall impression is one of an isolated and cold environment, but also a place of natural beauty and scientific interest.",
+  "done": true,
+  "done_reason": "stop",
+  "context": [
+    1581,
+    59705,
+    622,
+    59593,
+    5858,
+    46826,
+    10707,
+    144,
+    59666,
+    59705,
+    622,
+    59593,
+    701,
+    46826,
+    144,
+    59666,
+    59705,
+    622,
+    59593,
+    5858,
+    46826,
+    3903,
+    144,
+    5697,
+    620,
+ ...[truncated middle 449 characters]...8,
+    967,
+    567,
+    30626,
+    97,
+    926,
+    678,
+    1615,
+    7960,
+    639,
+    1158,
+    629,
+    956,
+    593,
+    562,
+    2761,
+    5935,
+    705,
+    602,
+    8558,
+    631,
+    25977,
+    98,
+    2789,
+    7960,
+    678,
+    7148,
+    4188,
+    592,
+    39761,
+    19116,
+    6719,
+    3545,
+    594,
+    7305,
+    6822,
+    98,
+    707,
+    8697,
+    620,
+    3095,
+    651,
+    919,
+    1374,
+    59594,
+    3707,
+    4311,
+    16529,
+    97,
+    15250,
+    648,
+    1771,
+    629,
+    3814,
+    8709,
+    2436,
+    592,
+    567,
+    7392,
+    593,
+    29389,
+    632,
+    567,
+    6949,
+    4013,
+    98,
+    707,
+    5043,
+    14410,
+    620,
+    853,
+    593,
+    663,
+    14936,
+    597,
+    5711,
+    3247,
+    97,
+    796,
+    962,
+    562,
+    1700,
+    593,
+    3685,
+    8641,
+    597,
+    8857,
+    1719,
+    98
+  ],
+  "total_duration": 57977215966,
+  "load_duration": 4614763,
+  "prompt_eval_duration": 17149860000,
+  "eval_count": 120,
+  "eval_duration": 40733514000
+}
+
+
+-----new_file-----
+ /permathings/scripts/ebook_processing/workspace/test_outlines_function_split.py:
+import os
+
+#cuda visible devices= 0,1
+os.environ["CUDA_VISIBLE_DEVICES"] = "0,1"
+
+from pydantic import BaseModel
+import json
+import torch
+from transformers import AutoConfig, AutoModelForCausalLM, AutoTokenizer, logging
+from accelerate import init_empty_weights, infer_auto_device_map, load_checkpoint_and_dispatch
+torch.cuda.empty_cache()
+import outlines
+
+
+MODEL_DIR_PATH="/ephemeral_cache/mistral-inst-v03"
+
+
+function_json_string = '''{
+    "type": "function",
+    "function": {
+        "name": "define_section_splits",
+        "description": "Store data related to the sectional divisions of a text",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "section_divisions": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "division_type": {
+                                "type": "string",
+                            ...[truncated middle 32307 characters]...om_config(config)
+
+print("infer auto device map")
+
+max_memory = {0:"4.5GiB", 1:"4.5GiB","cpu":"0GiB"}
+
+
+print("max_memory", max_memory)
+
+device_map = infer_auto_device_map(
+        model,
+        max_memory=max_memory,
+        no_split_module_classes=["MistralDecoderLayer"],
+        dtype=torch.int8
+    )
+
+#print(device_map)
+
+print("load checkpoint and dispatch")
+model = outlines.models.transformers(
+        MODEL_DIR_PATH,
+        #device="cuda",   #why... https://github.com/outlines-dev/outlines/blob/a987159860a6dd3a83d2f2376f36ab28ef45decd/outlines/models/transformers.py#L229
+        device=None,
+        model_kwargs={
+            "torch_dtype": torch.bfloat16,
+            "device_map": device_map,
+            "load_in_8bit": True,
+            "config":config,
+        },
+    )
+generator = outlines.generate.json(model, function_params_string)
+output = generator(prompt)
+
+print(json.dumps(output, indent=2))
+
+with open('example_output.json', 'w') as f:
+    json.dump(output, f, indent=2)
+
+-----new_file-----
+ /permathings/scripts/ebook_processing/workspace/reduced_lines.txt:
+This infallibly convinced me that your Lordship was the person intended by the Author. But being very unacquainted in the style and form of dedications, I employed those wits aforesaid to furnish me with hints and materials towards a panegyric upon your Lordship’s virtues.
+
+In two days they brought me ten sheets of paper filled up on every side. They swore to me that they had ransacked whatever could be found in the characters of Socrates, Aristides, Epaminondas, Cato, Tully, Atticus, and other hard names which I cannot now recollect. However, I have reason to believe they imposed upon my ignorance, because when I came to read over their collections, there was not a syllable there but what I and everybody else knew as well as themselves: therefore I grievously suspect a cheat; and that these Authors of mine stole and transcribed every word from the universal report of mankind. So that I took upon myself as fifty shillings out of pocket to no manner of purpose.
+
+If by altering the title...[truncated middle 4252861 characters]...kingdom one large poorhouse; to deprive us of all means to excite hospitality or charity; to turn our cities and churches into ruins; to make this country a desert for wild beasts and robbers; to destroy all arts and sciences, all trades and manufactures, and the very tillage of the ground, only to enrich one obscure ill-designing projector, and his followers; it is time for the pastor to cry out that the wolf is getting into his flock, to warn them to stand together, and all to consult the common safety. And God be praised for his infinite goodness, in raising such a spirit of union among us at least in this point, in the midst of all our former divisions; which union, if it continues, will in all probability defeat the pernicious design of this pestilent enemy to the nation.”
+
+It will scarcely be credited, that this dreadful description, when stripped of its exaggerations, meant no more than that Ireland might lose about six thousand a year during Wood’s patent for coining halfpence!
+
+-----new_file-----
+ /permathings/scripts/finetuning/simple_ft/Dockerfile:
+FROM nvidia/cuda:12.5.0-devel-ubuntu22.04
+
+ARG DEBIAN_FRONTEND=noninteractive
+
+RUN apt update
+RUN apt install -y git libsndfile1-dev tesseract-ocr espeak-ng python3 python3-pip ffmpeg
+RUN python3 -m pip install --no-cache-dir --upgrade pip
+
+ARG REF=main
+RUN git clone https://github.com/huggingface/transformers && cd transformers && git checkout $REF
+
+# If set to nothing, will install the latest version
+ARG PYTORCH=''
+ARG TORCH_VISION=''
+ARG TORCH_AUDIO=''
+# Example: `cu102`, `cu113`, etc.
+ARG CUDA='cu125'
+
+RUN [ ${#PYTORCH} -gt 0 ] && VERSION='torch=='$PYTORCH'.*' ||  VERSION='torch'; python3 -m pip install --no-cache-dir -U $VERSION --extra-index-url https://download.pytorch.org/whl/$CUDA
+RUN [ ${#TORCH_VISION} -gt 0 ] && VERSION='torchvision=='TORCH_VISION'.*' ||  VERSION='torchvision'; python3 -m pip install --no-cache-dir -U $VERSION --extra-index-url https://download.pytorch.org/whl/$CUDA
+RUN [ ${#TORCH_AUDIO} -gt 0 ] && VERSION='torchaudio=='TORCH_AUDIO'.*' ||  VERSION='torchaudio'; python3 -m pip install --no-cache-dir -U $VERSION --extra-index-url https://download.pytorch.org/whl/$CUDA
+
+RUN python3 -m pip install --no-cache-dir -e ./transformers[dev-torch,testing,video]
+
+RUN python3 -m pip uninstall -y tensorflow flax
+
+RUN python3 -m pip install --no-cache-dir git+https://github.com/facebookresearch/detectron2.git pytesseract
+RUN python3 -m pip install -U "itsdangerous<2.1.0"
+
+# When installing in editable mode, `transformers` is not recognized as a package.
+# this line must be added in order for python to be aware of transformers.
+RUN cd transformers && python3 setup.py develop
+
+RUN python3 -m pip install -U peft bitsandbytes accelerate
+
+RUN python3 -m pip install -U trl
+
+-----new_file-----
+ /permathings/scripts/finetuning/simple_ft/merge_run.sh:
+THIS_DIR_PATH=$(dirname $(realpath $0))
+SCRIPTS_DIR_PATH=$(dirname $(dirname $THIS_DIR_PATH))
+PERMATHINGS_DIR_PATH=$(dirname $SCRIPTS_DIR_PATH)
+LIBRARIES_DIR_PATH=$PERMATHINGS_DIR_PATH/libs
+ML_PROJECT_DIR_PATH=$(dirname $PERMATHINGS_DIR_PATH)
+EPHEMERA_DIR_PATH=$ML_PROJECT_DIR_PATH/ephemera
+SHARED_CACHES_DIR_PATH=$EPHEMERA_DIR_PATH/shared_caches
+
+#execute print(get_secret("HF_TOKEN")) from secretary in python
+cd $LIBRARIES_DIR_PATH
+HF_TOKEN=$(python3 -c "from secretary import get_secret; print(get_secret('HF_TOKEN'))")
+cd $THIS_DIR_PATH
+
+HF_CACHE_FOLDER_PATH=$SHARED_CACHES_DIR_PATH/huggingface
+
+#docker run --rm --gpus '"device=0,1"' \
+docker run --rm --gpus '"device=1"' \
+    -e HF_TOKEN=$HF_TOKEN \
+    -v ./workdir:/workdir \
+    -w /workdir \
+    -v $HF_CACHE_FOLDER_PATH:/root/.cache/huggingface \
+    --name merge \
+    -it finetune 
+
+-----new_file-----
+ ... 4 more file(s) in this folder were skipped due to folder limit.
+
+-----new_file-----
+ /permathings/scripts/LLaVA-NeXT/workspace/run.sh:
+
+
+-----new_file-----
+ /permathings/scripts/segmentation/SAM/workspace/outputs.txt:
+{'masks': [array([[False, False, False, ..., False, False, False],
+       [False, False, False, ..., False, False, False],
+       [False, False, False, ..., False, False, False],
+       ...,
+       [False, False, False, ..., False, False, False],
+       [False, False, False, ..., False, False, False],
+       [False, False, False, ..., False, False, False]]), array([[False, False, False, ..., False, False, False],
+       [False, False, False, ..., False, False, False],
+       [False, False, False, ..., False, False, False],
+       ...,
+       [False, False, False, ..., False, False, False],
+       [False, False, False, ..., False, False, False],
+       [False, False, False, ..., False, False, False]]), array([[False, False, False, ..., False, False, False],
+       [False, False, False, ..., False, False, False],
+       [False, False, False, ..., False, False, False],
+       ...,
+       [False, False, False, ..., False, False, False],
+       [False, False, False, ..., False, False, False...[truncated middle 56529 characters]....9539, 0.9539, 0.9538,
+        0.9538, 0.9538, 0.9536, 0.9534, 0.9533, 0.9531, 0.9530, 0.9528, 0.9528,
+        0.9526, 0.9525, 0.9525, 0.9525, 0.9524, 0.9524, 0.9521, 0.9516, 0.9515,
+        0.9514, 0.9514, 0.9514, 0.9513, 0.9513, 0.9503, 0.9500, 0.9492, 0.9488,
+        0.9487, 0.9487, 0.9483, 0.9482, 0.9482, 0.9481, 0.9479, 0.9479, 0.9478,
+        0.9478, 0.9476, 0.9474, 0.9474, 0.9474, 0.9469, 0.9469, 0.9468, 0.9467,
+        0.9467, 0.9463, 0.9462, 0.9459, 0.9458, 0.9456, 0.9455, 0.9455, 0.9455,
+        0.9454, 0.9450, 0.9447, 0.9446, 0.9446, 0.9444, 0.9442, 0.9440, 0.9436,
+        0.9434, 0.9431, 0.9422, 0.9418, 0.9415, 0.9409, 0.9400, 0.9398, 0.9395,
+        0.9392, 0.9391, 0.9388, 0.9379, 0.9376, 0.9373, 0.9365, 0.9359, 0.9348,
+        0.9342, 0.9334, 0.9328, 0.9295, 0.9291, 0.9288, 0.9271, 0.9257, 0.9246,
+        0.9239, 0.9236, 0.9221, 0.9214, 0.9199, 0.9132, 0.9115, 0.9107, 0.9107,
+        0.9102, 0.9086, 0.9078, 0.9072, 0.9050, 0.9027, 0.8989, 0.8970, 0.8918,
+        0.8890])}
+
+-----new_file-----
+ /permathings/scripts/segmentation/SAM/workspace/screenshot.png:
+(Binary file)
+
+-----new_file-----
+ /permathings/scripts/segmentation/segment-caption-anything/workspace/run.sh:
+CKPT_PATH=/ckpts
+cd /app/segment-caption-anything
+python scripts/apps/sca_app.py \
++model=base_sca_multitask_v2 \
+model.model_name_or_path=$CKPT_PATH \
+model.lm_head_model_name_or_path=$(python scripts/tools/get_sub_model_name_from_ckpt.py $CKPT_PATH "lm")
+
+-----new_file-----
+ /permathings/scripts/segmentation/OpenAdapt/workspace/run.sh:
+
+
+-----new_file-----
+ /permathings/scripts/finetuning/simple_ft/workdir/finetune_swift.py:
+import json, os
+import torch
+from datasets import Dataset
+from transformers import AutoTokenizer, AutoModelForCausalLM, TrainingArguments, Trainer, DataCollatorForLanguageModeling
+from peft import LoraConfig, get_peft_model,prepare_model_for_kbit_training
+from bitsandbytes.optim import Adam8bit
+import datetime
+import transformers
+import bitsandbytes
+from transformers.integrations import CodeCarbonCallback
+
+import torch
+from transformers import AutoConfig, AutoModelForCausalLM, AutoTokenizer, logging
+from accelerate import init_empty_weights, infer_auto_device_map, load_checkpoint_and_dispatch
+
+RESUME_IF_CKPT = False
+
+# Load dataset from JSON file
+#YYMMDD_support_test
+#TOKENIZERS_PARALLELISM=false
+os.environ["TOKENIZERS_PARALLELISM"] = "false"
+#disable warnings
+torch.autograd.set_detect_anomaly(True)
+transformers.logging.set_verbosity_error()
+
+import warnings
+warnings.filterwarnings('ignore')
+
+
+out_directory_name = "/workdir/"+datetime.datetime.now().strftime("%y%m%d") + "_swift2/"
+trai...[truncated middle 3055 characters]...ting=True,
+    num_train_epochs=1,
+    learning_rate=learning_rate,
+    #fp16=True,
+    #bf16=True,
+    logging_steps=1,
+    save_strategy="steps",
+    save_steps=40,
+    save_total_limit=10,
+    overwrite_output_dir=True,
+    evaluation_strategy= "no",
+    report_to="none",
+)
+
+optimizer = Adam8bit(model.parameters(), lr=learning_rate)
+
+#clear cache before training
+torch.cuda.empty_cache()
+
+# Set up Trainer
+trainer = Trainer(
+    model=model,
+    args=training_args,
+    train_dataset=full_dataset,
+    data_collator=data_collator,
+)
+
+trainer.remove_callback(CodeCarbonCallback)
+
+resume_from_checkpoint = False
+if os.path.exists(ckpt_dir) and RESUME_IF_CKPT:
+    resume_from_checkpoint = True
+# Fine-tune model
+trainer.train(resume_from_checkpoint=resume_from_checkpoint)
+
+output_dir = os.path.join(out_dir_path, "output")
+
+# Save fine-tuned model
+
+try:
+    model.save_pretrained(output_dir)
+    tokenizer.save_pretrained(output_dir)
+except:
+    print("Error saving model and tokenizer")
+    pass
+
+-----new_file-----
+ /permathings/scripts/finetuning/simple_ft/workdir/finetune_qlora_swift.py:
+#https://medium.com/@ogbanugot/notes-on-fine-tuning-llama-2-using-qlora-a-detailed-breakdown-370be42ccca1
+
+import os, json, datetime
+import torch
+from datasets import Dataset
+from transformers import (
+    AutoModelForCausalLM,
+    AutoTokenizer,
+    BitsAndBytesConfig,
+    TrainingArguments,
+    pipeline,
+    logging,
+)
+from peft import LoraConfig, PeftModel, get_peft_model, prepare_model_for_kbit_training
+from trl import SFTTrainer
+
+from bitsandbytes.optim import Adam8bit
+from transformers import AutoConfig, AutoModelForCausalLM, AutoTokenizer, logging
+from accelerate import init_empty_weights, infer_auto_device_map, load_checkpoint_and_dispatch
+
+DEVICE_MAP="auto"
+MODEL_ID="mistralai/Mistral-7B-v0.3"
+USE_4BIT=True
+USE_8BIT=False
+BNB_4BIT_QUANT_TYPE="nf4"
+COMPUTE_DTYPE=torch.bfloat16
+USE_NESTED_QUANT=True
+
+FP16=False
+BF16=True
+MAX_GRAD_NORM=0.3
+MAX_STEPS=-1
+WARMUP_RATIO=0.05
+GROUP_BY_LENGTH=True
+PACKING=False
+
+NEW_TOKENS = [
+    "<|context|>",
+    "<|plain|>",
+    "<|swiftify|>",
+]
+
+O...[truncated middle 2184 characters]...
+
+config = AutoConfig.from_pretrained(model_id)
+
+num_added_tokens = tokenizer.add_tokens(NEW_TOKENS)
+
+model = AutoModelForCausalLM.from_pretrained(
+    model_id,
+    quantization_config=bnb_config,
+    low_cpu_mem_usage=True,
+    return_dict=True,
+    torch_dtype=torch.bfloat16,
+    device_map=DEVICE_MAP,
+    #device_map=device_map,
+)
+model.config.use_cache = False
+model.config.pretraining_tp = 1
+
+tokenizer.add_special_tokens({'pad_token': '</s>'})
+tokenizer.pad_token = tokenizer.eos_token
+tokenizer.padding_side = "right"
+
+model.resize_token_embeddings(len(tokenizer))
+
+model = prepare_model_for_kbit_training(model)
+
+#model = get_peft_model(model, peft_config)
+
+trainer = SFTTrainer(
+    model=model,
+    train_dataset=full_dataset,
+    peft_config=peft_config,
+    dataset_text_field="text",
+    max_seq_length=MAX_SEQ_LENGTH,
+    tokenizer=tokenizer,
+    args=training_arguments,
+    packing=PACKING,
+)
+
+trainer.train()
+
+trainer.model.save_pretrained(os.path.join(OUTPUT_DIR, "final_model"))
