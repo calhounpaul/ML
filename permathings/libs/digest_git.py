@@ -57,17 +57,15 @@ def get_tree_structure(path, max_folder_depth, depth_augmented_limit_per_folder)
         
         file_limit = max(2, floor(depth_augmented_limit_per_folder / (2 ** level)))
         
-        if file_limit > 5:
-            files_to_show = files[:file_limit]
-            subindent = ' ' * 4 * (level + 1)
+        subindent = ' ' * 4 * (level + 1)
+        if len(files) > file_limit:
+            files_to_show = files[:file_limit // 2] + files[-file_limit // 2:]
             for file in files_to_show:
                 tree.append(f"{subindent}{file}")
             
-            if len(files) > file_limit:
-                remaining_files = len(files) - file_limit
-                tree.append(f"{subindent}... ({remaining_files} more file(s))")
+            omitted_files = len(files) - len(files_to_show)
+            tree.append(f"{subindent}... ({omitted_files} files omitted)")
         else:
-            subindent = ' ' * 4 * (level + 1)
             for file in files:
                 tree.append(f"{subindent}{file}")
     
@@ -101,33 +99,53 @@ def process_file(file_path, max_size, demarcation_string, ignored_extensions, wh
 
 def process_repo(repo_path, max_size_per_file, demarcation_string, ignored_extensions, whitelisted_extensions, depth_augmented_limit_per_folder, max_folder_depth, lower_bound_limit_per_folder=2):
     result = []
+    skipped_folders_count = 0
     logger.info(f"Processing repository at path: {repo_path}")
     base_path = repo_path  # Save the base path to strip from file paths
+
     for root, dirs, files in os.walk(repo_path):
         level = root.replace(repo_path, '').count(os.sep)
         if level > max_folder_depth:
+            skipped_folders_count += 1
             continue
 
         file_limit = max(lower_bound_limit_per_folder, floor(depth_augmented_limit_per_folder / (2 ** level)))
         files_processed = 0
+        files_to_process = min(max(file_limit, lower_bound_limit_per_folder), len(files))
+
+        folder_content = []
         for file in files:
-            if files_processed >= file_limit:
+            if files_processed >= files_to_process:
                 break
             file_path = os.path.join(root, file)
             processed = process_file(file_path, max_size_per_file, demarcation_string, ignored_extensions, whitelisted_extensions, base_path)
             if processed:
-                result.append((file_path, processed))
+                folder_content.append((file_path, processed))
                 files_processed += 1
         
         if files_processed < len(files):
             skipped = len(files) - files_processed
-            result.append((root, f"{demarcation_string} ... {skipped} more file(s) in this folder were skipped due to folder limit.\n"))
+            relative_path = os.path.relpath(root, repo_path)
+            skipped_info = f"{demarcation_string} {relative_path}: {skipped} file(s) skipped in this folder\n"
+            folder_content.append((root + '/__skipped_files__', skipped_info))  # Use a special filename to sort it at the end
+        elif files_processed == 0:
+            relative_path = os.path.relpath(root, repo_path)
+            empty_folder_info = f"{demarcation_string} {relative_path}: Empty folder or all files filtered\n"
+            folder_content.append((root, empty_folder_info))
+        
+        result.extend(folder_content)
 
-    # Sort by depth (files closer to root come first)
-    result.sort(key=lambda x: x[0].count(os.sep))
+    # Sort by absolute path
+    result.sort(key=lambda x: x[0])
+
+    # Add information about skipped folders
+    if skipped_folders_count > 0:
+        skipped_folders_info = f"{demarcation_string} {skipped_folders_count} folder(s) skipped due to depth limit\n"
+        result.append((repo_path, skipped_folders_info))
+
     return ''.join(content for _, content in result)
 
-def main(url_or_path, max_size_per_file, demarcation_string, ignored_extensions, whitelisted_extensions, depth_augmented_limit_per_folder, max_folder_depth):
+def main(url_or_path, max_size_per_file, demarcation_string, ignored_extensions, whitelisted_extensions, depth_augmented_limit_per_folder, max_folder_depth, output_path):
     parsed_url = urlparse(url_or_path)
     
     if parsed_url.scheme in ('http', 'https'):
@@ -163,7 +181,20 @@ def main(url_or_path, max_size_per_file, demarcation_string, ignored_extensions,
     
     result = f"Repository: {repo_name}\n\nFile Structure:\n{tree_structure}\n\nFile Contents:\n{processed_content}"
     
-    output_file = f"{repo_name}_processed.txt"
+    if output_path:
+        if os.path.isdir(output_path):
+            # If output_path is a directory, use the original file naming scheme
+            output_file = os.path.join(output_path, f"{repo_name}_processed.txt")
+        else:
+            # If output_path is not a directory, create the necessary directories
+            output_dir = os.path.dirname(output_path)
+            if output_dir:
+                os.makedirs(output_dir, exist_ok=True)
+            output_file = output_path
+    else:
+        # If no output_path is provided, use the default naming in the current directory
+        output_file = f"{repo_name}_processed.txt"
+    
     with open(output_file, 'w', encoding='utf-8') as f:
         f.write(result)
     
@@ -179,7 +210,8 @@ if __name__ == "__main__":
     parser.add_argument("--depth_augmented_limit_per_folder", type=int, default=40, help="Starting limit for files per folder, halved with each level of depth")
     parser.add_argument("--max_folder_depth", type=int, default=8, help="Maximum folder depth to process")
     parser.add_argument("--lower_bound_limit_per_folder", type=int, default=2, help="Minimum number of files to show per folder")
+    parser.add_argument("--output_path", help="Custom output file path or directory")
     
     args = parser.parse_args()
     
-    main(args.url_or_path, args.max_size_per_file, args.demarcation_string, args.ignored_extensions, args.whitelisted_extensions, args.depth_augmented_limit_per_folder, args.max_folder_depth)
+    main(args.url_or_path, args.max_size_per_file, args.demarcation_string, args.ignored_extensions, args.whitelisted_extensions, args.depth_augmented_limit_per_folder, args.max_folder_depth, args.output_path)
