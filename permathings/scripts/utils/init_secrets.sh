@@ -10,5 +10,5 @@ if [ ! -d $EPHEMERA_DIR_PATH ]; then
 fi
 
 cd $LIBRARIES_DIR_PATH
-python3 -c "from secretary import get_all_defaults; get_all_defaults()"
+sudo python3 -c "from secretary import get_all_defaults; get_all_defaults()"
 cd $THIS_DIR_PATH

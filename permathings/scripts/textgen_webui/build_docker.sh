@@ -13,8 +13,6 @@ INPUT_EBOOKS_DIR_PATH=$INPUTS_DIR_PATH/ebooks
 SHARED_CACHES_DIR_PATH=$EPHEMERA_DIR_PATH/shared_caches
 SECRETS_FILE_PATH=$EPHEMERA_DIR_PATH/secrets.json
 
-HWID=$(hwid | cut -d ' ' -f 2)
-
 cd $LIBS_DIR_PATH
 HF_TOKEN=$(python3 -c "from secretary import get_secret; print(get_secret('HF_TOKEN'))")
 cd $THIS_DIR_PATH
