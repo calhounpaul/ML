@@ -14,7 +14,7 @@ DEFAULT_SECRETS = [
 def get_current_hwid():
     hwid = None
     try:
-        hwid = os.popen('hwid').read().strip().split(': ')[1]
+        hwid = os.popen('cat /etc/machine-id').read().strip()
     except Exception as e:
         print(f"Error getting HWID: {e}")
     return hwid

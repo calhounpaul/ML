@@ -10,6 +10,13 @@ from math import floor
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+def human_readable_size(size, decimal_places=2):
+    for unit in ['B', 'KB', 'MB', 'GB', 'TB']:
+        if size < 1024.0:
+            break
+        size /= 1024.0
+    return f"{size:.{decimal_places}f} {unit}"
+
 def download_repo(url):
     if url.endswith('.git'):
         url = url[:-4]
@@ -61,13 +68,18 @@ def get_tree_structure(path, max_folder_depth, depth_augmented_limit_per_folder)
         if len(files) > file_limit:
             files_to_show = files[:file_limit // 2] + files[-file_limit // 2:]
             for file in files_to_show:
-                tree.append(f"{subindent}{file}")
+                file_path = os.path.join(root, file)
+                size = os.path.getsize(file_path)
+                tree.append(f"{subindent}{file} ({human_readable_size(size)})")
             
             omitted_files = len(files) - len(files_to_show)
-            tree.append(f"{subindent}... ({omitted_files} files omitted)")
+            omitted_size = sum(os.path.getsize(os.path.join(root, f)) for f in files if f not in files_to_show)
+            tree.append(f"{subindent}... ({omitted_files} files omitted, total size: {human_readable_size(omitted_size)})")
         else:
             for file in files:
-                tree.append(f"{subindent}{file}")
+                file_path = os.path.join(root, file)
+                size = os.path.getsize(file_path)
+                tree.append(f"{subindent}{file} ({human_readable_size(size)})")
     
     return '\n'.join(tree)
 
@@ -80,8 +92,8 @@ def process_file(file_path, max_size, demarcation_string, ignored_extensions, wh
     if whitelisted_extensions and ext not in whitelisted_extensions:
         return None
 
-    # Strip the base path from the file path and calculate the relative file path
     relative_file_path = file_path.replace(base_path, "")
+    file_size = os.path.getsize(file_path)
 
     try:
         with open(file_path, 'r', encoding='utf-8') as f:
@@ -92,16 +104,16 @@ def process_file(file_path, max_size, demarcation_string, ignored_extensions, wh
             truncated_chars = len(content) - max_size
             content = f"{content[:half_size]}...[truncated middle {truncated_chars} characters]...{content[-half_size:]}"
 
-        return f"{demarcation_string} {relative_file_path}:\n{content}\n"
+        return f"{demarcation_string} {relative_file_path} ({human_readable_size(file_size)}):\n{content}\n"
     except UnicodeDecodeError:
-        # Handle binary files or non-text files
-        return f"{demarcation_string} {relative_file_path}:\n(Binary file)\n"
+        return f"{demarcation_string} {relative_file_path} ({human_readable_size(file_size)}):\n(Binary file)\n"
 
 def process_repo(repo_path, max_size_per_file, demarcation_string, ignored_extensions, whitelisted_extensions, depth_augmented_limit_per_folder, max_folder_depth, lower_bound_limit_per_folder=2):
     result = []
     skipped_folders_count = 0
+    total_skipped_size = 0
     logger.info(f"Processing repository at path: {repo_path}")
-    base_path = repo_path  # Save the base path to strip from file paths
+    base_path = repo_path
 
     for root, dirs, files in os.walk(repo_path):
         level = root.replace(repo_path, '').count(os.sep)
@@ -114,20 +126,29 @@ def process_repo(repo_path, max_size_per_file, demarcation_string, ignored_exten
         files_to_process = min(max(file_limit, lower_bound_limit_per_folder), len(files))
 
         folder_content = []
+        folder_skipped_size = 0
         for file in files:
-            if files_processed >= files_to_process:
-                break
             file_path = os.path.join(root, file)
+            file_size = os.path.getsize(file_path)
+            
+            if files_processed >= files_to_process:
+                folder_skipped_size += file_size
+                continue
+            
             processed = process_file(file_path, max_size_per_file, demarcation_string, ignored_extensions, whitelisted_extensions, base_path)
             if processed:
                 folder_content.append((file_path, processed))
                 files_processed += 1
+            else:
+                folder_skipped_size += file_size
+        
+        total_skipped_size += folder_skipped_size
         
         if files_processed < len(files):
             skipped = len(files) - files_processed
             relative_path = os.path.relpath(root, repo_path)
-            skipped_info = f"{demarcation_string} {relative_path}: {skipped} file(s) skipped in this folder\n"
-            folder_content.append((root + '/__skipped_files__', skipped_info))  # Use a special filename to sort it at the end
+            skipped_info = f"{demarcation_string} {relative_path}: {skipped} file(s) skipped in this folder (total size: {human_readable_size(folder_skipped_size)})\n"
+            folder_content.append((root + '/__skipped_files__', skipped_info))
         elif files_processed == 0:
             relative_path = os.path.relpath(root, repo_path)
             empty_folder_info = f"{demarcation_string} {relative_path}: Empty folder or all files filtered\n"
@@ -135,16 +156,16 @@ def process_repo(repo_path, max_size_per_file, demarcation_string, ignored_exten
         
         result.extend(folder_content)
 
-    # Sort by absolute path
     result.sort(key=lambda x: x[0])
 
-    # Add information about skipped folders
     if skipped_folders_count > 0:
         skipped_folders_info = f"{demarcation_string} {skipped_folders_count} folder(s) skipped due to depth limit\n"
         result.append((repo_path, skipped_folders_info))
 
-    return ''.join(content for _, content in result)
+    total_skipped_info = f"{demarcation_string} Total size of skipped files: {human_readable_size(total_skipped_size)}\n"
+    result.append((repo_path + '/__total_skipped__', total_skipped_info))
 
+    return ''.join(content for _, content in result)
 def main(url_or_path, max_size_per_file, demarcation_string, ignored_extensions, whitelisted_extensions, depth_augmented_limit_per_folder, max_folder_depth, output_path):
     parsed_url = urlparse(url_or_path)
     
@@ -215,3 +236,5 @@ if __name__ == "__main__":
     args = parser.parse_args()
     
     main(args.url_or_path, args.max_size_per_file, args.demarcation_string, args.ignored_extensions, args.whitelisted_extensions, args.depth_augmented_limit_per_folder, args.max_folder_depth, args.output_path)
+
+

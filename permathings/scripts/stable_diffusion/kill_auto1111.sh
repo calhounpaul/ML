@@ -13,4 +13,5 @@ HF_TOKEN=$(python3 -c "from secretary import get_secret; print(get_secret('HF_TO
 SDWUI_REPO_CACHE=$SDWUI_REPO_CACHE_PARENT/stable-diffusion-webui-docker
 cd $SDWUI_REPO_CACHE
 docker compose --profile auto down
+docker compose --profile comfy down
 cd $THIS_DIR_PATH

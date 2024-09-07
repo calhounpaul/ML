@@ -22,37 +22,45 @@ This repository is a comprehensive toolkit for advanced machine learning and AI 
     - `langchain/`: Integration with LangChain framework
     - `ollama/`: Scripts for running Ollama models
     - `segmentation/`: Image segmentation tools (SAM, OpenAdapt, etc.)
-    - `stable_diffusion_3/`: Scripts for running Stable Diffusion 3
+    - `stable_diffusion/`: Scripts for running Stable Diffusion
     - `textgen_webui/`: Text generation web UI setup
     - `tts_webui/`: Text-to-Speech web UI setup
     - `utils/`: Utility scripts (e.g., git repository analysis, secret management)
+    - `vllm/`: Scripts for running vLLM models
 - `.gitignore`: Git ignore file
 - `README.md`: This file
 
 ## Getting Started
 
+Note: The packages in this repo are designed to be compatible with fresh Ubuntu 24.04 VMs spawned on a home Xen server. Use caution when deploying it anywhere else.
+
 1. Clone the repository:
    ```
-   git clone https://github.com/your-username/ML.git
+   git clone https://github.com/calhounpaul/ML.git
    ```
 
 2. Set up the environment:
    ```
    cd ML/permathings/prereqs
-   ./all.sh
+   bash ./all.sh
    ```
 
-3. Initialize secrets:
+3. Initialize secrets (just HF token at the moment):
    ```
    cd ../scripts/utils
-   ./init_secrets.sh
+   bash ./init_secrets.sh
    ```
 
-4. Choose a specific task or model from the `scripts/` directory and follow the instructions in the respective README or script comments.
+4. Choose a specific task or model from the `scripts/` directory and run it.
 
 ## Requirements
 
 - CUDA-compatible GPU
-- Docker
-- Python 3.x
-- Various Python libraries (requirements are specified in individual scripts)
+- Ubuntu 24.04
+
+## Additional Notes
+
+- The repository includes scripts for various AI tasks, including text generation, image processing, and text-to-speech.
+- There are tools for working with ebooks, fine-tuning models, and integrating with frameworks like LangChain.
+- The project makes extensive use of Docker for containerization and reproducibility.
+- Many scripts are provided for setting up and managing the environment, including CUDA and Docker installation.
