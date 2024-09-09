@@ -1,6 +1,6 @@
 # ML Repository
 
-This repository is a comprehensive toolkit for advanced machine learning and AI tasks, focusing on natural language processing, image processing, and model fine-tuning. It provides a well-organized structure of scripts, tools, and configurations to support various aspects of machine learning workflows.
+This repository is a comprehensive toolkit for advanced machine learning and AI tasks, focusing on natural language processing, image processing, model fine-tuning, and various AI-powered applications. It provides a well-organized structure of scripts, tools, and configurations to support various aspects of machine learning workflows.
 
 ## Key Features
 
@@ -10,57 +10,51 @@ This repository is a comprehensive toolkit for advanced machine learning and AI 
 - **Containerization**: Extensive use of Docker for reproducible and portable ML environments.
 - **Integration**: Works with popular platforms like Hugging Face and frameworks such as PyTorch and Transformers.
 - **Full Pipeline Support**: Includes tools for data processing, model training, and inference.
+- **Text-to-Speech**: Integration with TTS (Text-to-Speech) web UI.
+- **Image Generation and Manipulation**: Scripts for running Stable Diffusion and ComfyUI.
+- **Web Scraping**: Selenium-based tools for web data collection.
+- **E-book Processing**: Tools for processing and analyzing e-books.
 
 ## Repository Structure
 
-- `permathings/`: Main directory containing scripts and tools
-  - `libs/`: Utility libraries (e.g., docker_tools, secretary, selenium_tools)
-  - `prereqs/`: Scripts for setting up the environment (CUDA, Docker, etc.)
-  - `scripts/`: Various ML model implementations and tools
-    - `ebook_processing/`: Tools for processing and analyzing ebooks
-    - `finetuning/`: Scripts for fine-tuning language models
-    - `langchain/`: Integration with LangChain framework
-    - `ollama/`: Scripts for running Ollama models
-    - `segmentation/`: Image segmentation tools (SAM, OpenAdapt, etc.)
-    - `stable_diffusion/`: Scripts for running Stable Diffusion
-    - `textgen_webui/`: Text generation web UI setup
-    - `tts_webui/`: Text-to-Speech web UI setup
-    - `utils/`: Utility scripts (e.g., git repository analysis, secret management)
-    - `vllm/`: Scripts for running vLLM models
-- `.gitignore`: Git ignore file
-- `README.md`: This file
+- `permathings/`: Core directory containing libraries, prerequisites, and scripts.
+  - `libs/`: Utility libraries for various tasks.
+  - `prereqs/`: Scripts for setting up the environment (CUDA, Docker, etc.).
+  - `scripts/`: Various scripts for different ML tasks and model implementations.
+- `README.md`: This file.
+- `.gitignore`: Git ignore file.
 
 ## Getting Started
-
-Note: The packages in this repo are designed to be compatible with fresh Ubuntu 24.04 VMs spawned on a home Xen server. Use caution when deploying it anywhere else.
 
 1. Clone the repository:
    ```
    git clone https://github.com/calhounpaul/ML.git
    ```
 
-2. Set up the environment:
+2. Set up the environment (this is currently designed to run on an ub24.04 VM in XCP-ng, but it should also work with any cloud provider):
    ```
    cd ML/permathings/prereqs
    bash ./all.sh
    ```
 
-3. Initialize secrets (just HF token at the moment):
+3. Initialize secrets:
    ```
    cd ../scripts/utils
    bash ./init_secrets.sh
    ```
 
-4. Choose a specific task or model from the `scripts/` directory and run it.
+4. Choose a specific task or model from the `scripts/` directory and follow the instructions in the respective script or README.
+
+## Key Components
+
+- **Text Generation**: Includes scripts for running text generation web UIs and VLLM servers.
+- **Image Processing**: Tools for Stable Diffusion, Segment Anything Model (SAM), and other image segmentation tasks.
+- **LLM Integration**: Scripts for running various Large Language Models, including LLaVA and OpenDevin.
+- **Fine-tuning**: Tools for fine-tuning language models with different techniques.
+- **Data Processing**: Scripts for e-book processing and dataset creation.
+- **Web Interfaces**: Docker configurations for running web-based interfaces for various AI tasks.
 
 ## Requirements
 
 - CUDA-compatible GPU
 - Ubuntu 24.04
-
-## Additional Notes
-
-- The repository includes scripts for various AI tasks, including text generation, image processing, and text-to-speech.
-- There are tools for working with ebooks, fine-tuning models, and integrating with frameworks like LangChain.
-- The project makes extensive use of Docker for containerization and reproducibility.
-- Many scripts are provided for setting up and managing the environment, including CUDA and Docker installation.
