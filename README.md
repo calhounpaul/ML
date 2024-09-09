@@ -28,11 +28,32 @@ This repository is a comprehensive toolkit for advanced machine learning and AI 
 
 ## Key Components
 
-- **Text Generation**: Includes scripts for running text generation web UIs and vLLM servers.
+- **Text Generation**: Includes scripts for running instances of text generation webUI and vLLM.
+- **Video Generation**: Uses the CogX-5b model to generate silent color video clips:
+# ![Jackalope GIF](permathings/persistent_output_examples/a_peculiar_creature__part_rabb.gif)
 - **Image Processing**: Tools for Stable Diffusion, Segment Anything Model (SAM), and other image segmentation tasks.
 - **LLM Integration**: Scripts for running various Large Language Models, including LLaVA and OpenDevin.
 - **Fine-tuning**: Tools for fine-tuning language models with different techniques.
-- **Data Processing**: Scripts for e-book processing and dataset creation.
+- **Data Processing**: Scripts for e-book and multimodal document processing, including furniture assembly manual analysis:
+```
+"malm-bed-frame-white__AA-2543855-1-100"
+"This instruction manual is about assembling a furniture piece, specifically a bed frame, as indicated by the diagrams and illustrations showing the assembly process."
+
+"mittzon-underframe-for-sit-stand-desk-electric-black__AA-2445413-2-100"
+"This instruction manual is about assembling a MITTZON desk."
+
+"uppland-sofa-frame__AA-2202687-1-2"
+"This instruction manual is about assembling an IKEA sofa."
+
+"kura-reversible-bed__AA-843436-6_pub"
+"This instruction manual is about assembling a piece of furniture, specifically a bed frame."
+
+"neiden-bed-frame__AA-2044866-4_pub"
+"p35v_description": "This instruction manual is about assembling a bed frame, specifically a 'NEIDEN' bed frame by IKEA."
+
+"askvoll-bed-frame__AA-942096-6_pub"
+"This instruction manual is about assembling a furniture piece, specifically a bed frame, as indicated by the title 'ASKVOLL' and the illustrations showing the assembly process."
+```
 - **Web Interfaces**: Docker configurations for running web-based interfaces for various AI tasks.
 
 ## Requirements

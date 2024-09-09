@@ -31,6 +31,7 @@ RUN python3 -m pip install -U bitsandbytes accelerate
 RUN python3 -m pip install -U imageio-ffmpeg
 RUN python3 -m pip install -U diffusers
 RUN python3 -m pip install -U opencv-python
+RUN python3 -m pip install -U git+https://github.com/kkroening/ffmpeg-python
 
 # When installing in editable mode, `transformers` is not recognized as a package.
 # this line must be added in order for python to be aware of transformers.
