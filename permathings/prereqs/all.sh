@@ -1,5 +1,9 @@
 #!/bin/bash
 
+####################
+# These prereq scripts are used to prep a new ubuntu 24.04 VM
+####################
+
 if [ "$(lspci | grep -i nvidia)" ]; then
   echo "Nvidia GPU detected"
   bash ./0_*.sh

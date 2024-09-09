@@ -45,8 +45,6 @@ This repository is a comprehensive toolkit for advanced machine learning and AI 
 
 ## Setup
 
-0. This repo is currently designed to be deployed inside a fresh Ubuntu 24.04 VM running on an XCP-ng server. It should also be compatible with an instance from a cloud provider like AWS.
-
 1. Clone the repository:
    ```
    git clone https://github.com/[username]/ML.git

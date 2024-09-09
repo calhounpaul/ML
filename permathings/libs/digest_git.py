@@ -52,6 +52,8 @@ def extract_zip(zip_path):
 def get_tree_structure(path, max_folder_depth, depth_augmented_limit_per_folder):
     tree = []
     for root, dirs, files in os.walk(path):
+        # Include hidden directories
+        dirs[:] = [d for d in dirs]
         level = root.replace(path, '').count(os.sep)
         if level > max_folder_depth:
             if level == max_folder_depth + 1:
@@ -65,18 +67,20 @@ def get_tree_structure(path, max_folder_depth, depth_augmented_limit_per_folder)
         file_limit = max(2, floor(depth_augmented_limit_per_folder / (2 ** level)))
         
         subindent = ' ' * 4 * (level + 1)
-        if len(files) > file_limit:
-            files_to_show = files[:file_limit // 2] + files[-file_limit // 2:]
+        # Include hidden files
+        all_files = files + [f for f in os.listdir(root) if os.path.isfile(os.path.join(root, f)) and f.startswith('.')]
+        if len(all_files) > file_limit:
+            files_to_show = all_files[:file_limit // 2] + all_files[-file_limit // 2:]
             for file in files_to_show:
                 file_path = os.path.join(root, file)
                 size = os.path.getsize(file_path)
                 tree.append(f"{subindent}{file} ({human_readable_size(size)})")
             
-            omitted_files = len(files) - len(files_to_show)
-            omitted_size = sum(os.path.getsize(os.path.join(root, f)) for f in files if f not in files_to_show)
+            omitted_files = len(all_files) - len(files_to_show)
+            omitted_size = sum(os.path.getsize(os.path.join(root, f)) for f in all_files if f not in files_to_show)
             tree.append(f"{subindent}... ({omitted_files} files omitted, total size: {human_readable_size(omitted_size)})")
         else:
-            for file in files:
+            for file in all_files:
                 file_path = os.path.join(root, file)
                 size = os.path.getsize(file_path)
                 tree.append(f"{subindent}{file} ({human_readable_size(size)})")
@@ -92,7 +96,7 @@ def process_file(file_path, max_size, demarcation_string, ignored_extensions, wh
     if whitelisted_extensions and ext not in whitelisted_extensions:
         return None
 
-    relative_file_path = file_path.replace(base_path, "")
+    relative_file_path = os.path.relpath(file_path, base_path)
     file_size = os.path.getsize(file_path)
 
     try:
@@ -116,6 +120,8 @@ def process_repo(repo_path, max_size_per_file, demarcation_string, ignored_exten
     base_path = repo_path
 
     for root, dirs, files in os.walk(repo_path):
+        # Include hidden directories
+        dirs[:] = [d for d in dirs]
         level = root.replace(repo_path, '').count(os.sep)
         if level > max_folder_depth:
             skipped_folders_count += 1
@@ -123,11 +129,13 @@ def process_repo(repo_path, max_size_per_file, demarcation_string, ignored_exten
 
         file_limit = max(lower_bound_limit_per_folder, floor(depth_augmented_limit_per_folder / (2 ** level)))
         files_processed = 0
-        files_to_process = min(max(file_limit, lower_bound_limit_per_folder), len(files))
+        # Include hidden files
+        all_files = files + [f for f in os.listdir(root) if os.path.isfile(os.path.join(root, f)) and f.startswith('.')]
+        files_to_process = min(max(file_limit, lower_bound_limit_per_folder), len(all_files))
 
         folder_content = []
         folder_skipped_size = 0
-        for file in files:
+        for file in all_files:
             file_path = os.path.join(root, file)
             file_size = os.path.getsize(file_path)
             
@@ -137,35 +145,34 @@ def process_repo(repo_path, max_size_per_file, demarcation_string, ignored_exten
             
             processed = process_file(file_path, max_size_per_file, demarcation_string, ignored_extensions, whitelisted_extensions, base_path)
             if processed:
-                folder_content.append((file_path, processed))
+                folder_content.append(processed)
                 files_processed += 1
             else:
                 folder_skipped_size += file_size
         
         total_skipped_size += folder_skipped_size
         
-        if files_processed < len(files):
-            skipped = len(files) - files_processed
+        if files_processed < len(all_files):
+            skipped = len(all_files) - files_processed
             relative_path = os.path.relpath(root, repo_path)
             skipped_info = f"{demarcation_string} {relative_path}: {skipped} file(s) skipped in this folder (total size: {human_readable_size(folder_skipped_size)})\n"
-            folder_content.append((root + '/__skipped_files__', skipped_info))
+            folder_content.append(skipped_info)
         elif files_processed == 0:
             relative_path = os.path.relpath(root, repo_path)
             empty_folder_info = f"{demarcation_string} {relative_path}: Empty folder or all files filtered\n"
-            folder_content.append((root, empty_folder_info))
+            folder_content.append(empty_folder_info)
         
         result.extend(folder_content)
 
-    result.sort(key=lambda x: x[0])
-
     if skipped_folders_count > 0:
         skipped_folders_info = f"{demarcation_string} {skipped_folders_count} folder(s) skipped due to depth limit\n"
-        result.append((repo_path, skipped_folders_info))
+        result.append(skipped_folders_info)
 
     total_skipped_info = f"{demarcation_string} Total size of skipped files: {human_readable_size(total_skipped_size)}\n"
-    result.append((repo_path + '/__total_skipped__', total_skipped_info))
+    result.append(total_skipped_info)
 
-    return ''.join(content for _, content in result)
+    return ''.join(result)
+
 def main(url_or_path, max_size_per_file, demarcation_string, ignored_extensions, whitelisted_extensions, depth_augmented_limit_per_folder, max_folder_depth, output_path):
     parsed_url = urlparse(url_or_path)
     
@@ -236,5 +243,3 @@ if __name__ == "__main__":
     args = parser.parse_args()
     
     main(args.url_or_path, args.max_size_per_file, args.demarcation_string, args.ignored_extensions, args.whitelisted_extensions, args.depth_augmented_limit_per_folder, args.max_folder_depth, args.output_path)
-
-

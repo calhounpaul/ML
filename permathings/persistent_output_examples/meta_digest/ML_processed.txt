@@ -2,7 +2,8 @@ Repository: ML
 
 File Structure:
 ML-main/
-    README.md (2.92 KB)
+    README.md (2.78 KB)
+    .gitignore (22.00 B)
     .gitignore (22.00 B)
     permathings/
         libs/
@@ -11,15 +12,16 @@ ML-main/
             docker_tools.py (728.00 B)
             selenium_tools.py (1.54 KB)
         prereqs/
-            3_install_other.sh (431.00 B)
+            3_install_other.sh (436.00 B)
             1_install_docker_engine.sh (919.00 B)
             all.sh (202.00 B)
             0_install_cuda_12.6.sh (543.00 B)
             2_install_nvidia_container_toolkit.sh (598.00 B)
         persistent_output_examples/
             meta_digest/
-                ML_processed.txt (69.46 KB)
-                claude_description_240906.md (2.77 KB)
+                ML_processed.txt (84.17 KB)
+                furniture_assembly_manual_descriptions.json (1.58 KB)
+                claude_description_240906.md (3.55 KB)
         scripts/
             stable_diffusion/
                 init_auto1111.sh (1.63 KB)
@@ -67,7 +69,7 @@ ML-main/
                 examples/
                     recurrence_rule.py (15.51 KB)
             tformers_template/
-                Dockerfile (2.76 KB)
+                Dockerfile (1.62 KB)
                 run.sh (1.35 KB)
             ollama/
                 run_llava.sh (641.00 B)
@@ -80,6 +82,12 @@ ML-main/
                     0825wallpaper-13_1280.jpg.json (2.52 KB)
                     0831wallpaper-11_1600.jpg.json (2.18 KB)
                     ... (73 files omitted, total size: 159.79 KB)
+            document_processing/
+                Dockerfile (1.79 KB)
+                init_data.py (2.14 KB)
+                run.sh (943.00 B)
+                workspace/
+                    run_manual_test.py (5.76 KB)
             OpenDevin/
                 run.sh (639.00 B)
             LLaVA-NeXT/
@@ -116,16 +124,10 @@ ML-main/
 File Contents:
 
 -----new_file-----
- /.gitignore (22.00 B):
-ephemera/*
-*.pyc
-*.pyo
-
------new_file-----
- /README.md (2.92 KB):
+ README.md (2.78 KB):
 # ML Repository
 
-This repository is a comprehensive toolkit for advanced machine learning and AI tasks, focusing on natural language processing, image processing, and model fine-tuning. It provides a well-organized structure of scripts, tools, and configurations to support various aspects of machine learning workflows.
+This repository is a comprehensive toolkit for advanced machine learning and AI tasks, focusing on natural language processing, image processing, model fine-tuning, and various AI-powered applications. It provides a well-organized structure of scripts, tools, and configurations to support various aspects of machine learning workflows.
 
 ## Key Features
 
@@ -135,47 +137,51 @@ This repository is a comprehensive toolkit for advanced machine learning and AI 
 - **Containerization**: Extensive use of Docker for reproducible and portable ML environments.
 - **Integration**: Works with popular platforms like Hugging Face and frameworks such as PyTorch and Transformers.
 - **Full Pipeline Support**: Includes tools for data processing, model training, and inference.
-
-## Repository Structure
-
-- `permath...[truncated middle 994 characters]...o be compatible with fresh Ubuntu 24.04 VMs spawned on a home Xen server. Use caution when deploying it anywhere else.
-
-1. Clone the repository:
-   ```
-   git clone https://github.com/calhounpaul/ML.git
-   ```
-
-2. Set up the environment:
+- *...[truncated middle 845 characters]...n ub24.04 VM in XCP-ng, but it should also work with any cloud provider):
    ```
    cd ML/permathings/prereqs
    bash ./all.sh
    ```
 
-3. Initialize secrets (just HF token at the moment):
+3. Initialize secrets:
    ```
    cd ../scripts/utils
    bash ./init_secrets.sh
    ```
 
-4. Choose a specific task or model from the `scripts/` directory and run it.
+4. Choose a specific task or model from the `scripts/` directory and follow the instructions in the respective script or README.
+
+## Key Components
+
+- **Text Generation**: Includes scripts for running text generation web UIs and VLLM servers.
+- **Image Processing**: Tools for Stable Diffusion, Segment Anything Model (SAM), and other image segmentation tasks.
+- **LLM Integration**: Scripts for running various Large Language Models, including LLaVA and OpenDevin.
+- **Fine-tuning**: Tools for fine-tuning language models with different techniques.
+- **Data Processing**: Scripts for e-book processing and dataset creation.
+- **Web Interfaces**: Docker configurations for running web-based interfaces for various AI tasks.
 
 ## Requirements
 
 - CUDA-compatible GPU
 - Ubuntu 24.04
 
-## Additional Notes
+-----new_file-----
+ .gitignore (22.00 B):
+ephemera/*
+*.pyc
+*.pyo
 
-- The repository includes scripts for various AI tasks, including text generation, image processing, and text-to-speech.
-- There are tools for working with ebooks, fine-tuning models, and integrating with frameworks like LangChain.
-- The project makes extensive use of Docker for containerization and reproducibility.
-- Many scripts are provided for setting up and managing the environment, including CUDA and Docker installation.
+-----new_file-----
+ .gitignore (22.00 B):
+ephemera/*
+*.pyc
+*.pyo
 
 -----new_file-----
  permathings: Empty folder or all files filtered
 
 -----new_file-----
- /permathings/libs/digest_git.py (10.79 KB):
+ permathings/libs/digest_git.py (10.79 KB):
 import argparse
 import os
 import tempfile
@@ -225,25 +231,7 @@ def download_repo(url):
 
 
 -----new_file-----
- /permathings/libs/docker_tools.py (728.00 B):
-import os, sys, json, re, time, datetime, random, string, docker, atexit
-
-this_modules_path = os.path.dirname(os.path.realpath(__file__))
-parent_dir = os.path.dirname(this_modules_path)
-sys.path.append(parent_dir)
-
-def run_docker_container(image_name, port_bindings, environment_vars, volumes, detach=True):
-    client = docker.from_env()
-    container = client.containers.run(image_name, detach=detach, ports=port_bindings, environment=environment_vars, volumes=volumes)
-    return container
-
-def create_docker_image_from_dockerfile(dockerfile_path, image_name, tag="latest"):
-    client = docker.from_env()
-    image, build_log = client.images.build(path=dockerfile_path, tag=f"{image_name}:{tag}")
-    return image, build_log
-
------new_file-----
- /permathings/libs/secretary.py (3.05 KB):
+ permathings/libs/secretary.py (3.05 KB):
 import os, sys, json, hashlib, getpass, subprocess
 
 libs_dir = this_dir = os.path.dirname(os.path.realpath(__file__))
@@ -315,7 +303,25 @@ def get_all_defaults():
 
 
 -----new_file-----
- /permathings/libs/selenium_tools.py (1.54 KB):
+ permathings/libs/docker_tools.py (728.00 B):
+import os, sys, json, re, time, datetime, random, string, docker, atexit
+
+this_modules_path = os.path.dirname(os.path.realpath(__file__))
+parent_dir = os.path.dirname(this_modules_path)
+sys.path.append(parent_dir)
+
+def run_docker_container(image_name, port_bindings, environment_vars, volumes, detach=True):
+    client = docker.from_env()
+    container = client.containers.run(image_name, detach=detach, ports=port_bindings, environment=environment_vars, volumes=volumes)
+    return container
+
+def create_docker_image_from_dockerfile(dockerfile_path, image_name, tag="latest"):
+    client = docker.from_env()
+    image, build_log = client.images.build(path=dockerfile_path, tag=f"{image_name}:{tag}")
+    return image, build_log
+
+-----new_file-----
+ permathings/libs/selenium_tools.py (1.54 KB):
 import os, sys, json, re, time, datetime, random, string, docker, atexit
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
@@ -363,169 +369,25 @@ def test_tools():
 
 
 -----new_file-----
- permathings/persistent_output_examples: Empty folder or all files filtered
-
------new_file-----
- /permathings/persistent_output_examples/meta_digest/ML_processed.txt (69.46 KB):
-Repository: ML
-
-File Structure:
-ML-main/
-    README.md
-    .gitignore
-    permathings/
-        libs/
-            secretary.py
-            docker_tools.py
-            selenium_tools.py
-        prereqs/
-            3_install_other.sh
-            0_install_cuda_12.5.sh
-            1_install_docker_engine.sh
-            all.sh
-            2_install_nvidia_container_toolkit.sh
-        persistent_output_examples/
-            meta_digest/
-                ML_processed.txt
-                claude_description_240906.md
-        scripts/
-            textgen_webui/
-                build_docker.sh
-                run.sh
-            tts_webui/
-                build_docker.sh
-                run.sh
-            utils/
-                digest_git.py
-                set_power.sh
-                init_secrets.sh
-            segmentation/
-                segment-track-anything/
-                    grab_weights.sh
-                    Dockerfile
-                    ... (1 files omitted)
-                SAM/
-   ...[truncated middle 69123 characters]...(dirname $SCRIPTS_DIR_PATH)
-LIBRARIES_DIR_PATH=$PERMATHINGS_DIR_PATH/libs
-ML_PROJECT_DIR_PATH=$(dirname $PERMATHINGS_DIR_PATH)
-EPHEMERA_DIR_PATH=$ML_PROJECT_DIR_PATH/ephemera
-
-if [ ! -d $EPHEMERA_DIR_PATH ]; then
-    mkdir $EPHEMERA_DIR_PATH
-fi
-
-cd $LIBRARIES_DIR_PATH
-python3 -c "from secretary import get_all_defaults; get_all_defaults()"
-cd $THIS_DIR_PATH
-
-
------new_file-----
- /permathings/scripts/utils/set_power.sh:
-sudo nvidia-smi -pl 220
-
------new_file-----
- /permathings/scripts/webscraping/run.py:
-import os, sys, json, re, time, datetime, random, string, docker, atexit
-
-this_dir = os.path.dirname(os.path.abspath(__file__))
-scripts_dir = os.path.dirname(this_dir)
-permathings_dir = os.path.dirname(scripts_dir)
-root_dir = os.path.dirname(permathings_dir)
-ephemeral_dir = os.path.join(root_dir, "ephemera")
-outputs_dir = os.path.join(ephemeral_dir, "outputs")
-libs_dir = os.path.join(permathings_dir, "libs")
-sys.path.append(libs_dir)
-
-from selenium_tools import test_tools
-
-test_tools()
-
-
-
------new_file-----
- /permathings/persistent_output_examples/meta_digest/claude_description_240906.md (2.77 KB):
-Here's a GitHub README file for the ML repository:
-
-# ML Repository
-
-This repository is a comprehensive toolkit for advanced machine learning and AI tasks, focusing on natural language processing, image processing, and model fine-tuning. It provides a well-organized structure of scripts, tools, and configurations to support various aspects of machine learning workflows.
-
-## Key Features
-
-- **Environment Setup**: Scripts for setting up CUDA, Docker, and other prerequisites.
-- **Model Implementations**: Support for text generation (GPT-like models), image processing (Stable Diffusion, Segment Anything Model), and more.
-- **Fine-tuning Tools**: Scripts and configurations for fine-tuning language models.
-- **Containerization**: Extensive use of Docker for reproducible and portable ML environments.
-- **Integration**: Works with popular platforms like Hugging Face and frameworks such as PyTorch and Transformers.
-- **Full Pipeline Support**: Includes tools for data processing, model training,...[truncated middle 835 characters]...git repository analysis, secret management)
-- `.gitignore`: Git ignore file
-- `README.md`: This file
-
-## Getting Started
-
-1. Clone the repository:
-   ```
-   git clone https://github.com/your-username/ML.git
-   ```
-
-2. Set up the environment:
-   ```
-   cd ML/permathings/prereqs
-   ./all.sh
-   ```
-
-3. Initialize secrets:
-   ```
-   cd ../scripts/utils
-   ./init_secrets.sh
-   ```
-
-4. Choose a specific task or model from the `scripts/` directory and follow the instructions in the respective README or script comments.
-
-## Requirements
-
-- CUDA-compatible GPU
-- Docker
-- Python 3.x
-- Various Python libraries (requirements are specified in individual scripts)
-
-## Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request.
-
-## License
-
-This project is open-source and available under the [MIT License](LICENSE).
-
-## Disclaimer
-
-This repository contains experimental code and models. Use at your own risk and ensure you comply with the licenses of all included tools and models.
-
------new_file-----
- /permathings/prereqs/0_install_cuda_12.6.sh (543.00 B):
+ permathings/prereqs/3_install_other.sh (436.00 B):
 #!/bin/bash
 
-# Set non-interactive frontend
-export DEBIAN_FRONTEND=noninteractive
+sudo apt update
+sudo apt install -y python3-full python3-pip python3-venv jq imagemagick git-lfs tmux axel git calibre
 
-# Download and install CUDA keyring
-wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2204/x86_64/cuda-keyring_1.1-1_all.deb
-sudo dpkg -i cuda-keyring_1.1-1_all.deb
+pip3 install --upgrade pip
 
-# Update package list
-sudo apt-get update
+pip3 install --upgrade pillow aes-cipher
 
-# Install CUDA Toolkit 12.6
-sudo apt-get -y install cuda-toolkit-12-6
 
-# Install NVIDIA drivers (legacy kernel module flavor for wider compatibility)
-sudo apt-get install -y cuda-drivers
+pip3 install hwid --break-system-packages
+pip3 install --upgrade huggingface_hub wget docker selenium --break-system-packages
 
-# Clean up
-sudo rm cuda-keyring_1.1-1_all.deb
+#sudo sed -i 's/<policy domain="coder" rights="none" pattern="PDF" \/>//g' /etc/ImageMagick-6/policy.xml
+
 
 -----new_file-----
- /permathings/prereqs/1_install_docker_engine.sh (919.00 B):
+ permathings/prereqs/1_install_docker_engine.sh (919.00 B):
 #!/bin/bash
 
 for pkg in docker.io docker-doc docker-compose docker-compose-v2 podman-docker containerd runc; do sudo apt-get remove $pkg; done
@@ -553,42 +415,7 @@ sudo usermod -aG docker $USER
 sudo systemctl restart docker
 
 -----new_file-----
- /permathings/prereqs/2_install_nvidia_container_toolkit.sh (598.00 B):
-#!/bin/bash
-
-curl -fsSL https://nvidia.github.io/libnvidia-container/gpgkey | sudo gpg --dearmor -o /usr/share/keyrings/nvidia-container-toolkit-keyring.gpg \
-  && curl -s -L https://nvidia.github.io/libnvidia-container/stable/deb/nvidia-container-toolkit.list | \
-    sed 's#deb https://#deb [signed-by=/usr/share/keyrings/nvidia-container-toolkit-keyring.gpg] https://#g' | \
-    sudo tee /etc/apt/sources.list.d/nvidia-container-toolkit.list
-
-sudo apt-get update
-
-sudo apt-get install -y nvidia-container-toolkit
-
-sudo nvidia-ctk runtime configure --runtime=docker
-
-sudo systemctl restart docker
-
------new_file-----
- /permathings/prereqs/3_install_other.sh (431.00 B):
-#!/bin/bash
-
-sudo apt update
-sudo apt install -y python3-full python3-pip python3-venv jq imagemagick git-lfs tmux axel git calibre
-
-pip3 install --upgrade pip
-
-pip3 install --upgrade docker selenium pillow aes-cipher
-
-
-pip3 install hwid --break-system-packages
-pip3 install --upgrade huggingface_hub --break-system-packages
-
-#sudo sed -i 's/<policy domain="coder" rights="none" pattern="PDF" \/>//g' /etc/ImageMagick-6/policy.xml
-
-
------new_file-----
- /permathings/prereqs/all.sh (202.00 B):
+ permathings/prereqs/all.sh (202.00 B):
 #!/bin/bash
 
 if [ "$(lspci | grep -i nvidia)" ]; then
@@ -605,39 +432,611 @@ fi
 
 
 -----new_file-----
+ permathings/prereqs/0_install_cuda_12.6.sh (543.00 B):
+#!/bin/bash
+
+# Set non-interactive frontend
+export DEBIAN_FRONTEND=noninteractive
+
+# Download and install CUDA keyring
+wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2204/x86_64/cuda-keyring_1.1-1_all.deb
+sudo dpkg -i cuda-keyring_1.1-1_all.deb
+
+# Update package list
+sudo apt-get update
+
+# Install CUDA Toolkit 12.6
+sudo apt-get -y install cuda-toolkit-12-6
+
+# Install NVIDIA drivers (legacy kernel module flavor for wider compatibility)
+sudo apt-get install -y cuda-drivers
+
+# Clean up
+sudo rm cuda-keyring_1.1-1_all.deb
+
+-----new_file-----
+ permathings/prereqs/2_install_nvidia_container_toolkit.sh (598.00 B):
+#!/bin/bash
+
+curl -fsSL https://nvidia.github.io/libnvidia-container/gpgkey | sudo gpg --dearmor -o /usr/share/keyrings/nvidia-container-toolkit-keyring.gpg \
+  && curl -s -L https://nvidia.github.io/libnvidia-container/stable/deb/nvidia-container-toolkit.list | \
+    sed 's#deb https://#deb [signed-by=/usr/share/keyrings/nvidia-container-toolkit-keyring.gpg] https://#g' | \
+    sudo tee /etc/apt/sources.list.d/nvidia-container-toolkit.list
+
+sudo apt-get update
+
+sudo apt-get install -y nvidia-container-toolkit
+
+sudo nvidia-ctk runtime configure --runtime=docker
+
+sudo systemctl restart docker
+
+-----new_file-----
+ permathings/persistent_output_examples: Empty folder or all files filtered
+
+-----new_file-----
+ permathings/persistent_output_examples/meta_digest/ML_processed.txt (84.17 KB):
+Repository: ML
+
+File Structure:
+ML-main/
+    README.md (2.92 KB)
+    .gitignore (22.00 B)
+    permathings/
+        libs/
+            digest_git.py (10.79 KB)
+            secretary.py (3.05 KB)
+            docker_tools.py (728.00 B)
+            selenium_tools.py (1.54 KB)
+        prereqs/
+            3_install_other.sh (431.00 B)
+            1_install_docker_engine.sh (919.00 B)
+            all.sh (202.00 B)
+            0_install_cuda_12.6.sh (543.00 B)
+            2_install_nvidia_container_toolkit.sh (598.00 B)
+        persistent_output_examples/
+            meta_digest/
+                ML_processed.txt (69.46 KB)
+                claude_description_240906.md (2.77 KB)
+        scripts/
+            stable_diffusion/
+                init_auto1111.sh (1.63 KB)
+                kill_auto1111.sh (696.00 B)
+                run_comfyUI_alt1.sh (608.00 B)
+                run_auto1111.sh (2.45 KB)
+                run_comfyUI_alt2.sh (732.00 B)
+            textgen_webui/
+                build_doc...[truncated middle 84195 characters]...PO_CACHE_PATH
+
+docker run --rm -it \
+    -v $HF_CACHE_FOLDER_PATH:/root/.cache/huggingface \
+    --gpus='"device=0"' \
+    -p 8000:8000 \
+    --env "HUGGING_FACE_HUB_TOKEN=$HF_TOKEN" \
+    --ipc=host \
+    -m 40g \
+    outlines_vllm_server \
+    --guided-decoding-backend outlines \
+    --dtype auto \
+    --max-model-len 8000 \
+    --model mistralai/Mistral-7B-Instruct-v0.3
+
+-----new_file-----
+ /permathings/scripts/webscraping/run.py (491.00 B):
+import os, sys, json, re, time, datetime, random, string, docker, atexit
+
+this_dir = os.path.dirname(os.path.abspath(__file__))
+scripts_dir = os.path.dirname(this_dir)
+permathings_dir = os.path.dirname(scripts_dir)
+root_dir = os.path.dirname(permathings_dir)
+ephemeral_dir = os.path.join(root_dir, "ephemera")
+outputs_dir = os.path.join(ephemeral_dir, "outputs")
+libs_dir = os.path.join(permathings_dir, "libs")
+sys.path.append(libs_dir)
+
+from selenium_tools import test_tools
+
+test_tools()
+
+
+-----new_file-----
+ Total size of skipped files: 16.41 MB
+
+
+-----new_file-----
+ permathings/persistent_output_examples/meta_digest/furniture_assembly_manual_descriptions.json (1.58 KB):
+[
+  {
+    "manual_filename": "brimnes-bed-frame-with-storage-white__AA-473492-22-100",
+    "p35v_description": "This instruction manual is about assembling furniture, specifically a piece of furniture that appears to be a drawer or storage unit. The manual includes diagrams and illustrations to guide the user through the assembly process."
+  },
+  {
+    "manual_filename": "malm-bed-frame-white__AA-2543855-1-100",
+    "p35v_description": "This instruction manual is about assembling a furniture piece, specifically a bed frame, as indicated by the diagrams and illustrations showing the assembly process."
+  },
+  {
+    "manual_filename": "mittzon-underframe-for-sit-stand-desk-electric-black__AA-2445413-2-100",
+    "p35v_description": "This instruction manual is about assembling a MITTZON desk."
+  },
+  {
+    "manual_filename": "uppland-sofa-frame__AA-2202687-1-2",
+    "p35v_description": "This instruction manual is about assembling an IKEA sofa."
+  },
+  {
+    "manual_filename": "kura-reversible-bed__AA-843436-6_pub",
+    "p35v_description": "This instruction manual is about assembling a piece of furniture, specifically a bed frame."
+  },
+  {
+    "manual_filename": "neiden-bed-frame__AA-2044866-4_pub",
+    "p35v_description": "This instruction manual is about assembling a bed frame, specifically a 'NEIDEN' bed frame by IKEA."
+  },
+  {
+    "manual_filename": "askvoll-bed-frame__AA-942096-6_pub",
+    "p35v_description": "This instruction manual is about assembling a furniture piece, specifically a bed frame, as indicated by the title 'ASKVOLL' and the illustrations showing the assembly process."
+  }
+]
+
+-----new_file-----
+ permathings/persistent_output_examples/meta_digest/claude_description_240906.md (3.55 KB):
+# ML Repository
+
+This repository is a comprehensive toolkit for advanced machine learning and AI tasks, focusing on natural language processing, image processing, model fine-tuning, and various AI-powered applications. It provides a well-organized structure of scripts, tools, and configurations to support various aspects of machine learning workflows.
+
+## Key Features
+
+- **Environment Setup**: Scripts for setting up CUDA, Docker, and other prerequisites.
+- **Model Implementations**: Support for text generation (GPT-like models), image processing (Stable Diffusion, Segment Anything Model), and more.
+- **Fine-tuning Tools**: Scripts and configurations for fine-tuning language models.
+- **Containerization**: Extensive use of Docker for reproducible and portable ML environments.
+- **Integration**: Works with popular platforms like Hugging Face and frameworks such as PyTorch and Transformers.
+- **Full Pipeline Support**: Includes tools for data processing, model training, and inference.
+- *...[truncated middle 1633 characters]...ng web-based interfaces for various AI tasks.
+
+## Requirements
+
+- CUDA-compatible GPU
+- Ubuntu 24.04 (or compatible Linux distribution)
+- Docker
+- Python 3.x
+- Various Python libraries (requirements are specified in individual scripts)
+
+## Usage Notes
+
+- Many scripts use Docker to ensure consistent environments. Make sure Docker is properly installed and configured.
+- Some scripts require Hugging Face API tokens or other credentials. Use the `init_secrets.sh` script to set these up.
+- Pay attention to GPU memory requirements, especially for larger models or when running multiple containers.
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+## License
+
+This project is open-source. Please ensure you comply with the licenses of all included tools and models.
+
+## Disclaimer
+
+This repository contains experimental code and models. Use at your own risk and ensure you comply with the licenses and terms of use for all third-party tools and models included.
+
+-----new_file-----
  permathings/scripts: Empty folder or all files filtered
 
 -----new_file-----
- /permathings/scripts/LLaVA-NeXT/Dockerfile (806.00 B):
-FROM nvidia/cuda:12.5.0-devel-ubuntu22.04
+ permathings/scripts/stable_diffusion/init_auto1111.sh (1.63 KB):
+THIS_DIR_PATH=$(dirname $(realpath $0))
+SCRIPTS_DIR_PATH=$(dirname $THIS_DIR_PATH)
+PERMATHINGS_DIR_PATH=$(dirname $SCRIPTS_DIR_PATH)
+LIBRARIES_DIR_PATH=$PERMATHINGS_DIR_PATH/libs
+ML_PROJECT_DIR_PATH=$(dirname $PERMATHINGS_DIR_PATH)
+EPHEMERA_DIR_PATH=$ML_PROJECT_DIR_PATH/ephemera
+SHARED_CACHES_DIR_PATH=$EPHEMERA_DIR_PATH/shared_caches
+SDWUI_REPO_CACHE_PARENT=$SHARED_CACHES_DIR_PATH/stable_diffusion
 
-ENV DEBIAN_FRONTEND=noninteractive
+SDWUI_DOCKER_REPO_URL="https://github.com/AbdBarho/stable-diffusion-webui-docker/"
 
-RUN apt update
-RUN apt install -y git
-RUN apt install -y curl
-RUN apt install -y wget
-RUN apt install -y python3.10-full
-RUN apt install -y python3-pip python3-dev python3-venv
-RUN python3 -m pip install --no-cache-dir --upgrade pip
-RUN apt install -y tesseract-ocr libtesseract-dev
+#docker ps -a | grep "webui-docker" | awk '{print $1}' | xargs docker rm -f
+#docker images | grep "webui-docker" | awk '{print $3}' | xargs docker rmi -f
 
-WORKDIR /app
-RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.3/install.sh | bash
-RUN git clone https://github.com/OpenAdaptAI/OpenAdapt.git
-WORKDIR /app/OpenAdapt
-ENV PYTHONPATH "${PYTHONPATH}:/app/OpenAdapt"
-RUN python3 -m pip install --no-cache-dir poetry
-RUN poetry install
-RUN poetry run install-dashboard
-RUN python3 -m pip install --no-cache-dir .[all]
-WORKDIR /app/OpenAdapt/openadapt
-RUN alembic upgrade head
-RUN pytest
+if [ ! -d $EPHEMERA_DIR_PATH ]; then
+	mkdir $EPHEMERA_DIR_PATH
+fi
+if [ ! -d $SHARED_CACHES_DIR_PATH ]; then
+	mkdir $SHARED_CACHES_DIR_PATH
+fi
+if [ ! -d $SDWUI_REPO_CACHE_PARENT ]; then
+	mkdir $SDWUI_REPO_CACHE_PARENT
+fi
+cd $SDWUI_REPO_CACHE_PARENT
+if [ ! -d stable-diffusion-webui-docker ]; then
+	git clone $SDWUI_DOCKER_REPO_URL
+fi
+
+cd stable-diffusion-webui-docker
+
+git checkout 802d0bcd689e3a6fcdb56465c216caac01416816
+
+docker compose --profile download up --build
+
+sed -i 's/    image: sd-auto:78/#    image: sd-auto:78/g' docker-compose.yml
+
+sed -i 's/git reset --hard v1.9.4 \&\& \\/git reset --hard v1.10.0 \&\& \\/g' services/AUTOMATIC1111/Dockerfile
+
+if ! grep -q "typing_extensions" services/AUTOMATIC1111/requirements_versions.txt; then
+	sed -i 's/pip install -r requirements_versions.txt/pip3 install --upgrade typing_extensions \&\& \\\n  pip install -r requirements_versions.txt/g' services/AUTOMATIC1111/Dockerfile
+fi
+
+cd $SDWUI_REPO_CACHE_PARENT/stable-diffusion-webui-docker
+
+docker compose --profile auto up --build
 
 -----new_file-----
- /permathings/scripts/LLaVA-NeXT/run_docker.sh (1.24 KB):
-THIS_DOCKER_CONTAINER_NAME="transformers-llava-next"
+ permathings/scripts/stable_diffusion/kill_auto1111.sh (696.00 B):
+THIS_DIR_PATH=$(dirname $(realpath $0))
+SCRIPTS_DIR_PATH=$(dirname $THIS_DIR_PATH)
+PERMATHINGS_DIR_PATH=$(dirname $SCRIPTS_DIR_PATH)
+LIBRARIES_DIR_PATH=$PERMATHINGS_DIR_PATH/libs
+ML_PROJECT_DIR_PATH=$(dirname $PERMATHINGS_DIR_PATH)
+EPHEMERA_DIR_PATH=$ML_PROJECT_DIR_PATH/ephemera
+SHARED_CACHES_DIR_PATH=$EPHEMERA_DIR_PATH/shared_caches
+SDWUI_REPO_CACHE_PARENT=$SHARED_CACHES_DIR_PATH/stable_diffusion
+
+cd $LIBRARIES_DIR_PATH
+HF_TOKEN=$(python3 -c "from secretary import get_secret; print(get_secret('HF_TOKEN'))")
+
+SDWUI_REPO_CACHE=$SDWUI_REPO_CACHE_PARENT/stable-diffusion-webui-docker
+cd $SDWUI_REPO_CACHE
+docker compose --profile auto down
+docker compose --profile comfy down
+cd $THIS_DIR_PATH
+
+-----new_file-----
+ permathings/scripts/stable_diffusion/run_comfyUI_alt1.sh (608.00 B):
+THIS_DIR_PATH=$(dirname $(realpath $0))
+SCRIPTS_DIR_PATH=$(dirname $THIS_DIR_PATH)
+PERMATHINGS_DIR_PATH=$(dirname $SCRIPTS_DIR_PATH)
+LIBRARIES_DIR_PATH=$PERMATHINGS_DIR_PATH/libs
+ML_PROJECT_DIR_PATH=$(dirname $PERMATHINGS_DIR_PATH)
+EPHEMERA_DIR_PATH=$ML_PROJECT_DIR_PATH/ephemera
+SHARED_CACHES_DIR_PATH=$EPHEMERA_DIR_PATH/shared_caches
+COMFY_CACHE=$SHARED_CACHES_DIR_PATH/stable_diffusion/comfy
+if [ ! -d $COMFY_CACHE ]; then
+    mkdir -p $COMFY_CACHE
+fi
+
+docker run -it --rm \
+  --name comfyui \
+  --gpus all \
+  -p 8188:8188 \
+  -v $COMFY_CACHE:/home/runner \
+  -e CLI_ARGS="" \
+  yanwk/comfyui-boot:cu121
+
+
+-----new_file-----
+ permathings/scripts/stable_diffusion/run_auto1111.sh (2.45 KB):
+THIS_DIR_PATH=$(dirname $(realpath $0))
+SCRIPTS_DIR_PATH=$(dirname $THIS_DIR_PATH)
+PERMATHINGS_DIR_PATH=$(dirname $SCRIPTS_DIR_PATH)
+LIBRARIES_DIR_PATH=$PERMATHINGS_DIR_PATH/libs
+ML_PROJECT_DIR_PATH=$(dirname $PERMATHINGS_DIR_PATH)
+EPHEMERA_DIR_PATH=$ML_PROJECT_DIR_PATH/ephemera
+SHARED_CACHES_DIR_PATH=$EPHEMERA_DIR_PATH/shared_caches
+SDWUI_REPO_CACHE_PARENT=$SHARED_CACHES_DIR_PATH/stable_diffusion
+SDWUI_REPO_PATH=$SDWUI_REPO_CACHE_PARENT/stable-diffusion-webui-docker
+EXTENSIONS_DIR_PATH=$SDWUI_REPO_PATH/data/config/auto/extensions
+MODELS_DIR_PATH=$SDWUI_REPO_PATH/data/models
+CONFIG_JSON_PATH=$SDWUI_REPO_PATH/data/config/auto/config.json
+
+cd $LIBRARIES_DIR_PATH
+HF_TOKEN=$(python3 -c "from secretary import get_secret; print(get_secret('HF_TOKEN'))")
+
+SDWUI_REPO_CACHE=$SDWUI_REPO_CACHE_PARENT/stable-diffusion-webui-docker
+
+if [ $(stat -c "%U" $EXTENSIONS_DIR_PATH) != $USER ]; then
+    sudo chown -R $USER:$USER $EXTENSIONS_DIR_PATH -R
+fi
+
+cd $EXTENSIONS_DIR_PATH
+if [ ! -d sd-webui-lobe-the...[truncated middle 512 characters]...r
+
+if [ ! -f $CONFIG_JSON_PATH ]; then
+    echo "{}" > $CONFIG_JSON_PATH
+fi
+
+if [ $(stat -c "%U" $CONFIG_JSON_PATH) != $USER ]; then
+    sudo chown $USER:$USER $CONFIG_JSON_PATH
+fi
+
+API_KEY=$(jq -r '.custom_api_key // ""' $CONFIG_JSON_PATH)
+
+if [ -z "$API_KEY" ] || [ ${#API_KEY} -le 5 ]; then
+    read -p "Do you have a CivitAI API Key? (y/n): " HAS_KEY
+    if [ "$HAS_KEY" = "y" ]; then
+        read -p "Please enter your CivitAI API Key: " CIVITAI_API_KEY
+        if [ ${#CIVITAI_API_KEY} -gt 5 ]; then
+            jq --arg key "$CIVITAI_API_KEY" '.custom_api_key = $key' $CONFIG_JSON_PATH > tmp.$$.json
+            sudo rm $CONFIG_JSON_PATH
+            sudo mv tmp.$$.json $CONFIG_JSON_PATH
+        else
+            echo "The API key is too short. Skipping."
+        fi
+    else
+        echo "Continuing without CivitAI API Key."
+    fi
+fi
+
+if [ $(stat -c "%U" $CONFIG_JSON_PATH) != $USER ]; then
+    sudo chown $USER:$USER $CONFIG_JSON_PATH
+fi
+
+docker compose --profile auto up
+cd $THIS_DIR_PATH
+
+-----new_file-----
+ permathings/scripts/stable_diffusion/run_comfyUI_alt2.sh (732.00 B):
+THIS_DIR_PATH=$(dirname $(realpath $0))
+SCRIPTS_DIR_PATH=$(dirname $THIS_DIR_PATH)
+PERMATHINGS_DIR_PATH=$(dirname $SCRIPTS_DIR_PATH)
+LIBRARIES_DIR_PATH=$PERMATHINGS_DIR_PATH/libs
+ML_PROJECT_DIR_PATH=$(dirname $PERMATHINGS_DIR_PATH)
+EPHEMERA_DIR_PATH=$ML_PROJECT_DIR_PATH/ephemera
+SHARED_CACHES_DIR_PATH=$EPHEMERA_DIR_PATH/shared_caches
+COMFY_REPO=$SHARED_CACHES_DIR_PATH/stable_diffusion/comfy_alt2
+if [ ! -d $COMFY_REPO ]; then
+    mkdir -p $COMFY_REPO
+fi
+#https://github.com/calhounpaul/ComfyUI-Docker
+if [ ! -d $COMFY_REPO/ComfyUI-Docker ]; then
+    git clone https://github.com/calhounpaul/ComfyUI-Docker.git $COMFY_REPO/ComfyUI-Docker
+fi
+cd $COMFY_REPO/ComfyUI-Docker/cu124-megapak
+
+docker compose up --build
+
+cd $THIS_DIR_PATH
+
+-----new_file-----
+ permathings/scripts/textgen_webui/build_docker.sh (1.91 KB):
+#!/bin/bash
+
+THIS_DIR_PATH=$(dirname $(realpath $0))
+SCRIPTS_DIR_PATH=$(dirname $THIS_DIR_PATH)
+PERMATHINGS_DIR_PATH=$(dirname $SCRIPTS_DIR_PATH)
+LIBS_DIR_PATH=$PERMATHINGS_DIR_PATH/libs
+ML_PROJECT_DIR_PATH=$(dirname $PERMATHINGS_DIR_PATH)
+EPHEMERA_DIR_PATH=$ML_PROJECT_DIR_PATH/ephemera
+INPUTS_DIR_PATH=$EPHEMERA_DIR_PATH/inputs
+OUTPUTS_DIR_PATH=$EPHEMERA_DIR_PATH/outputs
+EBOOK_ANALYSES_DIR_PATH=$OUTPUTS_DIR_PATH/ebook_analyses
+INPUT_EBOOKS_DIR_PATH=$INPUTS_DIR_PATH/ebooks
+SHARED_CACHES_DIR_PATH=$EPHEMERA_DIR_PATH/shared_caches
+SECRETS_FILE_PATH=$EPHEMERA_DIR_PATH/secrets.json
+
+cd $LIBS_DIR_PATH
+HF_TOKEN=$(python3 -c "from secretary import get_secret; print(get_secret('HF_TOKEN'))")
+cd $THIS_DIR_PATH
+
+# This script builds the vllm_server docker image
+TEXT_GET_WEBUI_CACHE_FOLDER_PATH=$SHARED_CACHES_DIR_PATH/tgwui
+if [ ! -d $TEXT_GET_WEBUI_CACHE_FOLDER_PATH ]; then
+    mkdir -p $TEXT_GET_WEBUI_CACHE_FOLDER_PATH
+fi
+
+cd $TEXT_GET_WEBUI_CACHE_FOLDER_PATH
+
+#if "vllm_server" dir is not present, create it
+if [ ! -d "tgwui_docker" ]; then
+    mkdir -p tgwui_docker
+fi
+cd tgwui_docker
+
+#remove text-generation-webui if it exists
+#if [ -d "text-generation-webui-docker" ]; then
+#    rm -rf text-generation-webui-docker
+#fi
+
+#if vllm dir is not present, clone it
+if [ ! -d "text-generation-webui" ]; then
+    git clone https://github.com/Atinoda/text-generation-webui-docker
+fi
+cd text-generation-webui-docker
+
+mv docker-compose.yml docker-compose.yml.bak
+mv docker-compose.build.yml docker-compose.yml
+
+sed -i 's/        - VERSION_TAG="v1.5"/        - VERSION_TAG="nightly"/g' docker-compose.yml
+sed -i 's/      target: default/      target: default-nvidia/g' docker-compose.yml
+
+#sed -i 's/                device_ids: \['0'\]/                device_ids: \['0', '1'\]/g' docker-compose.yml
+#HF_TOKEN=$(jq -r '.HF_TOKEN' $SECRETS_FILE_PATH) docker compose up --build
+#run compose build detach with secrets
+HF_TOKEN=$HF_TOKEN docker compose up --build -d
+
+
+-----new_file-----
+ permathings/scripts/textgen_webui/run.sh (875.00 B):
+#!/bin/bash
+
+THIS_DIR_PATH=$(dirname $(realpath $0))
+SCRIPTS_DIR_PATH=$(dirname $THIS_DIR_PATH)
+PERMATHINGS_DIR_PATH=$(dirname $SCRIPTS_DIR_PATH)
+LIBS_DIR_PATH=$PERMATHINGS_DIR_PATH/libs
+ML_PROJECT_DIR_PATH=$(dirname $PERMATHINGS_DIR_PATH)
+EPHEMERA_DIR_PATH=$ML_PROJECT_DIR_PATH/ephemera
+INPUTS_DIR_PATH=$EPHEMERA_DIR_PATH/inputs
+OUTPUTS_DIR_PATH=$EPHEMERA_DIR_PATH/outputs
+EBOOK_ANALYSES_DIR_PATH=$OUTPUTS_DIR_PATH/ebook_analyses
+INPUT_EBOOKS_DIR_PATH=$INPUTS_DIR_PATH/ebooks
+SHARED_CACHES_DIR_PATH=$EPHEMERA_DIR_PATH/shared_caches
+SECRETS_FILE_PATH=$EPHEMERA_DIR_PATH/secrets.json
+
+cd $LIBS_DIR_PATH
+HF_TOKEN=$(python3 -c "from secretary import get_secret; print(get_secret('HF_TOKEN'))")
+
+TEXT_GEN_WEBUI_FOLDER_PATH=$SHARED_CACHES_DIR_PATH/tgwui/tgwui_docker/text-generation-webui-docker
+
+cd $TEXT_GEN_WEBUI_FOLDER_PATH
+HF_TOKEN=$HF_TOKEN docker compose up -d
+# --build -d
+
+-----new_file-----
+ permathings/scripts/tts_webui/build_docker.sh (1.79 KB):
+#!/bin/bash
+
+THIS_DIR_PATH=$(dirname $(realpath $0))
+SCRIPTS_DIR_PATH=$(dirname $THIS_DIR_PATH)
+PERMATHINGS_DIR_PATH=$(dirname $SCRIPTS_DIR_PATH)
+LIBS_DIR_PATH=$PERMATHINGS_DIR_PATH/libs
+ML_PROJECT_DIR_PATH=$(dirname $PERMATHINGS_DIR_PATH)
+EPHEMERA_DIR_PATH=$ML_PROJECT_DIR_PATH/ephemera
+INPUTS_DIR_PATH=$EPHEMERA_DIR_PATH/inputs
+OUTPUTS_DIR_PATH=$EPHEMERA_DIR_PATH/outputs
+EBOOK_ANALYSES_DIR_PATH=$OUTPUTS_DIR_PATH/ebook_analyses
+INPUT_EBOOKS_DIR_PATH=$INPUTS_DIR_PATH/ebooks
+SHARED_CACHES_DIR_PATH=$EPHEMERA_DIR_PATH/shared_caches
+SECRETS_FILE_PATH=$EPHEMERA_DIR_PATH/secrets.json
+
+HWID=$(hwid | cut -d ' ' -f 2)
+
+cd $LIBS_DIR_PATH
+HF_TOKEN=$(python3 -c "from secretary import get_secret; print(get_secret('HF_TOKEN'))")
+cd $THIS_DIR_PATH
+
+# This script builds the vllm_server docker image
+TEXT_GET_WEBUI_CACHE_FOLDER_PATH=$SHARED_CACHES_DIR_PATH/ttswui
+if [ ! -d $TEXT_GET_WEBUI_CACHE_FOLDER_PATH ]; then
+    mkdir -p $TEXT_GET_WEBUI_CACHE_FOLDER_PATH
+fi
+
+cd $TEXT_GET_WEBUI_CACHE_FOLDER_PATH
+
+#remove text-generation-webui if it exists
+#if [ -d "text-generation-webui-docker" ]; then
+#    rm -rf text-generation-webui-docker
+#fi
+
+if [ ! -d "tts-generation-webui" ]; then
+    git clone https://github.com/rsxdalv/tts-generation-webui
+fi
+cd tts-generation-webui
+
+#mv docker-compose.yml docker-compose.yml.bak
+#mv docker-compose.build.yml docker-compose.yml
+
+#sed -i 's/        - VERSION_TAG="v1.5"/        - VERSION_TAG="nightly"/g' docker-compose.yml
+#sed -i 's/      target: default/      target: default-nvidia/g' docker-compose.yml
+
+#sed -i 's/                device_ids: \['0'\]/                device_ids: \['0', '1'\]/g' docker-compose.yml
+#HF_TOKEN=$(jq -r '.HF_TOKEN' $SECRETS_FILE_PATH) docker compose up --build
+#run compose build detach with secrets
+HF_TOKEN=$HF_TOKEN docker build -t rsxdalv/tts-generation-webui .
+
+-----new_file-----
+ permathings/scripts/tts_webui/run.sh (855.00 B):
+#!/bin/bash
+
+THIS_DIR_PATH=$(dirname $(realpath $0))
+SCRIPTS_DIR_PATH=$(dirname $THIS_DIR_PATH)
+PERMATHINGS_DIR_PATH=$(dirname $SCRIPTS_DIR_PATH)
+LIBS_DIR_PATH=$PERMATHINGS_DIR_PATH/libs
+ML_PROJECT_DIR_PATH=$(dirname $PERMATHINGS_DIR_PATH)
+EPHEMERA_DIR_PATH=$ML_PROJECT_DIR_PATH/ephemera
+INPUTS_DIR_PATH=$EPHEMERA_DIR_PATH/inputs
+OUTPUTS_DIR_PATH=$EPHEMERA_DIR_PATH/outputs
+EBOOK_ANALYSES_DIR_PATH=$OUTPUTS_DIR_PATH/ebook_analyses
+INPUT_EBOOKS_DIR_PATH=$INPUTS_DIR_PATH/ebooks
+SHARED_CACHES_DIR_PATH=$EPHEMERA_DIR_PATH/shared_caches
+SECRETS_FILE_PATH=$EPHEMERA_DIR_PATH/secrets.json
+
+cd $LIBS_DIR_PATH
+HF_TOKEN=$(python3 -c "from secretary import get_secret; print(get_secret('HF_TOKEN'))")
+
+TEXT_GEN_WEBUI_FOLDER_PATH=$SHARED_CACHES_DIR_PATH/ttswui/tts-generation-webui
+
+cd $TEXT_GEN_WEBUI_FOLDER_PATH
+HF_TOKEN=$HF_TOKEN docker compose up -d
+# --build -d
+
+-----new_file-----
+ permathings/scripts/utils/set_power.sh (23.00 B):
+sudo nvidia-smi -pl 220
+
+-----new_file-----
+ permathings/scripts/utils/init_secrets.sh (464.00 B):
+THIS_DIR_PATH=$(dirname $(realpath $0))
+SCRIPTS_DIR_PATH=$(dirname $THIS_DIR_PATH)
+PERMATHINGS_DIR_PATH=$(dirname $SCRIPTS_DIR_PATH)
+LIBRARIES_DIR_PATH=$PERMATHINGS_DIR_PATH/libs
+ML_PROJECT_DIR_PATH=$(dirname $PERMATHINGS_DIR_PATH)
+EPHEMERA_DIR_PATH=$ML_PROJECT_DIR_PATH/ephemera
+
+if [ ! -d $EPHEMERA_DIR_PATH ]; then
+    mkdir $EPHEMERA_DIR_PATH
+fi
+
+cd $LIBRARIES_DIR_PATH
+python3 -c "from secretary import get_all_defaults; get_all_defaults()"
+cd $THIS_DIR_PATH
+
+
+-----new_file-----
+ permathings/scripts/utils/digest_git.sh (662.00 B):
+THIS_DIR_PATH=$(dirname $(realpath $0))
+SCRIPTS_DIR_PATH=$(dirname $THIS_DIR_PATH)
+PERMATHINGS_DIR_PATH=$(dirname $SCRIPTS_DIR_PATH)
+LIBRARIES_DIR_PATH=$PERMATHINGS_DIR_PATH/libs
+ML_PROJECT_DIR_PATH=$(dirname $PERMATHINGS_DIR_PATH)
+EPHEMERA_DIR_PATH=$ML_PROJECT_DIR_PATH/ephemera
+GIT_AGGREGATES_PATH=$EPHEMERA_DIR_PATH/git_aggregates
+
+if [ ! -d $EPHEMERA_DIR_PATH ]; then
+    mkdir $EPHEMERA_DIR_PATH
+fi
+if [ ! -d $GIT_AGGREGATES_PATH ]; then
+    mkdir $GIT_AGGREGATES_PATH
+fi
+
+if [ -z "$1" ]; then
+    REPO_URL="https://github.com/calhounpaul/ML"
+else
+    REPO_URL=$1
+fi
+
+cd $LIBRARIES_DIR_PATH
+python3 digest_git.py $REPO_URL --output_path $GIT_AGGREGATES_PATH
+
+-----new_file-----
+ permathings/scripts/segmentation: Empty folder or all files filtered
+
+-----new_file-----
+ permathings/scripts/segmentation/segment-track-anything/grab_weights.sh (582.00 B):
+THIS_DIR_PATH=$(dirname $(realpath $0))
+SCRIPTS_DIR_PATH=$(dirname $(dirname $THIS_DIR_PATH))
+PERMATHINGS_DIR_PATH=$(dirname $SCRIPTS_DIR_PATH)
+ML_PROJECT_DIR_PATH=$(dirname $PERMATHINGS_DIR_PATH)
+EPHEMERA_DIR_PATH=$ML_PROJECT_DIR_PATH/ephemera
+SHARED_CACHES_DIR_PATH=$EPHEMERA_DIR_PATH/shared_caches
+
+if [ ! -d $SHARED_CACHES_DIR_PATH ]; then
+    mkdir -p $SHARED_CACHES_DIR_PATH
+fi
+cd $SHARED_CACHES_DIR_PATH
+
+git clone https://github.com/z-x-yang/Segment-and-Track-Anything.git
+
+cd Segment-and-Track-Anything
+
+#bash script/install.sh
+
+mkdir ./ckpt
+
+bash script/download_ckpt.sh
+
+
+
+-----new_file-----
+ permathings/scripts/segmentation/segment-track-anything/run_docker.sh (1.33 KB):
+THIS_DOCKER_CONTAINER_NAME="transformers-for-tracking-sam"
 
 THIS_DIR_PATH=$(dirname $(realpath $0))
 SCRIPTS_DIR_PATH=$(dirname $(dirname $THIS_DIR_PATH))
@@ -648,7 +1047,222 @@ ML_PROJECT_DIR_PATH=$(dirname $PERMATHINGS_DIR_PATH)
 EPHEMERA_DIR_PATH=$ML_PROJECT_DIR_PATH/ephemera
 SHARED_CACHES_DIR_PATH=$EPHEMERA_DIR_PATH/shared_caches
 
-#docker build -t $TEMPLATE_IMAGE_NAME $TEMPLATE_DIR_PATH
+docker build -t $TEMPLATE_IMAGE_NAME $TEMPLATE_DIR_PATH
+docker build -t $THIS_DOCKER_CONTAINER_NAME .
+
+if [ ! -d $SHARED_CACHES_DIR_PATH ]; then
+    mkdir -p $SHARED_CACHES_DIR_PATH
+fi
+
+THIS_CACHE=$SHARED_CACHES_DIR_PATH/$THIS_DOCKER_CONTAINER_NAME
+
+if [ ! -d $THIS_CACHE ]; then
+    mkdir -p $THIS_CACHE
+fi
+
+WORKDIR_PATH=$THIS_DIR_PATH/workspace
+
+if [ ! -d $WORKDIR_PATH ]; then
+    mkdir -p $WORKDIR_PATH
+fi
+
+docker kill $THIS_DOCKER_CONTAINER_NAME
+docker rm $THIS_DOCKER_CONTAINER_NAME
+sleep 2
+docker kill $THIS_DOCKER_CONTAINER_NAME
+docker rm $THIS_DOCKER_CONTAINER_NAME
+sleep 2
+
+REPO_PATH=$SHARED_CACHES_DIR_PATH/Segment-and-Track-Anything
+
+docker run --gpus all -it --rm \
+    --name $THIS_DOCKER_CONTAINER_NAME \
+    -v $THIS_CACHE:/root/.cache \
+    -v $WORKDIR_PATH:/workspace \
+    -v $REPO_PATH:/app \
+    -w /workspace \
+    -p 7860:7860 \
+    $THIS_DOCKER_CONTAINER_NAME
+
+
+-----new_file-----
+ permathings/scripts/segmentation/segment-track-anything: 1 file(s) skipped in this folder (total size: 374.00 B)
+
+-----new_file-----
+ permathings/scripts/segmentation/SAM/Dockerfile (375.00 B):
+FROM transformers-quantization-latest-gpu
+
+# Install the necessary packages
+RUN apt update
+RUN apt install -y git
+RUN python3 -m pip install --no-cache-dir --upgrade pip
+RUN python3 -m pip install --no-cache-dir opencv-python
+RUN python3 -m pip install --no-cache-dir numpy
+RUN python3 -m pip install --no-cache-dir pillow
+RUN python3 -m pip install --no-cache-dir matplotlib
+
+-----new_file-----
+ permathings/scripts/segmentation/SAM/run.sh (1.23 KB):
+THIS_DOCKER_CONTAINER_NAME="transformers-for-sam"
+
+THIS_DIR_PATH=$(dirname $(realpath $0))
+SCRIPTS_DIR_PATH=$(dirname $(dirname $THIS_DIR_PATH))
+TEMPLATE_DIR_PATH=$SCRIPTS_DIR_PATH/tformers_template
+TEMPLATE_IMAGE_NAME="transformers-quantization-latest-gpu"
+PERMATHINGS_DIR_PATH=$(dirname $SCRIPTS_DIR_PATH)
+ML_PROJECT_DIR_PATH=$(dirname $PERMATHINGS_DIR_PATH)
+EPHEMERA_DIR_PATH=$ML_PROJECT_DIR_PATH/ephemera
+SHARED_CACHES_DIR_PATH=$EPHEMERA_DIR_PATH/shared_caches
+
+docker build -t $TEMPLATE_IMAGE_NAME $TEMPLATE_DIR_PATH
+docker build -t $THIS_DOCKER_CONTAINER_NAME .
+
+if [ ! -d $SHARED_CACHES_DIR_PATH ]; then
+    mkdir -p $SHARED_CACHES_DIR_PATH
+fi
+
+THIS_CACHE=$SHARED_CACHES_DIR_PATH/$THIS_DOCKER_CONTAINER_NAME
+
+if [ ! -d $THIS_CACHE ]; then
+    mkdir -p $THIS_CACHE
+fi
+
+WORKDIR_PATH=$THIS_DIR_PATH/workspace
+
+if [ ! -d $WORKDIR_PATH ]; then
+    mkdir -p $WORKDIR_PATH
+fi
+
+docker kill $THIS_DOCKER_CONTAINER_NAME
+docker rm $THIS_DOCKER_CONTAINER_NAME
+sleep 2
+docker kill $THIS_DOCKER_CONTAINER_NAME
+docker rm $THIS_DOCKER_CONTAINER_NAME
+sleep 2
+
+docker run --gpus all -it --rm \
+    --name $THIS_DOCKER_CONTAINER_NAME \
+    -v $THIS_CACHE:/root/.cache \
+    -v $WORKDIR_PATH:/workspace \
+    -w /workspace \
+    -p 8000:8000 \
+    $THIS_DOCKER_CONTAINER_NAME
+
+
+-----new_file-----
+ permathings/scripts/segmentation/SAM/workspace/out.png (108.55 KB):
+(Binary file)
+
+-----new_file-----
+ permathings/scripts/segmentation/SAM/workspace/test1.py (13.76 KB):
+IMAGE_URL = """https://ia802906.us.archive.org/13/items/artworks1/The%20Voyage%20of%20Life%20-%203%20-%20Manhood%20-%20Thomas%20Cole%2C%201842.jpg"""
+OUT_FILENAME = "mhood.jpg"
+LABELS = ["a man.", "a tree.", "the sea."]
+
+import random
+from dataclasses import dataclass
+from typing import Any, List, Dict, Optional, Union, Tuple
+
+import cv2
+import torch
+import requests
+import numpy as np
+from PIL import Image
+import plotly.express as px
+import matplotlib.pyplot as plt
+import plotly.graph_objects as go
+from transformers import AutoModelForMaskGeneration, AutoProcessor, pipeline
+
+#grab the image first, if it's not already in the directory
+import os
+import urllib.request
+if not os.path.exists(OUT_FILENAME):
+    urllib.request.urlretrieve(IMAGE_URL, OUT_FILENAME)
+
+@dataclass
+class BoundingBox:
+    xmin: int
+    ymin: int
+    xmax: int
+    ymax: int
+
+    @property
+    def xyxy(self) -> List[float]:
+        return [self.xmin, self.ymin, self.xmax, self.ymax]
+
+@dataclass
+class DetectionResult:
+ ...[truncated middle 12091 characters]...etector_id)
+    detections = segment(image, detections, polygon_refinement, segmenter_id)
+
+    return np.array(image), detections
+
+"""### Inference
+
+Let's showcase Grounded SAM on our favorite image: the cats image from the COCO dataset.
+"""
+
+#image_url = "http://images.cocodataset.org/val2017/000000039769.jpg"
+#labels = ["a cat.", "a remote control."]
+image_url = OUT_FILENAME
+labels = LABELS
+threshold = 0.3
+
+noext_filename = ".".join(OUT_FILENAME.split(".")[:-1])
+extension = OUT_FILENAME.split(".")[-1]
+OUT_FILENAME = f"{noext_filename}_grounded.{extension}"
+
+detector_id = "IDEA-Research/grounding-dino-tiny"
+segmenter_id = "facebook/sam-vit-base"
+
+image_array, detections = grounded_segmentation(
+    image=image_url,
+    labels=labels,
+    threshold=threshold,
+    polygon_refinement=True,
+    detector_id=detector_id,
+    segmenter_id=segmenter_id
+)
+
+"""Let's visualize the results:"""
+
+plot_detections(image_array, detections, OUT_FILENAME)
+
+plot_detections_plotly(image_array, detections)
+
+-----new_file-----
+ permathings/scripts/segmentation/SAM/workspace: 3 file(s) skipped in this folder (total size: 342.89 KB)
+
+-----new_file-----
+ permathings/scripts/segmentation/OpenAdapt/grab_weights.sh (506.00 B):
+THIS_DIR_PATH=$(dirname $(realpath $0))
+SCRIPTS_DIR_PATH=$(dirname $(dirname $THIS_DIR_PATH))
+PERMATHINGS_DIR_PATH=$(dirname $SCRIPTS_DIR_PATH)
+ML_PROJECT_DIR_PATH=$(dirname $PERMATHINGS_DIR_PATH)
+EPHEMERA_DIR_PATH=$ML_PROJECT_DIR_PATH/ephemera
+SHARED_CACHES_DIR_PATH=$EPHEMERA_DIR_PATH/shared_caches
+
+if [ ! -d $SHARED_CACHES_DIR_PATH ]; then
+    mkdir -p $SHARED_CACHES_DIR_PATH
+fi
+cd $SHARED_CACHES_DIR_PATH
+
+git lfs install
+git clone https://huggingface.co/xk-huang/segment-caption-anything-ollm3bv2-vg
+
+-----new_file-----
+ permathings/scripts/segmentation/OpenAdapt/run_docker.sh (1.18 KB):
+THIS_DOCKER_CONTAINER_NAME="transformers-openadapt"
+
+THIS_DIR_PATH=$(dirname $(realpath $0))
+SCRIPTS_DIR_PATH=$(dirname $(dirname $THIS_DIR_PATH))
+TEMPLATE_DIR_PATH=$SCRIPTS_DIR_PATH/tformers_template
+TEMPLATE_IMAGE_NAME="transformers-quantization-latest-gpu"
+PERMATHINGS_DIR_PATH=$(dirname $SCRIPTS_DIR_PATH)
+ML_PROJECT_DIR_PATH=$(dirname $PERMATHINGS_DIR_PATH)
+EPHEMERA_DIR_PATH=$ML_PROJECT_DIR_PATH/ephemera
+SHARED_CACHES_DIR_PATH=$EPHEMERA_DIR_PATH/shared_caches
+
 docker build -t $THIS_DOCKER_CONTAINER_NAME .
 
 if [ ! -d $SHARED_CACHES_DIR_PATH ]; then
@@ -684,238 +1298,95 @@ docker run --gpus all -it --rm \
 
 
 -----new_file-----
- /permathings/scripts/LLaVA-NeXT/workspace/run.sh (0.00 B):
+ permathings/scripts/segmentation/OpenAdapt: 1 file(s) skipped in this folder (total size: 431.00 B)
+
+-----new_file-----
+ permathings/scripts/segmentation/OpenAdapt/workspace/run.sh (0.00 B):
 
 
 -----new_file-----
- /permathings/scripts/OpenDevin/run.sh (639.00 B):
-OPENDEVIN_WORKSPACE=$(pwd)/workspace
-export WORKSPACE_BASE=$(pwd)/workspace
-docker run -it --rm \
-    --pull=always \
-    -e SANDBOX_USER_ID=$(id -u) \
-    -e PERSIST_SANDBOX="true" \
-    -e SSH_PASSWORD="temp_pass" \
-    -e WORKSPACE_MOUNT_PATH=$OPENDEVIN_WORKSPACE \
-    -v $OPENDEVIN_WORKSPACE:/opt/workspace_base \
-    -v /var/run/docker.sock:/var/run/docker.sock \
-    -p 3000:3000 \
-    --add-host host.docker.internal:host-gateway \
-    -e LLM_API_KEY="ollama" \
-    -e LLM_BASE_URL="http://host.docker.internal:11434" \
-    --name opendevin-app-$(date +%Y%m%d%H%M%S) \
-    ghcr.io/opendevin/opendevin:0.6
-
-#command-r-plus:104b-q2_K
-
------new_file-----
- /permathings/scripts/ebook_processing/Dockerfile (844.00 B):
-FROM nvidia/cuda:12.5.0-devel-ubuntu22.04
-
-ENV DEBIAN_FRONTEND=noninteractive
-
-RUN apt update
-RUN apt install -y git
-RUN apt install -y curl
-RUN apt install -y wget
-RUN apt install -y python3.10-full
-RUN apt install -y python3-pip python3-dev python3-venv
-RUN python3 -m pip install --no-cache-dir --upgrade pip
-RUN python3 -m pip install --no-cache-dir --upgrade mistral-inference
-RUN python3 -m pip install --no-cache-dir transformers huggingface_hub
-RUN python3 -m pip install --no-cache-dir outlines
-RUN python3 -m pip install --no-cache-dir pydantic
-RUN python3 -m pip install --no-cache-dir protobuf
-RUN python3 -m pip install --no-cache-dir accelerate
-RUN python3 -m pip install --no-cache-dir bitsandbytes
-RUN python3 -m pip install --no-cache-dir sentence-splitter
-RUN python3 -m pip install --no-cache-dir Unidecode
-WORKDIR /workspace
-
------new_file-----
- permathings/scripts/ebook_processing: 1 file(s) skipped in this folder (total size: 1.81 KB)
-
------new_file-----
- /permathings/scripts/ebook_processing/compile_synthetic_data.py (7.89 KB):
-import os, sys, json, random, string, re, time
-import itertools
-
-this_dir = os.path.dirname(os.path.abspath(__file__))
-scripts_dir = os.path.dirname(this_dir)
-permathings_dir = os.path.dirname(scripts_dir)
-root_dir = os.path.dirname(permathings_dir)
-ephemeral_dir = os.path.join(root_dir, "ephemera")
-outputs_dir = os.path.join(ephemeral_dir, "outputs")
-ebook_analyses_dir = os.path.join(outputs_dir, "ebook_analyses")
-swift_quotes_dir = os.path.join(ebook_analyses_dir, "swift_quotes")
-
-REPLACEMENTS = {
-    "\u2019": "'",
-    "\u2014": "-",
-    "\u201c": "\"",
-    "\u201d": "\"",
-    "\u2026": "...",
-    "\u2013": "-",
-    "\u00a0": " ",
-}
-
-SKIP_STRINGS=[
-    "_",
-    "normalized",
-    "\\n",
-    "Z - nds",
-    "G -- ",
-    "d - l",
-    "This quote",
-    "----",
-    "si- lent",
-]
-
-SKIP_IF_NOT_EQUALLY_IN_BOTH = [
-    "---",
-    "[",
-    "]",
-    "...",
-    "#",
-    ".--"
-]
-
-REMOVE_IF_STARTS_WITH = [
-    ", ",
-    "-- ",
-    ": ",
-    ". ",
-]
-
-all_chunks_data = {}
-all_sentence_pairs = {}
-for...[truncated middle 6076 characters]...  input()
-        continue
-    start_from_sentence = max(1,len(sentences_swift)-10)
-    for i in range(start_from_sentence, len(sentences_swift)):
-        this_sentence = sentences_plain[i]
-        this_context = sentences_plain[:i]
-        converted_to = sentences_swift[i]
-        if this_sentence == converted_to:
-            continue
-        if len(this_sentence) < 10 or len(converted_to) < 10:
-            continue
-        this_line = SPECIAL_TOKENS["CONTEXT"] + " " + " ".join(this_context) + " " + SPECIAL_TOKENS["TO_CONVERT"] + " " + this_sentence + " " + SPECIAL_TOKENS["CONVERTED"] + " " + converted_to
-        all_lines.append(this_line)
-
-for datum in all_lines:
-    sample_of_other_lines = [datum,] + random.sample(all_lines, 10)
-    full_string = (" ").join(sample_of_other_lines)
-    final_dataset.append(full_string)
-
-random.shuffle(final_dataset)
-#save the dataset
-with open(os.path.join(ebook_analyses_dir, "final_dataset.json"), "w") as f:
-    json.dump(final_dataset, f, indent=4)
-
------new_file-----
- /permathings/scripts/ebook_processing/compile_synthetic_data_original.py (9.98 KB):
-import os, sys, json, random, string, re, time
-
-this_dir = os.path.dirname(os.path.abspath(__file__))
-scripts_dir = os.path.dirname(this_dir)
-permathings_dir = os.path.dirname(scripts_dir)
-root_dir = os.path.dirname(permathings_dir)
-ephemeral_dir = os.path.join(root_dir, "ephemera")
-outputs_dir = os.path.join(ephemeral_dir, "outputs")
-ebook_analyses_dir = os.path.join(outputs_dir, "ebook_analyses")
-swift_quotes_dir = os.path.join(ebook_analyses_dir, "swift_quotes")
-
-REPLACEMENTS = {
-    "\u2019": "'",
-    "\u2014": "-",
-    "\u201c": "\"",
-    "\u201d": "\"",
-    "\u2026": "...",
-    "\u2013": "-",
-    "\u00a0": " ",
-}
-
-SKIP_STRINGS=[
-    "_",
-    "normalized",
-    "\\n",
-    "Z - nds",
-    "G -- ",
-    "d - l",
-    "This quote",
-    "----",
-    "si- lent",
-]
-
-SKIP_IF_NOT_EQUALLY_IN_BOTH = [
-    "---",
-    "[",
-    "]",
-    "...",
-    "#",
-    ".--"
-]
-
-REMOVE_IF_STARTS_WITH = [
-    ", ",
-    "-- ",
-    ": ",
-    ". ",
-]
-
-all_chunks_data = {}
-all_sentence_pairs = {}
-for file in os.listd...[truncated middle 8223 characters]...E_SWIFTIFIED_END
-        full_block = prior_block1 + " " + sentence_block + " " + post_block + " " + SWIFTIFICATION_START + " " + swift_sentence + " " + SWIFTIFICATION_END
-        final_dataset.append(full_block)
-        full_block = prior_block1 + " " + sentence_block + " " + SWIFTIFICATION_START + " " + swift_sentence + " " + SWIFTIFICATION_END
-        final_dataset.append(full_block)
-        if prior_block1 != prior_block2:
-            full_block = prior_block2 + " " + sentence_block + " " + post_block + " " + SWIFTIFICATION_START + " " + swift_sentence + " " + SWIFTIFICATION_END
-            final_dataset.append(full_block)
-            full_block = prior_block2 + " " + sentence_block + " " + SWIFTIFICATION_START + " " + swift_sentence + " " + SWIFTIFICATION_END
-            final_dataset.append(full_block)
-            
-
-random.shuffle(final_dataset)
-#save the dataset
-with open(os.path.join(ebook_analyses_dir, "final_dataset.json"), "w") as f:
-    json.dump(final_dataset, f, indent=4)
-
------new_file-----
- /permathings/scripts/ebook_processing/convert_to_text.sh (1.03 KB):
+ permathings/scripts/segmentation/segment-caption-anything/grab_weights.sh (506.00 B):
 THIS_DIR_PATH=$(dirname $(realpath $0))
-SCRIPTS_DIR_PATH=$(dirname $THIS_DIR_PATH)
+SCRIPTS_DIR_PATH=$(dirname $(dirname $THIS_DIR_PATH))
 PERMATHINGS_DIR_PATH=$(dirname $SCRIPTS_DIR_PATH)
 ML_PROJECT_DIR_PATH=$(dirname $PERMATHINGS_DIR_PATH)
 EPHEMERA_DIR_PATH=$ML_PROJECT_DIR_PATH/ephemera
-INPUTS_DIR_PATH=$EPHEMERA_DIR_PATH/inputs
-INPUT_EBOOKS_DIR_PATH=$INPUTS_DIR_PATH/ebooks
-if [ ! -d $INPUT_EBOOKS_DIR_PATH ]; then
-    mkdir -p $INPUT_EBOOKS_DIR_PATH
+SHARED_CACHES_DIR_PATH=$EPHEMERA_DIR_PATH/shared_caches
+
+if [ ! -d $SHARED_CACHES_DIR_PATH ]; then
+    mkdir -p $SHARED_CACHES_DIR_PATH
 fi
+cd $SHARED_CACHES_DIR_PATH
 
-for INPUT_EBOOK_PATH in $INPUT_EBOOKS_DIR_PATH/*.azw; do
-    OUTPUT_EBOOK_PATH=$(echo $INPUT_EBOOK_PATH | sed 's/\.azw$/\.txt/')
-    if [ -f $OUTPUT_EBOOK_PATH ]; then
-        continue
-    fi
-    ebook-convert $INPUT_EBOOK_PATH $OUTPUT_EBOOK_PATH --enable-heuristics --replace-scene-breaks SCENE__BREAK__SCENE__BREAK
-done
-
-
-for INPUT_EBOOK_PATH in $INPUT_EBOOKS_DIR_PATH/*.epub; do
-    OUTPUT_EBOOK_PATH=$(echo $INPUT_EBOOK_PATH | sed 's/\.epub$/\.txt/')
-    if [ -f $OUTPUT_EBOOK_PATH ]; then
-        continue
-    fi
-    ebook-convert $INPUT_EBOOK_PATH $OUTPUT_EBOOK_PATH --enable-heuristics --replace-scene-breaks SCENE__BREAK__SCENE__BREAK
-done
+git lfs install
+git clone https://huggingface.co/xk-huang/segment-caption-anything-ollm3bv2-vg
 
 -----new_file-----
- /permathings/scripts/ebook_processing/run_docker.sh (1.81 KB):
-THIS_DOCKER_CONTAINER_NAME="transformers-ebook-processing"
+ permathings/scripts/segmentation/segment-caption-anything/run_docker.sh (1.35 KB):
+THIS_DOCKER_CONTAINER_NAME="transformers-for-captioning-sam"
+
+THIS_DIR_PATH=$(dirname $(realpath $0))
+SCRIPTS_DIR_PATH=$(dirname $(dirname $THIS_DIR_PATH))
+TEMPLATE_DIR_PATH=$SCRIPTS_DIR_PATH/tformers_template
+TEMPLATE_IMAGE_NAME="transformers-quantization-latest-gpu"
+PERMATHINGS_DIR_PATH=$(dirname $SCRIPTS_DIR_PATH)
+ML_PROJECT_DIR_PATH=$(dirname $PERMATHINGS_DIR_PATH)
+EPHEMERA_DIR_PATH=$ML_PROJECT_DIR_PATH/ephemera
+SHARED_CACHES_DIR_PATH=$EPHEMERA_DIR_PATH/shared_caches
+
+docker build -t $TEMPLATE_IMAGE_NAME $TEMPLATE_DIR_PATH
+docker build -t $THIS_DOCKER_CONTAINER_NAME .
+
+if [ ! -d $SHARED_CACHES_DIR_PATH ]; then
+    mkdir -p $SHARED_CACHES_DIR_PATH
+fi
+
+THIS_CACHE=$SHARED_CACHES_DIR_PATH/$THIS_DOCKER_CONTAINER_NAME
+
+if [ ! -d $THIS_CACHE ]; then
+    mkdir -p $THIS_CACHE
+fi
+
+WORKDIR_PATH=$THIS_DIR_PATH/workspace
+
+if [ ! -d $WORKDIR_PATH ]; then
+    mkdir -p $WORKDIR_PATH
+fi
+
+docker kill $THIS_DOCKER_CONTAINER_NAME
+docker rm $THIS_DOCKER_CONTAINER_NAME
+sleep 2
+docker kill $THIS_DOCKER_CONTAINER_NAME
+docker rm $THIS_DOCKER_CONTAINER_NAME
+sleep 2
+
+CKPTS_DIR_PATH=$SHARED_CACHES_DIR_PATH/segment-caption-anything-ollm3bv2-vg
+
+docker run --gpus all -it --rm \
+    --name $THIS_DOCKER_CONTAINER_NAME \
+    -v $THIS_CACHE:/root/.cache \
+    -v $WORKDIR_PATH:/workspace \
+    -v $CKPTS_DIR_PATH:/ckpts \
+    -w /workspace \
+    -p 7860:7860 \
+    $THIS_DOCKER_CONTAINER_NAME
+
+
+-----new_file-----
+ permathings/scripts/segmentation/segment-caption-anything: 1 file(s) skipped in this folder (total size: 540.00 B)
+
+-----new_file-----
+ permathings/scripts/segmentation/segment-caption-anything/workspace/run.sh (256.00 B):
+CKPT_PATH=/ckpts
+cd /app/segment-caption-anything
+python scripts/apps/sca_app.py \
++model=base_sca_multitask_v2 \
+model.model_name_or_path=$CKPT_PATH \
+model.lm_head_model_name_or_path=$(python scripts/tools/get_sub_model_name_from_ckpt.py $CKPT_PATH "lm")
+
+-----new_file-----
+ permathings/scripts/vllm/run_docker_api_server.sh (1.33 KB):
+#!/bin/bash
 
 THIS_DIR_PATH=$(dirname $(realpath $0))
 SCRIPTS_DIR_PATH=$(dirname $THIS_DIR_PATH)
@@ -925,398 +1396,162 @@ ML_PROJECT_DIR_PATH=$(dirname $PERMATHINGS_DIR_PATH)
 EPHEMERA_DIR_PATH=$ML_PROJECT_DIR_PATH/ephemera
 INPUTS_DIR_PATH=$EPHEMERA_DIR_PATH/inputs
 OUTPUTS_DIR_PATH=$EPHEMERA_DIR_PATH/outputs
-EBOOK_ANALYSES_DIR_PATH=$OUTPUTS_DIR_PATH/ebook_analyses
-INPUT_EBOOKS_DIR_PATH=$INPUTS_DIR_PATH/ebooks
 SHARED_CACHES_DIR_PATH=$EPHEMERA_DIR_PATH/shared_caches
-SECRETS_FILE_PATH=$EPHEMERA_DIR_PATH/secrets.json
+HF_CACHE_FOLDER_PATH=$SHARED_CACHES_DIR_PATH/huggingface
+VLLM_REPO_CACHE_PATH=$SHARED_CACHES_DIR_PATH/vllm
 
-HWID=$(hwid | cut -d ' ' -f 2)
-
-if [ ! -d $OUTPUTS_DIR_PATH ]; then
-    mkdir -p $OUTPUTS_DIR_PATH
+if [ ! -f $EPHEMERA_DIR_PATH/secrets.json ]; then
+    echo "Secrets file not found. Running init_secrets.sh..."
+    $PERMATHINGS_DIR_PATH/scripts/utils/init_secrets.sh
 fi
-if [ ! -f $EBOOK_ANALYSES_DIR_PATH ]; then
-    mkdir -p $EBOOK_ANALYSES_DIR_PATH
+
+if [ ! -d $SHARED_CACHES_DIR_PATH ]; then
+    mkdir -p $SHARED_CACHES_DIR_PATH
+fi
+if [ ! -d $HF_CACHE_FOLDER_PATH ]; then
+    mkdir -p $HF_CACHE_FOLDER_PATH
 fi
 
 cd $LIBS_DIR_PATH
-python3 -c "from secretary import get_secret; n=get_secret('HF_TOKEN')"
+HF_TOKEN=$(python3 -c "from secretary import get_secret; print(get_secret('HF_TOKEN'))")
+
+cd $VLLM_REPO_CACHE_PATH
+
+docker run --rm -it \
+    -v $HF_CACHE_FOLDER_PATH:/root/.cache/huggingface \
+    --gpus='"device=0"' \
+    -p 8000:8000 \
+    --env "HUGGING_FACE_HUB_TOKEN=$HF_TOKEN" \
+    --ipc=host \
+    -m 40g \
+    outlines_vllm_server \
+    --guided-decoding-backend outlines \
+    --dtype auto \
+    --max-model-len 8000 \
+    --model mistralai/Mistral-7B-Instruct-v0.3
+
+-----new_file-----
+ permathings/scripts/vllm/build_docker_api_server.sh (1.15 KB):
+#!/bin/bash
+
+THIS_DIR_PATH=$(dirname $(realpath $0))
+SCRIPTS_DIR_PATH=$(dirname $THIS_DIR_PATH)
+PERMATHINGS_DIR_PATH=$(dirname $SCRIPTS_DIR_PATH)
+LIBS_DIR_PATH=$PERMATHINGS_DIR_PATH/libs
+ML_PROJECT_DIR_PATH=$(dirname $PERMATHINGS_DIR_PATH)
+EPHEMERA_DIR_PATH=$ML_PROJECT_DIR_PATH/ephemera
+INPUTS_DIR_PATH=$EPHEMERA_DIR_PATH/inputs
+OUTPUTS_DIR_PATH=$EPHEMERA_DIR_PATH/outputs
+SHARED_CACHES_DIR_PATH=$EPHEMERA_DIR_PATH/shared_caches
+VLLM_REPO_CACHE_PATH=$SHARED_CACHES_DIR_PATH/vllm
+
+cd $LIBS_DIR_PATH
+HF_TOKEN=$(python3 -c "from secretary import get_secret; print(get_secret('HF_TOKEN'))")
 cd $THIS_DIR_PATH
-
-HF_TOKEN_ENCRYPTED=$(jq -r '.HF_TOKEN' $SECRETS_FILE_PATH)
-
-HF_TOKEN=$(echo "$HF_TOKEN_ENCRYPTED" | openssl enc -d -aes-256-cbc -a -salt -pass pass:$HWID -pbkdf2)
-
-docker build -t $THIS_DOCKER_CONTAINER_NAME .
 
 if [ ! -d $SHARED_CACHES_DIR_PATH ]; then
     mkdir -p $SHARED_CACHES_DIR_PATH
 fi
 
-if [ ! -d $SHARED_CACHES_DIR_PATH/$THIS_DOCKER_CONTAINER_NAME ]; then
-    mkdir -p $SHARED_CACHES_DIR_PATH/$THIS_DOCKER_CONTAINER_NAME
+if [ ! -d $VLLM_REPO_CACHE_PATH ]; then
+    cd $SHARED_CACHES_DIR_PATH
+    git clone https://github.com/vllm-project/vllm
+    cd vllm
+    echo "typing-extensions" >> requirements-common.txt
+    #git checkout 919770957f26d71a5a6eda7a1a7443dfeb5ba0ee
+    sed -i 's/ENTRYPOINT \[/#ENTRYPOINT \[/g' Dockerfile
+    echo "ENTRYPOINT [\"python3\", \"-m\", \"outlines.serve.serve\"]" >> Dockerfile
 fi
 
-WORKDIR_PATH=$THIS_DIR_PATH/workspace
+cd $VLLM_REPO_CACHE_PATH
 
-if [ ! -d $WORKDIR_PATH ]; then
-    mkdir -p $WORKDIR_PATH
-fi
+docker build --build-arg RUN_WHEEL_CHECK=false -t outlines_vllm_server .
 
-#echo "HF_TOKEN $HF_TOKEN"
-docker run -it --gpus '"device=0"' --rm \
-    --name $THIS_DOCKER_CONTAINER_NAME \
-    -v $SHARED_CACHES_DIR_PATH/$THIS_DOCKER_CONTAINER_NAME:/ephemeral_cache \
-    -v $WORKDIR_PATH:/workspace \
-    -e HF_TOKEN=$HF_TOKEN \
-    -v $INPUT_EBOOKS_DIR_PATH:/ebooks \
-    -v $EBOOK_ANALYSES_DIR_PATH:/ebook_analyses \
-    -w /workspace \
-    $THIS_DOCKER_CONTAINER_NAME
+-----new_file-----
+ permathings/scripts/vllm/examples/recurrence_rule.py (15.51 KB):
+import os, sys, json, re, time, datetime, random, string, requests, hashlib, multiprocessing, traceback
+
+parent_dir = os.path.dirname(os.path.realpath(__file__))
+docker_data_dir = parent_dir
+
+
+def one_curl_request(prompt, max_tokens=4096,url="http://127.0.0.1:8000/generate",opts={}):
+    data = {
+        "prompt": prompt,
+        "max_tokens": max_tokens
+    }
+    data.update(opts)
+    headers = {
+        "Content-Type": "application/json"
+    }
+    response = requests.post(url, headers=headers, data=json.dumps(data))
+    return response.json()
+
+MISTRAL_FUNCTIONS = [
+    {
+        "type": "function",
+        "function": {
+            "name": "codify_recurrence",
+            "description": "Define the recurrence based on precise parameters",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "freq": {
+                        "type": "string",
+                        "enum": [
+                            "each_year",
+        ...[truncated middle 13879 characters]...il 2, 2024 and ending on December 10, 2024.",
+        "Create a recurrence rule that runs every other Monday starting on May 6, 2024 and ending on December 30, 2024.",
+        "Provide a recurrence rule that starts on January 5, 2024, at 2:00 PM, repeats weekly on Fridays and Mondays, and ends on December 27, 2024.",
+        "Create a recurrence rule that starts on January 6, 2024, at 3:00 PM, repeats weekly on Saturdays and Tuesdays, and ends on December 28, 2024.",
+        "Create a recurrence rule that runs every third Wednesday of the month starting on June 19, 2024 and ending on December 18, 2024.",
+        "Create a recurrence rule that runs every alternate Tuesday starting on July 2, 2024 and ending on December 24, 2024.",
+        "Provide a recurrence rule that starts on January 7, 2024, at 4:00 PM, repeats weekly on Sundays and Wednesdays, and ends on December 29, 2024."
+    ]
+
+    for instruction in list_of_instructions:
+        print(instruction)
+        runtest(instruction)
+
+-----new_file-----
+ permathings/scripts/tformers_template/Dockerfile (1.62 KB):
+FROM nvidia/cuda:12.1.0-cudnn8-devel-ubuntu20.04
+LABEL maintainer="Hugging Face"
+
+ARG DEBIAN_FRONTEND=noninteractive
+
+RUN apt update
+RUN apt install -y git libsndfile1-dev tesseract-ocr espeak-ng python3 python3-pip ffmpeg
+RUN python3 -m pip install --no-cache-dir --upgrade pip
+
+ARG REF=main
+RUN git clone https://github.com/huggingface/transformers && cd transformers && git checkout $REF
+
+# If set to nothing, will install the latest version
+ARG PYTORCH='2.4.0'
+ARG TORCH_VISION=''
+ARG TORCH_AUDIO=''
+# Example: `cu102`, `cu113`, etc.
+ARG CUDA='cu121'
+
+RUN [ ${#PYTORCH} -gt 0 ] && VERSION='torch=='$PYTORCH'.*' ||  VERSION='torch'; python3 -m pip install --no-cache-dir -U $VERSION --extra-index-url https://download.pytorch.org/whl/$CUDA
+RUN [ ${#TORCH_VISION} -gt 0 ] && VERSION='torchvision=='TORCH_VISION'.*' ||  VERSION='torchvision'; python3 -m pip install --no-cache-dir -U $VERSION --extra-index-url https://download.pytorch.org/whl/$CUDA
+RUN [ ${#TORCH_AUDIO} -gt 0 ] && VERSION='torchaudio=='TORCH_AUDIO'.*' ||  VERSION='torchaudio'; python3 -m pip install --no-cache-dir -U $VERSION --extra-index-url https://download.pytorch.org/whl/$CUDA
+
+RUN python3 -m pip install --no-cache-dir -e ./transformers[dev-torch,testing,video]
+
+RUN python3 -m pip uninstall -y tensorflow flax
+
+RUN python3 -m pip install --no-cache-dir git+https://github.com/facebookresearch/detectron2.git pytesseract
+RUN python3 -m pip install -U "itsdangerous<2.1.0"
+
+# When installing in editable mode, `transformers` is not recognized as a package.
+# this line must be added in order for python to be aware of transformers.
+RUN cd transformers && python3 setup.py develop
 
 
 -----new_file-----
- permathings/scripts/ebook_processing/workspace: 6 file(s) skipped in this folder (total size: 4.15 MB)
-
------new_file-----
- /permathings/scripts/ebook_processing/workspace/test_outlines_function_split.py (33.56 KB):
-import os
-
-#cuda visible devices= 0,1
-os.environ["CUDA_VISIBLE_DEVICES"] = "0,1"
-
-from pydantic import BaseModel
-import json
-import torch
-from transformers import AutoConfig, AutoModelForCausalLM, AutoTokenizer, logging
-from accelerate import init_empty_weights, infer_auto_device_map, load_checkpoint_and_dispatch
-torch.cuda.empty_cache()
-import outlines
-
-
-MODEL_DIR_PATH="/ephemeral_cache/mistral-inst-v03"
-
-
-function_json_string = '''{
-    "type": "function",
-    "function": {
-        "name": "define_section_splits",
-        "description": "Store data related to the sectional divisions of a text",
-        "parameters": {
-            "type": "object",
-            "properties": {
-                "section_divisions": {
-                    "type": "array",
-                    "items": {
-                        "type": "object",
-                        "properties": {
-                            "division_type": {
-                                "type": "string",
-                            ...[truncated middle 32307 characters]...om_config(config)
-
-print("infer auto device map")
-
-max_memory = {0:"4.5GiB", 1:"4.5GiB","cpu":"0GiB"}
-
-
-print("max_memory", max_memory)
-
-device_map = infer_auto_device_map(
-        model,
-        max_memory=max_memory,
-        no_split_module_classes=["MistralDecoderLayer"],
-        dtype=torch.int8
-    )
-
-#print(device_map)
-
-print("load checkpoint and dispatch")
-model = outlines.models.transformers(
-        MODEL_DIR_PATH,
-        #device="cuda",   #why... https://github.com/outlines-dev/outlines/blob/a987159860a6dd3a83d2f2376f36ab28ef45decd/outlines/models/transformers.py#L229
-        device=None,
-        model_kwargs={
-            "torch_dtype": torch.bfloat16,
-            "device_map": device_map,
-            "load_in_8bit": True,
-            "config":config,
-        },
-    )
-generator = outlines.generate.json(model, function_params_string)
-output = generator(prompt)
-
-print(json.dumps(output, indent=2))
-
-with open('example_output.json', 'w') as f:
-    json.dump(output, f, indent=2)
-
------new_file-----
- /permathings/scripts/ebook_processing/workspace/verify_swiftian.py (13.36 KB):
-import os, sys, re, json, random, time
-from unidecode import unidecode
-
-#cuda visible devices= 0,1
-#os.environ["CUDA_VISIBLE_DEVICES"] = "0,1"
-os.environ["CUDA_VISIBLE_DEVICES"] = "0"
-
-from pydantic import BaseModel
-import torch
-from transformers import AutoConfig, AutoModelForCausalLM, AutoTokenizer, logging
-from accelerate import init_empty_weights, infer_auto_device_map, load_checkpoint_and_dispatch
-torch.cuda.empty_cache()
-import outlines
-
-
-MODEL_DIR_PATH="/ephemeral_cache/mistral-inst-v03"
-LOAD_MODEL = True
-
-
-ebook_dir = "/ebooks"
-ebook_analysis_dir = "/ebook_analyses"
-swift_quotes_dir = ebook_analysis_dir+"/swift_quotes"
-if not os.path.exists(swift_quotes_dir):
-    os.makedirs(swift_quotes_dir)
-jswift_book = "jswift.txt"
-jswift_path = os.path.join(ebook_dir, jswift_book)
-jswift_string = open(jswift_path).read()
-
-scene_split_lines = jswift_string.split("SCENE__BREAK__SCENE__BREAK")
-
-reduced_lines = []
-for line in scene_split_lines:
-    if len(line) < 6000:
-        continue
-    lin...[truncated middle 11681 characters]...ator = outlines.generate.json(model, function_params_string)
-        tools_string="[AVAILABLE_TOOLS] ["+this_function_string+"][/AVAILABLE_TOOLS]"
-        instruction_string="[INST] "+ instruction + " [/INST]"
-        prompt = tools_string + instruction_string + "[TOOL_CALLS]"
-        output = generator(prompt)
-        try:
-            output_json = json.loads(output)
-        except:
-            output_json = output
-        data_to_save = {
-            "prompt_string": prompt,
-            "given_info_as_json_dict": given_info_as_json_dict,
-            "function": this_function_json,
-            "output": output,
-            "output_json": output_json,
-        }
-        with open(save_path, "w") as f:
-            json.dump(data_to_save, f, indent=4)
-        print("Saved chunk", k, "to", save_path)
-    except Exception as e:
-        #if keyboard interrupt, save progress
-        if "KeyboardInterrupt" in str(e):
-            break
-        print(e)
-        print("Error processing chunk", k)
-
------new_file-----
- permathings/scripts/finetuning: Empty folder or all files filtered
-
------new_file-----
- permathings/scripts/finetuning/simple_ft: 4 file(s) skipped in this folder (total size: 8.39 KB)
-
------new_file-----
- /permathings/scripts/finetuning/simple_ft/build.sh (26.00 B):
-docker build -t finetune .
-
------new_file-----
- /permathings/scripts/finetuning/simple_ft/merge_run.sh (846.00 B):
-THIS_DIR_PATH=$(dirname $(realpath $0))
-SCRIPTS_DIR_PATH=$(dirname $(dirname $THIS_DIR_PATH))
-PERMATHINGS_DIR_PATH=$(dirname $SCRIPTS_DIR_PATH)
-LIBRARIES_DIR_PATH=$PERMATHINGS_DIR_PATH/libs
-ML_PROJECT_DIR_PATH=$(dirname $PERMATHINGS_DIR_PATH)
-EPHEMERA_DIR_PATH=$ML_PROJECT_DIR_PATH/ephemera
-SHARED_CACHES_DIR_PATH=$EPHEMERA_DIR_PATH/shared_caches
-
-#execute print(get_secret("HF_TOKEN")) from secretary in python
-cd $LIBRARIES_DIR_PATH
-HF_TOKEN=$(python3 -c "from secretary import get_secret; print(get_secret('HF_TOKEN'))")
-cd $THIS_DIR_PATH
-
-HF_CACHE_FOLDER_PATH=$SHARED_CACHES_DIR_PATH/huggingface
-
-#docker run --rm --gpus '"device=0,1"' \
-docker run --rm --gpus '"device=1"' \
-    -e HF_TOKEN=$HF_TOKEN \
-    -v ./workdir:/workdir \
-    -w /workdir \
-    -v $HF_CACHE_FOLDER_PATH:/root/.cache/huggingface \
-    --name merge \
-    -it finetune 
-
------new_file-----
- permathings/scripts/finetuning/simple_ft/workdir: 4 file(s) skipped in this folder (total size: 11.75 MB)
-
------new_file-----
- /permathings/scripts/finetuning/simple_ft/workdir/finetune_depr.py (3.90 KB):
-import json, os
-import torch
-from datasets import Dataset
-from transformers import AutoTokenizer, AutoModelForCausalLM, TrainingArguments, Trainer, DataCollatorForLanguageModeling
-from peft import LoraConfig, get_peft_model,prepare_model_for_kbit_training
-from bitsandbytes.optim import Adam8bit
-import datetime
-import transformers
-import bitsandbytes
-from transformers.integrations import CodeCarbonCallback
-
-RESUME_IF_CKPT = False
-
-# Load dataset from JSON file
-#YYMMDD_support_test
-#TOKENIZERS_PARALLELISM=false
-os.environ["TOKENIZERS_PARALLELISM"] = "false"
-#disable warnings
-torch.autograd.set_detect_anomaly(True)
-transformers.logging.set_verbosity_error()
-
-import warnings
-warnings.filterwarnings('ignore')
-
-
-out_directory_name = datetime.datetime.now().strftime("%y%m%d") + "_support_bot/"
-training_data_path = "/dataset.json"
-
-with open(training_data_path, "r") as f:
-    train_data = json.load(f)
-
-full_dataset = Dataset.from_dict({"text": train_data})
-
-q4_config = transformers.BitsAndByte...[truncated middle 1996 characters]...    #gradient_checkpointing=True,
-    num_train_epochs=1,
-    learning_rate=learning_rate,
-    fp16=True,
-    #bf16=True,
-    logging_steps=1,
-    save_strategy="steps",
-    save_steps=40,
-    save_total_limit=10,
-    overwrite_output_dir=True,
-    evaluation_strategy= "no",
-)
-
-optimizer = Adam8bit(model.parameters(), lr=learning_rate)
-
-#clear cache before training
-torch.cuda.empty_cache()
-
-# Set up Trainer
-trainer = Trainer(
-    model=model,
-    args=training_args,
-    train_dataset=full_dataset,
-    data_collator=data_collator,
-)
-
-trainer.remove_callback(CodeCarbonCallback)
-
-resume_from_checkpoint = False
-if os.path.exists(ckpt_dir) and RESUME_IF_CKPT:
-    resume_from_checkpoint = True
-# Fine-tune model
-trainer.train(resume_from_checkpoint=resume_from_checkpoint)
-
-output_dir = os.path.join(out_dir_path, "output")
-
-# Save fine-tuned model
-
-try:
-    model.save_pretrained(output_dir)
-    tokenizer.save_pretrained(output_dir)
-except:
-    print("Error saving model and tokenizer")
-    pass
-
------new_file-----
- /permathings/scripts/finetuning/simple_ft/workdir/finetune_swift.py (4.94 KB):
-import json, os
-import torch
-from datasets import Dataset
-from transformers import AutoTokenizer, AutoModelForCausalLM, TrainingArguments, Trainer, DataCollatorForLanguageModeling
-from peft import LoraConfig, get_peft_model,prepare_model_for_kbit_training
-from bitsandbytes.optim import Adam8bit
-import datetime
-import transformers
-import bitsandbytes
-from transformers.integrations import CodeCarbonCallback
-
-import torch
-from transformers import AutoConfig, AutoModelForCausalLM, AutoTokenizer, logging
-from accelerate import init_empty_weights, infer_auto_device_map, load_checkpoint_and_dispatch
-
-RESUME_IF_CKPT = False
-
-# Load dataset from JSON file
-#YYMMDD_support_test
-#TOKENIZERS_PARALLELISM=false
-os.environ["TOKENIZERS_PARALLELISM"] = "false"
-#disable warnings
-torch.autograd.set_detect_anomaly(True)
-transformers.logging.set_verbosity_error()
-
-import warnings
-warnings.filterwarnings('ignore')
-
-
-out_directory_name = "/workdir/"+datetime.datetime.now().strftime("%y%m%d") + "_swift2/"
-trai...[truncated middle 3055 characters]...ting=True,
-    num_train_epochs=1,
-    learning_rate=learning_rate,
-    #fp16=True,
-    #bf16=True,
-    logging_steps=1,
-    save_strategy="steps",
-    save_steps=40,
-    save_total_limit=10,
-    overwrite_output_dir=True,
-    evaluation_strategy= "no",
-    report_to="none",
-)
-
-optimizer = Adam8bit(model.parameters(), lr=learning_rate)
-
-#clear cache before training
-torch.cuda.empty_cache()
-
-# Set up Trainer
-trainer = Trainer(
-    model=model,
-    args=training_args,
-    train_dataset=full_dataset,
-    data_collator=data_collator,
-)
-
-trainer.remove_callback(CodeCarbonCallback)
-
-resume_from_checkpoint = False
-if os.path.exists(ckpt_dir) and RESUME_IF_CKPT:
-    resume_from_checkpoint = True
-# Fine-tune model
-trainer.train(resume_from_checkpoint=resume_from_checkpoint)
-
-output_dir = os.path.join(out_dir_path, "output")
-
-# Save fine-tuned model
-
-try:
-    model.save_pretrained(output_dir)
-    tokenizer.save_pretrained(output_dir)
-except:
-    print("Error saving model and tokenizer")
-    pass
-
------new_file-----
- /permathings/scripts/langchain/Dockerfile (50.00 B):
-FROM transformers-quantization-latest-gpu
-
-RUN apt
-
------new_file-----
- /permathings/scripts/langchain/run.sh (1.08 KB):
+ permathings/scripts/tformers_template/run.sh (1.35 KB):
 THIS_DOCKER_CONTAINER_NAME="transformers-quantization-latest-gpu"
 
 THIS_DIR_PATH=$(dirname $(realpath $0))
@@ -1331,6 +1566,14 @@ if [ ! -f ./Dockerfile ]; then
 fi
 
 docker build -t $THIS_DOCKER_CONTAINER_NAME .
+
+#if [ ! "$(docker ps -q -f name=$THIS_DOCKER_CONTAINER_NAME)" == "" ]; then
+#    docker stop $THIS_DOCKER_CONTAINER_NAME
+#fi
+
+#if [ "$(docker ps -aq -f status=exited -f name=$THIS_DOCKER_CONTAINER_NAME)" ]; then
+#    docker rm $THIS_DOCKER_CONTAINER_NAME
+#fi
 
 if [ ! -d $SHARED_CACHES_DIR_PATH ]; then
     mkdir -p $SHARED_CACHES_DIR_PATH
@@ -1350,14 +1593,171 @@ docker run -it --gpus all --rm \
     --name $THIS_DOCKER_CONTAINER_NAME \
     -v $SHARED_CACHES_DIR_PATH/$THIS_DOCKER_CONTAINER_NAME:/root/.cache \
     -v $WORKDIR_PATH:/workspace \
+    -w /workspace \
     $THIS_DOCKER_CONTAINER_NAME
 
 
 -----new_file-----
- permathings/scripts/ollama: 1 file(s) skipped in this folder (total size: 2.15 KB)
+ permathings/scripts/ollama/run_llava.sh (641.00 B):
+THIS_MODEL="llava:34b-v1.6"
+
+#THIS_MODEL="llava-phi3"
+
+THIS_DIR_PATH=$(dirname $(realpath $0))
+SCRIPTS_DIR_PATH=$(dirname $THIS_DIR_PATH)
+PERMATHINGS_DIR_PATH=$(dirname $SCRIPTS_DIR_PATH)
+ML_PROJECT_DIR_PATH=$(dirname $PERMATHINGS_DIR_PATH)
+EPHEMERA_DIR_PATH=$ML_PROJECT_DIR_PATH/ephemera
+SHARED_CACHES_DIR_PATH=$EPHEMERA_DIR_PATH/shared_caches
+OLLAMA_CACHE_FOLDER_PATH=$SHARED_CACHES_DIR_PATH/ollama
+
+docker kill ollama
+docker rm ollama
+docker kill /ollama
+docker rm /ollama
+
+docker run -d --rm --gpus all \
+    -v $OLLAMA_CACHE_FOLDER_PATH:/root/.ollama -p 11434:11434 --name ollama ollama/ollama
+
+docker exec ollama ollama run $THIS_MODEL
 
 -----new_file-----
- /permathings/scripts/ollama/describe_screenshot.sh (495.00 B):
+ permathings/scripts/ollama/screenshot.png.json (2.45 KB):
+{
+  "model": "llava:34b-v1.6",
+  "created_at": "2024-06-11T14:56:49.970430224Z",
+  "response": "The image shows a webpage for a digital storage unit converter. It appears to be a tool that allows users to convert between different units of data storage, such as megabytes (MB), gigabytes (GB), terabytes (TB), and other related terms. The page includes instructions or tips on how to use the calculator, which are written in smaller text below the main conversion area. There's a button labeled \"Calculate\" that presumably performs the data storage conversion when clicked. The interface is simple and seems to be designed for quick calculations of digital storage sizes.",
+  "done": true,
+  "done_reason": "stop",
+  "context": [
+    1581,
+    59705,
+    622,
+    59593,
+    5858,
+    46826,
+    10707,
+    144,
+    59666,
+    59705,
+    622,
+    59593,
+    701,
+    46826,
+    144,
+    59666,
+    59705,
+    622,
+    59593,
+    5858,
+    46826,
+    3903,
+    144,
+    5697,
+    620,
+    594,
+    7...[truncated middle 507 characters]... 4267,
+    6382,
+    662,
+    9812,
+    59604,
+    97,
+    19267,
+    4267,
+    6382,
+    662,
+    6021,
+    59604,
+    97,
+    5019,
+    4267,
+    6382,
+    662,
+    25151,
+    59604,
+    97,
+    597,
+    924,
+    3691,
+    2818,
+    98,
+    707,
+    2943,
+    3849,
+    9745,
+    705,
+    7610,
+    632,
+    1040,
+    592,
+    1149,
+    567,
+    41675,
+    97,
+    878,
+    678,
+    3738,
+    594,
+    4908,
+    2641,
+    2723,
+    567,
+    1740,
+    13078,
+    2259,
+    98,
+    1889,
+    59610,
+    59575,
+    562,
+    6197,
+    15815,
+    1529,
+    13525,
+    16643,
+    59592,
+    639,
+    25946,
+    16331,
+    567,
+    1394,
+    6526,
+    13078,
+    950,
+    30663,
+    98,
+    707,
+    6780,
+    620,
+    2812,
+    597,
+    2833,
+    592,
+    629,
+    4060,
+    631,
+    2741,
+    9830,
+    593,
+    5439,
+    6526,
+    9167,
+    98
+  ],
+  "total_duration": 45721774587,
+  "load_duration": 3763409,
+  "prompt_eval_duration": 9237577000,
+  "eval_count": 126,
+  "eval_duration": 36451981000
+}
+
+
+-----new_file-----
+ permathings/scripts/ollama/screenshot.png (284.02 KB):
+(Binary file)
+
+-----new_file-----
+ permathings/scripts/ollama/describe_screenshot.sh (495.00 B):
 THIS_MODEL="llava:34b-v1.6"
 
 #THIS_MODEL="llava-phi3"
@@ -1370,7 +1770,161 @@ echo $response | jq . > screenshot.png.json
 
 
 -----new_file-----
- /permathings/scripts/ollama/example_output/0811wallpaper-7_1280.jpg.json (2.18 KB):
+ permathings/scripts/ollama/run_web_bundle.sh (708.00 B):
+THIS_DIR_PATH=$(dirname $(realpath $0))
+SCRIPTS_DIR_PATH=$(dirname $THIS_DIR_PATH)
+PERMATHINGS_DIR_PATH=$(dirname $SCRIPTS_DIR_PATH)
+ML_PROJECT_DIR_PATH=$(dirname $PERMATHINGS_DIR_PATH)
+EPHEMERA_DIR_PATH=$ML_PROJECT_DIR_PATH/ephemera
+SHARED_CACHES_DIR_PATH=$EPHEMERA_DIR_PATH/shared_caches
+OLLAMA_CACHE_FOLDER_PATH=$SHARED_CACHES_DIR_PATH/ollama
+OLLAMA_WEB_FOLDER_PATH=$SHARED_CACHES_DIR_PATH/ollama_web
+
+docker kill open-webui
+docker rm open-webui
+sleep 3
+
+docker run -d -p 3000:8080 --gpus '"device=0,1"' -v $OLLAMA_CACHE_FOLDER_PATH:/root/.ollama \
+    -v $OLLAMA_WEB_FOLDER_PATH:/app/backend/data --name open-webui --restart always \
+    -e OLLAMA_HOST=0.0.0.0 \
+    ghcr.io/open-webui/open-webui:ollama
+
+
+-----new_file-----
+ permathings/scripts/ollama: 1 file(s) skipped in this folder (total size: 2.15 KB)
+
+-----new_file-----
+ permathings/scripts/ollama/example_output/0825wallpaper-13_1280.jpg.json (2.52 KB):
+{
+  "model": "llava:34b-v1.6",
+  "created_at": "2024-06-10T17:50:25.533009278Z",
+  "response": "This picture shows a scenic winter landscape with a snow-covered ground and trees. In the center of the image, there is a large circular pool that appears to be steaming or emitting vapor, indicating that it's likely a hot spring despite the cold surrounding environment. The contrast between the frozen surroundings and the heat from the hot springs creates an interesting juxtaposition within the scene. There are also clouds visible in the sky above, adding to the dramatic effect of the image. The photo is credited to \"Gary Leland\" with a timestamp indicating it was taken on August 26, 2010.",
+  "done": true,
+  "done_reason": "stop",
+  "context": [
+    1581,
+    59705,
+    622,
+    59593,
+    5858,
+    46826,
+    10707,
+    144,
+    59666,
+    59705,
+    622,
+    59593,
+    701,
+    46826,
+    144,
+    59666,
+    59705,
+    622,
+    59593,
+    5858,
+    46826,
+    3903,
+    144,
+    5697,
+ ...[truncated middle 584 characters]...    15250,
+    639,
+    648,
+    59610,
+    59575,
+    3008,
+    562,
+    2987,
+    7268,
+    6285,
+    567,
+    5711,
+    9929,
+    3247,
+    98,
+    707,
+    6889,
+    1397,
+    567,
+    16402,
+    26199,
+    597,
+    567,
+    5332,
+    742,
+    567,
+    2987,
+    31903,
+    10626,
+    663,
+    3571,
+    9168,
+    852,
+    744,
+    30112,
+    2050,
+    567,
+    5753,
+    98,
+    1889,
+    678,
+    962,
+    16529,
+    9686,
+    594,
+    567,
+    8697,
+    2198,
+    97,
+    5952,
+    592,
+    567,
+    14868,
+    1646,
+    593,
+    567,
+    2728,
+    98,
+    707,
+    5631,
+    620,
+    31401,
+    592,
+    1529,
+    59628,
+    898,
+    750,
+    16409,
+    59592,
+    651,
+    562,
+    35541,
+    15250,
+    648,
+    717,
+    2955,
+    632,
+    5143,
+    59568,
+    79,
+    83,
+    97,
+    59568,
+    79,
+    77,
+    78,
+    77,
+    98
+  ],
+  "total_duration": 67881211735,
+  "load_duration": 3330098,
+  "prompt_eval_duration": 17181581000,
+  "eval_count": 133,
+  "eval_duration": 50627769000
+}
+
+
+-----new_file-----
+ permathings/scripts/ollama/example_output/0811wallpaper-7_1280.jpg.json (2.18 KB):
 {
   "model": "llava:34b-v1.6",
   "created_at": "2024-06-10T17:09:23.18214022Z",
@@ -1513,1002 +2067,43 @@ echo $response | jq . > screenshot.png.json
 
 
 -----new_file-----
- /permathings/scripts/ollama/example_output/0825wallpaper-13_1280.jpg.json (2.52 KB):
-{
-  "model": "llava:34b-v1.6",
-  "created_at": "2024-06-10T17:50:25.533009278Z",
-  "response": "This picture shows a scenic winter landscape with a snow-covered ground and trees. In the center of the image, there is a large circular pool that appears to be steaming or emitting vapor, indicating that it's likely a hot spring despite the cold surrounding environment. The contrast between the frozen surroundings and the heat from the hot springs creates an interesting juxtaposition within the scene. There are also clouds visible in the sky above, adding to the dramatic effect of the image. The photo is credited to \"Gary Leland\" with a timestamp indicating it was taken on August 26, 2010.",
-  "done": true,
-  "done_reason": "stop",
-  "context": [
-    1581,
-    59705,
-    622,
-    59593,
-    5858,
-    46826,
-    10707,
-    144,
-    59666,
-    59705,
-    622,
-    59593,
-    701,
-    46826,
-    144,
-    59666,
-    59705,
-    622,
-    59593,
-    5858,
-    46826,
-    3903,
-    144,
-    5697,
- ...[truncated middle 584 characters]...    15250,
-    639,
-    648,
-    59610,
-    59575,
-    3008,
-    562,
-    2987,
-    7268,
-    6285,
-    567,
-    5711,
-    9929,
-    3247,
-    98,
-    707,
-    6889,
-    1397,
-    567,
-    16402,
-    26199,
-    597,
-    567,
-    5332,
-    742,
-    567,
-    2987,
-    31903,
-    10626,
-    663,
-    3571,
-    9168,
-    852,
-    744,
-    30112,
-    2050,
-    567,
-    5753,
-    98,
-    1889,
-    678,
-    962,
-    16529,
-    9686,
-    594,
-    567,
-    8697,
-    2198,
-    97,
-    5952,
-    592,
-    567,
-    14868,
-    1646,
-    593,
-    567,
-    2728,
-    98,
-    707,
-    5631,
-    620,
-    31401,
-    592,
-    1529,
-    59628,
-    898,
-    750,
-    16409,
-    59592,
-    651,
-    562,
-    35541,
-    15250,
-    648,
-    717,
-    2955,
-    632,
-    5143,
-    59568,
-    79,
-    83,
-    97,
-    59568,
-    79,
-    77,
-    78,
-    77,
-    98
-  ],
-  "total_duration": 67881211735,
-  "load_duration": 3330098,
-  "prompt_eval_duration": 17181581000,
-  "eval_count": 133,
-  "eval_duration": 50627769000
-}
-
-
------new_file-----
  permathings/scripts/ollama/example_output: 73 file(s) skipped in this folder (total size: 159.79 KB)
 
 -----new_file-----
- /permathings/scripts/ollama/run_llava.sh (641.00 B):
-THIS_MODEL="llava:34b-v1.6"
-
-#THIS_MODEL="llava-phi3"
-
-THIS_DIR_PATH=$(dirname $(realpath $0))
-SCRIPTS_DIR_PATH=$(dirname $THIS_DIR_PATH)
-PERMATHINGS_DIR_PATH=$(dirname $SCRIPTS_DIR_PATH)
-ML_PROJECT_DIR_PATH=$(dirname $PERMATHINGS_DIR_PATH)
-EPHEMERA_DIR_PATH=$ML_PROJECT_DIR_PATH/ephemera
-SHARED_CACHES_DIR_PATH=$EPHEMERA_DIR_PATH/shared_caches
-OLLAMA_CACHE_FOLDER_PATH=$SHARED_CACHES_DIR_PATH/ollama
-
-docker kill ollama
-docker rm ollama
-docker kill /ollama
-docker rm /ollama
-
-docker run -d --rm --gpus all \
-    -v $OLLAMA_CACHE_FOLDER_PATH:/root/.ollama -p 11434:11434 --name ollama ollama/ollama
-
-docker exec ollama ollama run $THIS_MODEL
-
------new_file-----
- /permathings/scripts/ollama/run_web_bundle.sh (708.00 B):
-THIS_DIR_PATH=$(dirname $(realpath $0))
-SCRIPTS_DIR_PATH=$(dirname $THIS_DIR_PATH)
-PERMATHINGS_DIR_PATH=$(dirname $SCRIPTS_DIR_PATH)
-ML_PROJECT_DIR_PATH=$(dirname $PERMATHINGS_DIR_PATH)
-EPHEMERA_DIR_PATH=$ML_PROJECT_DIR_PATH/ephemera
-SHARED_CACHES_DIR_PATH=$EPHEMERA_DIR_PATH/shared_caches
-OLLAMA_CACHE_FOLDER_PATH=$SHARED_CACHES_DIR_PATH/ollama
-OLLAMA_WEB_FOLDER_PATH=$SHARED_CACHES_DIR_PATH/ollama_web
-
-docker kill open-webui
-docker rm open-webui
-sleep 3
-
-docker run -d -p 3000:8080 --gpus '"device=0,1"' -v $OLLAMA_CACHE_FOLDER_PATH:/root/.ollama \
-    -v $OLLAMA_WEB_FOLDER_PATH:/app/backend/data --name open-webui --restart always \
-    -e OLLAMA_HOST=0.0.0.0 \
-    ghcr.io/open-webui/open-webui:ollama
-
-
------new_file-----
- /permathings/scripts/ollama/screenshot.png (284.02 KB):
-(Binary file)
-
------new_file-----
- /permathings/scripts/ollama/screenshot.png.json (2.45 KB):
-{
-  "model": "llava:34b-v1.6",
-  "created_at": "2024-06-11T14:56:49.970430224Z",
-  "response": "The image shows a webpage for a digital storage unit converter. It appears to be a tool that allows users to convert between different units of data storage, such as megabytes (MB), gigabytes (GB), terabytes (TB), and other related terms. The page includes instructions or tips on how to use the calculator, which are written in smaller text below the main conversion area. There's a button labeled \"Calculate\" that presumably performs the data storage conversion when clicked. The interface is simple and seems to be designed for quick calculations of digital storage sizes.",
-  "done": true,
-  "done_reason": "stop",
-  "context": [
-    1581,
-    59705,
-    622,
-    59593,
-    5858,
-    46826,
-    10707,
-    144,
-    59666,
-    59705,
-    622,
-    59593,
-    701,
-    46826,
-    144,
-    59666,
-    59705,
-    622,
-    59593,
-    5858,
-    46826,
-    3903,
-    144,
-    5697,
-    620,
-    594,
-    7...[truncated middle 507 characters]... 4267,
-    6382,
-    662,
-    9812,
-    59604,
-    97,
-    19267,
-    4267,
-    6382,
-    662,
-    6021,
-    59604,
-    97,
-    5019,
-    4267,
-    6382,
-    662,
-    25151,
-    59604,
-    97,
-    597,
-    924,
-    3691,
-    2818,
-    98,
-    707,
-    2943,
-    3849,
-    9745,
-    705,
-    7610,
-    632,
-    1040,
-    592,
-    1149,
-    567,
-    41675,
-    97,
-    878,
-    678,
-    3738,
-    594,
-    4908,
-    2641,
-    2723,
-    567,
-    1740,
-    13078,
-    2259,
-    98,
-    1889,
-    59610,
-    59575,
-    562,
-    6197,
-    15815,
-    1529,
-    13525,
-    16643,
-    59592,
-    639,
-    25946,
-    16331,
-    567,
-    1394,
-    6526,
-    13078,
-    950,
-    30663,
-    98,
-    707,
-    6780,
-    620,
-    2812,
-    597,
-    2833,
-    592,
-    629,
-    4060,
-    631,
-    2741,
-    9830,
-    593,
-    5439,
-    6526,
-    9167,
-    98
-  ],
-  "total_duration": 45721774587,
-  "load_duration": 3763409,
-  "prompt_eval_duration": 9237577000,
-  "eval_count": 126,
-  "eval_duration": 36451981000
-}
-
-
------new_file-----
- permathings/scripts/segmentation: Empty folder or all files filtered
-
------new_file-----
- permathings/scripts/segmentation/OpenAdapt: 1 file(s) skipped in this folder (total size: 431.00 B)
-
------new_file-----
- /permathings/scripts/segmentation/OpenAdapt/grab_weights.sh (506.00 B):
-THIS_DIR_PATH=$(dirname $(realpath $0))
-SCRIPTS_DIR_PATH=$(dirname $(dirname $THIS_DIR_PATH))
-PERMATHINGS_DIR_PATH=$(dirname $SCRIPTS_DIR_PATH)
-ML_PROJECT_DIR_PATH=$(dirname $PERMATHINGS_DIR_PATH)
-EPHEMERA_DIR_PATH=$ML_PROJECT_DIR_PATH/ephemera
-SHARED_CACHES_DIR_PATH=$EPHEMERA_DIR_PATH/shared_caches
-
-if [ ! -d $SHARED_CACHES_DIR_PATH ]; then
-    mkdir -p $SHARED_CACHES_DIR_PATH
-fi
-cd $SHARED_CACHES_DIR_PATH
-
-git lfs install
-git clone https://huggingface.co/xk-huang/segment-caption-anything-ollm3bv2-vg
-
------new_file-----
- /permathings/scripts/segmentation/OpenAdapt/run_docker.sh (1.18 KB):
-THIS_DOCKER_CONTAINER_NAME="transformers-openadapt"
-
-THIS_DIR_PATH=$(dirname $(realpath $0))
-SCRIPTS_DIR_PATH=$(dirname $(dirname $THIS_DIR_PATH))
-TEMPLATE_DIR_PATH=$SCRIPTS_DIR_PATH/tformers_template
-TEMPLATE_IMAGE_NAME="transformers-quantization-latest-gpu"
-PERMATHINGS_DIR_PATH=$(dirname $SCRIPTS_DIR_PATH)
-ML_PROJECT_DIR_PATH=$(dirname $PERMATHINGS_DIR_PATH)
-EPHEMERA_DIR_PATH=$ML_PROJECT_DIR_PATH/ephemera
-SHARED_CACHES_DIR_PATH=$EPHEMERA_DIR_PATH/shared_caches
-
-docker build -t $THIS_DOCKER_CONTAINER_NAME .
-
-if [ ! -d $SHARED_CACHES_DIR_PATH ]; then
-    mkdir -p $SHARED_CACHES_DIR_PATH
-fi
-
-THIS_CACHE=$SHARED_CACHES_DIR_PATH/$THIS_DOCKER_CONTAINER_NAME
-
-if [ ! -d $THIS_CACHE ]; then
-    mkdir -p $THIS_CACHE
-fi
-
-WORKDIR_PATH=$THIS_DIR_PATH/workspace
-
-if [ ! -d $WORKDIR_PATH ]; then
-    mkdir -p $WORKDIR_PATH
-fi
-
-docker kill $THIS_DOCKER_CONTAINER_NAME
-docker rm $THIS_DOCKER_CONTAINER_NAME
-sleep 2
-docker kill $THIS_DOCKER_CONTAINER_NAME
-docker rm $THIS_DOCKER_CONTAINER_NAME
-sleep 2
-
-docker run --gpus all -it --rm \
-    --name $THIS_DOCKER_CONTAINER_NAME \
-    -v $THIS_CACHE:/root/.cache \
-    -v $WORKDIR_PATH:/workspace \
-    -w /workspace \
-    -p 7860:7860 \
-    $THIS_DOCKER_CONTAINER_NAME
-
-
------new_file-----
- /permathings/scripts/segmentation/OpenAdapt/workspace/run.sh (0.00 B):
-
-
------new_file-----
- /permathings/scripts/segmentation/SAM/Dockerfile (375.00 B):
-FROM transformers-quantization-latest-gpu
-
-# Install the necessary packages
-RUN apt update
-RUN apt install -y git
-RUN python3 -m pip install --no-cache-dir --upgrade pip
-RUN python3 -m pip install --no-cache-dir opencv-python
-RUN python3 -m pip install --no-cache-dir numpy
-RUN python3 -m pip install --no-cache-dir pillow
-RUN python3 -m pip install --no-cache-dir matplotlib
-
------new_file-----
- /permathings/scripts/segmentation/SAM/run.sh (1.23 KB):
-THIS_DOCKER_CONTAINER_NAME="transformers-for-sam"
-
-THIS_DIR_PATH=$(dirname $(realpath $0))
-SCRIPTS_DIR_PATH=$(dirname $(dirname $THIS_DIR_PATH))
-TEMPLATE_DIR_PATH=$SCRIPTS_DIR_PATH/tformers_template
-TEMPLATE_IMAGE_NAME="transformers-quantization-latest-gpu"
-PERMATHINGS_DIR_PATH=$(dirname $SCRIPTS_DIR_PATH)
-ML_PROJECT_DIR_PATH=$(dirname $PERMATHINGS_DIR_PATH)
-EPHEMERA_DIR_PATH=$ML_PROJECT_DIR_PATH/ephemera
-SHARED_CACHES_DIR_PATH=$EPHEMERA_DIR_PATH/shared_caches
-
-docker build -t $TEMPLATE_IMAGE_NAME $TEMPLATE_DIR_PATH
-docker build -t $THIS_DOCKER_CONTAINER_NAME .
-
-if [ ! -d $SHARED_CACHES_DIR_PATH ]; then
-    mkdir -p $SHARED_CACHES_DIR_PATH
-fi
-
-THIS_CACHE=$SHARED_CACHES_DIR_PATH/$THIS_DOCKER_CONTAINER_NAME
-
-if [ ! -d $THIS_CACHE ]; then
-    mkdir -p $THIS_CACHE
-fi
-
-WORKDIR_PATH=$THIS_DIR_PATH/workspace
-
-if [ ! -d $WORKDIR_PATH ]; then
-    mkdir -p $WORKDIR_PATH
-fi
-
-docker kill $THIS_DOCKER_CONTAINER_NAME
-docker rm $THIS_DOCKER_CONTAINER_NAME
-sleep 2
-docker kill $THIS_DOCKER_CONTAINER_NAME
-docker rm $THIS_DOCKER_CONTAINER_NAME
-sleep 2
-
-docker run --gpus all -it --rm \
-    --name $THIS_DOCKER_CONTAINER_NAME \
-    -v $THIS_CACHE:/root/.cache \
-    -v $WORKDIR_PATH:/workspace \
-    -w /workspace \
-    -p 8000:8000 \
-    $THIS_DOCKER_CONTAINER_NAME
-
-
------new_file-----
- permathings/scripts/segmentation/SAM/workspace: 3 file(s) skipped in this folder (total size: 342.89 KB)
-
------new_file-----
- /permathings/scripts/segmentation/SAM/workspace/out.png (108.55 KB):
-(Binary file)
-
------new_file-----
- /permathings/scripts/segmentation/SAM/workspace/test1.py (13.76 KB):
-IMAGE_URL = """https://ia802906.us.archive.org/13/items/artworks1/The%20Voyage%20of%20Life%20-%203%20-%20Manhood%20-%20Thomas%20Cole%2C%201842.jpg"""
-OUT_FILENAME = "mhood.jpg"
-LABELS = ["a man.", "a tree.", "the sea."]
-
-import random
-from dataclasses import dataclass
-from typing import Any, List, Dict, Optional, Union, Tuple
-
-import cv2
-import torch
-import requests
-import numpy as np
-from PIL import Image
-import plotly.express as px
-import matplotlib.pyplot as plt
-import plotly.graph_objects as go
-from transformers import AutoModelForMaskGeneration, AutoProcessor, pipeline
-
-#grab the image first, if it's not already in the directory
-import os
-import urllib.request
-if not os.path.exists(OUT_FILENAME):
-    urllib.request.urlretrieve(IMAGE_URL, OUT_FILENAME)
-
-@dataclass
-class BoundingBox:
-    xmin: int
-    ymin: int
-    xmax: int
-    ymax: int
-
-    @property
-    def xyxy(self) -> List[float]:
-        return [self.xmin, self.ymin, self.xmax, self.ymax]
-
-@dataclass
-class DetectionResult:
- ...[truncated middle 12091 characters]...etector_id)
-    detections = segment(image, detections, polygon_refinement, segmenter_id)
-
-    return np.array(image), detections
-
-"""### Inference
-
-Let's showcase Grounded SAM on our favorite image: the cats image from the COCO dataset.
-"""
-
-#image_url = "http://images.cocodataset.org/val2017/000000039769.jpg"
-#labels = ["a cat.", "a remote control."]
-image_url = OUT_FILENAME
-labels = LABELS
-threshold = 0.3
-
-noext_filename = ".".join(OUT_FILENAME.split(".")[:-1])
-extension = OUT_FILENAME.split(".")[-1]
-OUT_FILENAME = f"{noext_filename}_grounded.{extension}"
-
-detector_id = "IDEA-Research/grounding-dino-tiny"
-segmenter_id = "facebook/sam-vit-base"
-
-image_array, detections = grounded_segmentation(
-    image=image_url,
-    labels=labels,
-    threshold=threshold,
-    polygon_refinement=True,
-    detector_id=detector_id,
-    segmenter_id=segmenter_id
-)
-
-"""Let's visualize the results:"""
-
-plot_detections(image_array, detections, OUT_FILENAME)
-
-plot_detections_plotly(image_array, detections)
-
------new_file-----
- permathings/scripts/segmentation/segment-caption-anything: 1 file(s) skipped in this folder (total size: 540.00 B)
-
------new_file-----
- /permathings/scripts/segmentation/segment-caption-anything/grab_weights.sh (506.00 B):
-THIS_DIR_PATH=$(dirname $(realpath $0))
-SCRIPTS_DIR_PATH=$(dirname $(dirname $THIS_DIR_PATH))
-PERMATHINGS_DIR_PATH=$(dirname $SCRIPTS_DIR_PATH)
-ML_PROJECT_DIR_PATH=$(dirname $PERMATHINGS_DIR_PATH)
-EPHEMERA_DIR_PATH=$ML_PROJECT_DIR_PATH/ephemera
-SHARED_CACHES_DIR_PATH=$EPHEMERA_DIR_PATH/shared_caches
-
-if [ ! -d $SHARED_CACHES_DIR_PATH ]; then
-    mkdir -p $SHARED_CACHES_DIR_PATH
-fi
-cd $SHARED_CACHES_DIR_PATH
-
-git lfs install
-git clone https://huggingface.co/xk-huang/segment-caption-anything-ollm3bv2-vg
-
------new_file-----
- /permathings/scripts/segmentation/segment-caption-anything/run_docker.sh (1.35 KB):
-THIS_DOCKER_CONTAINER_NAME="transformers-for-captioning-sam"
-
-THIS_DIR_PATH=$(dirname $(realpath $0))
-SCRIPTS_DIR_PATH=$(dirname $(dirname $THIS_DIR_PATH))
-TEMPLATE_DIR_PATH=$SCRIPTS_DIR_PATH/tformers_template
-TEMPLATE_IMAGE_NAME="transformers-quantization-latest-gpu"
-PERMATHINGS_DIR_PATH=$(dirname $SCRIPTS_DIR_PATH)
-ML_PROJECT_DIR_PATH=$(dirname $PERMATHINGS_DIR_PATH)
-EPHEMERA_DIR_PATH=$ML_PROJECT_DIR_PATH/ephemera
-SHARED_CACHES_DIR_PATH=$EPHEMERA_DIR_PATH/shared_caches
-
-docker build -t $TEMPLATE_IMAGE_NAME $TEMPLATE_DIR_PATH
-docker build -t $THIS_DOCKER_CONTAINER_NAME .
-
-if [ ! -d $SHARED_CACHES_DIR_PATH ]; then
-    mkdir -p $SHARED_CACHES_DIR_PATH
-fi
-
-THIS_CACHE=$SHARED_CACHES_DIR_PATH/$THIS_DOCKER_CONTAINER_NAME
-
-if [ ! -d $THIS_CACHE ]; then
-    mkdir -p $THIS_CACHE
-fi
-
-WORKDIR_PATH=$THIS_DIR_PATH/workspace
-
-if [ ! -d $WORKDIR_PATH ]; then
-    mkdir -p $WORKDIR_PATH
-fi
-
-docker kill $THIS_DOCKER_CONTAINER_NAME
-docker rm $THIS_DOCKER_CONTAINER_NAME
-sleep 2
-docker kill $THIS_DOCKER_CONTAINER_NAME
-docker rm $THIS_DOCKER_CONTAINER_NAME
-sleep 2
-
-CKPTS_DIR_PATH=$SHARED_CACHES_DIR_PATH/segment-caption-anything-ollm3bv2-vg
-
-docker run --gpus all -it --rm \
-    --name $THIS_DOCKER_CONTAINER_NAME \
-    -v $THIS_CACHE:/root/.cache \
-    -v $WORKDIR_PATH:/workspace \
-    -v $CKPTS_DIR_PATH:/ckpts \
-    -w /workspace \
-    -p 7860:7860 \
-    $THIS_DOCKER_CONTAINER_NAME
-
-
------new_file-----
- /permathings/scripts/segmentation/segment-caption-anything/workspace/run.sh (256.00 B):
-CKPT_PATH=/ckpts
-cd /app/segment-caption-anything
-python scripts/apps/sca_app.py \
-+model=base_sca_multitask_v2 \
-model.model_name_or_path=$CKPT_PATH \
-model.lm_head_model_name_or_path=$(python scripts/tools/get_sub_model_name_from_ckpt.py $CKPT_PATH "lm")
-
------new_file-----
- permathings/scripts/segmentation/segment-track-anything: 1 file(s) skipped in this folder (total size: 374.00 B)
-
------new_file-----
- /permathings/scripts/segmentation/segment-track-anything/grab_weights.sh (582.00 B):
-THIS_DIR_PATH=$(dirname $(realpath $0))
-SCRIPTS_DIR_PATH=$(dirname $(dirname $THIS_DIR_PATH))
-PERMATHINGS_DIR_PATH=$(dirname $SCRIPTS_DIR_PATH)
-ML_PROJECT_DIR_PATH=$(dirname $PERMATHINGS_DIR_PATH)
-EPHEMERA_DIR_PATH=$ML_PROJECT_DIR_PATH/ephemera
-SHARED_CACHES_DIR_PATH=$EPHEMERA_DIR_PATH/shared_caches
-
-if [ ! -d $SHARED_CACHES_DIR_PATH ]; then
-    mkdir -p $SHARED_CACHES_DIR_PATH
-fi
-cd $SHARED_CACHES_DIR_PATH
-
-git clone https://github.com/z-x-yang/Segment-and-Track-Anything.git
-
-cd Segment-and-Track-Anything
-
-#bash script/install.sh
-
-mkdir ./ckpt
-
-bash script/download_ckpt.sh
-
-
-
------new_file-----
- /permathings/scripts/segmentation/segment-track-anything/run_docker.sh (1.33 KB):
-THIS_DOCKER_CONTAINER_NAME="transformers-for-tracking-sam"
-
-THIS_DIR_PATH=$(dirname $(realpath $0))
-SCRIPTS_DIR_PATH=$(dirname $(dirname $THIS_DIR_PATH))
-TEMPLATE_DIR_PATH=$SCRIPTS_DIR_PATH/tformers_template
-TEMPLATE_IMAGE_NAME="transformers-quantization-latest-gpu"
-PERMATHINGS_DIR_PATH=$(dirname $SCRIPTS_DIR_PATH)
-ML_PROJECT_DIR_PATH=$(dirname $PERMATHINGS_DIR_PATH)
-EPHEMERA_DIR_PATH=$ML_PROJECT_DIR_PATH/ephemera
-SHARED_CACHES_DIR_PATH=$EPHEMERA_DIR_PATH/shared_caches
-
-docker build -t $TEMPLATE_IMAGE_NAME $TEMPLATE_DIR_PATH
-docker build -t $THIS_DOCKER_CONTAINER_NAME .
-
-if [ ! -d $SHARED_CACHES_DIR_PATH ]; then
-    mkdir -p $SHARED_CACHES_DIR_PATH
-fi
-
-THIS_CACHE=$SHARED_CACHES_DIR_PATH/$THIS_DOCKER_CONTAINER_NAME
-
-if [ ! -d $THIS_CACHE ]; then
-    mkdir -p $THIS_CACHE
-fi
-
-WORKDIR_PATH=$THIS_DIR_PATH/workspace
-
-if [ ! -d $WORKDIR_PATH ]; then
-    mkdir -p $WORKDIR_PATH
-fi
-
-docker kill $THIS_DOCKER_CONTAINER_NAME
-docker rm $THIS_DOCKER_CONTAINER_NAME
-sleep 2
-docker kill $THIS_DOCKER_CONTAINER_NAME
-docker rm $THIS_DOCKER_CONTAINER_NAME
-sleep 2
-
-REPO_PATH=$SHARED_CACHES_DIR_PATH/Segment-and-Track-Anything
-
-docker run --gpus all -it --rm \
-    --name $THIS_DOCKER_CONTAINER_NAME \
-    -v $THIS_CACHE:/root/.cache \
-    -v $WORKDIR_PATH:/workspace \
-    -v $REPO_PATH:/app \
-    -w /workspace \
-    -p 7860:7860 \
-    $THIS_DOCKER_CONTAINER_NAME
-
-
------new_file-----
- /permathings/scripts/stable_diffusion/init_auto1111.sh (1.63 KB):
-THIS_DIR_PATH=$(dirname $(realpath $0))
-SCRIPTS_DIR_PATH=$(dirname $THIS_DIR_PATH)
-PERMATHINGS_DIR_PATH=$(dirname $SCRIPTS_DIR_PATH)
-LIBRARIES_DIR_PATH=$PERMATHINGS_DIR_PATH/libs
-ML_PROJECT_DIR_PATH=$(dirname $PERMATHINGS_DIR_PATH)
-EPHEMERA_DIR_PATH=$ML_PROJECT_DIR_PATH/ephemera
-SHARED_CACHES_DIR_PATH=$EPHEMERA_DIR_PATH/shared_caches
-SDWUI_REPO_CACHE_PARENT=$SHARED_CACHES_DIR_PATH/stable_diffusion
-
-SDWUI_DOCKER_REPO_URL="https://github.com/AbdBarho/stable-diffusion-webui-docker/"
-
-#docker ps -a | grep "webui-docker" | awk '{print $1}' | xargs docker rm -f
-#docker images | grep "webui-docker" | awk '{print $3}' | xargs docker rmi -f
-
-if [ ! -d $EPHEMERA_DIR_PATH ]; then
-	mkdir $EPHEMERA_DIR_PATH
-fi
-if [ ! -d $SHARED_CACHES_DIR_PATH ]; then
-	mkdir $SHARED_CACHES_DIR_PATH
-fi
-if [ ! -d $SDWUI_REPO_CACHE_PARENT ]; then
-	mkdir $SDWUI_REPO_CACHE_PARENT
-fi
-cd $SDWUI_REPO_CACHE_PARENT
-if [ ! -d stable-diffusion-webui-docker ]; then
-	git clone $SDWUI_DOCKER_REPO_URL
-fi
-
-cd stable-diffusion-webui-docker
-
-git checkout 802d0bcd689e3a6fcdb56465c216caac01416816
-
-docker compose --profile download up --build
-
-sed -i 's/    image: sd-auto:78/#    image: sd-auto:78/g' docker-compose.yml
-
-sed -i 's/git reset --hard v1.9.4 \&\& \\/git reset --hard v1.10.0 \&\& \\/g' services/AUTOMATIC1111/Dockerfile
-
-if ! grep -q "typing_extensions" services/AUTOMATIC1111/requirements_versions.txt; then
-	sed -i 's/pip install -r requirements_versions.txt/pip3 install --upgrade typing_extensions \&\& \\\n  pip install -r requirements_versions.txt/g' services/AUTOMATIC1111/Dockerfile
-fi
-
-cd $SDWUI_REPO_CACHE_PARENT/stable-diffusion-webui-docker
-
-docker compose --profile auto up --build
-
------new_file-----
- /permathings/scripts/stable_diffusion/kill_auto1111.sh (696.00 B):
-THIS_DIR_PATH=$(dirname $(realpath $0))
-SCRIPTS_DIR_PATH=$(dirname $THIS_DIR_PATH)
-PERMATHINGS_DIR_PATH=$(dirname $SCRIPTS_DIR_PATH)
-LIBRARIES_DIR_PATH=$PERMATHINGS_DIR_PATH/libs
-ML_PROJECT_DIR_PATH=$(dirname $PERMATHINGS_DIR_PATH)
-EPHEMERA_DIR_PATH=$ML_PROJECT_DIR_PATH/ephemera
-SHARED_CACHES_DIR_PATH=$EPHEMERA_DIR_PATH/shared_caches
-SDWUI_REPO_CACHE_PARENT=$SHARED_CACHES_DIR_PATH/stable_diffusion
-
-cd $LIBRARIES_DIR_PATH
-HF_TOKEN=$(python3 -c "from secretary import get_secret; print(get_secret('HF_TOKEN'))")
-
-SDWUI_REPO_CACHE=$SDWUI_REPO_CACHE_PARENT/stable-diffusion-webui-docker
-cd $SDWUI_REPO_CACHE
-docker compose --profile auto down
-docker compose --profile comfy down
-cd $THIS_DIR_PATH
-
------new_file-----
- /permathings/scripts/stable_diffusion/run_auto1111.sh (2.45 KB):
-THIS_DIR_PATH=$(dirname $(realpath $0))
-SCRIPTS_DIR_PATH=$(dirname $THIS_DIR_PATH)
-PERMATHINGS_DIR_PATH=$(dirname $SCRIPTS_DIR_PATH)
-LIBRARIES_DIR_PATH=$PERMATHINGS_DIR_PATH/libs
-ML_PROJECT_DIR_PATH=$(dirname $PERMATHINGS_DIR_PATH)
-EPHEMERA_DIR_PATH=$ML_PROJECT_DIR_PATH/ephemera
-SHARED_CACHES_DIR_PATH=$EPHEMERA_DIR_PATH/shared_caches
-SDWUI_REPO_CACHE_PARENT=$SHARED_CACHES_DIR_PATH/stable_diffusion
-SDWUI_REPO_PATH=$SDWUI_REPO_CACHE_PARENT/stable-diffusion-webui-docker
-EXTENSIONS_DIR_PATH=$SDWUI_REPO_PATH/data/config/auto/extensions
-MODELS_DIR_PATH=$SDWUI_REPO_PATH/data/models
-CONFIG_JSON_PATH=$SDWUI_REPO_PATH/data/config/auto/config.json
-
-cd $LIBRARIES_DIR_PATH
-HF_TOKEN=$(python3 -c "from secretary import get_secret; print(get_secret('HF_TOKEN'))")
-
-SDWUI_REPO_CACHE=$SDWUI_REPO_CACHE_PARENT/stable-diffusion-webui-docker
-
-if [ $(stat -c "%U" $EXTENSIONS_DIR_PATH) != $USER ]; then
-    sudo chown -R $USER:$USER $EXTENSIONS_DIR_PATH -R
-fi
-
-cd $EXTENSIONS_DIR_PATH
-if [ ! -d sd-webui-lobe-the...[truncated middle 512 characters]...r
-
-if [ ! -f $CONFIG_JSON_PATH ]; then
-    echo "{}" > $CONFIG_JSON_PATH
-fi
-
-if [ $(stat -c "%U" $CONFIG_JSON_PATH) != $USER ]; then
-    sudo chown $USER:$USER $CONFIG_JSON_PATH
-fi
-
-API_KEY=$(jq -r '.custom_api_key // ""' $CONFIG_JSON_PATH)
-
-if [ -z "$API_KEY" ] || [ ${#API_KEY} -le 5 ]; then
-    read -p "Do you have a CivitAI API Key? (y/n): " HAS_KEY
-    if [ "$HAS_KEY" = "y" ]; then
-        read -p "Please enter your CivitAI API Key: " CIVITAI_API_KEY
-        if [ ${#CIVITAI_API_KEY} -gt 5 ]; then
-            jq --arg key "$CIVITAI_API_KEY" '.custom_api_key = $key' $CONFIG_JSON_PATH > tmp.$$.json
-            sudo rm $CONFIG_JSON_PATH
-            sudo mv tmp.$$.json $CONFIG_JSON_PATH
-        else
-            echo "The API key is too short. Skipping."
-        fi
-    else
-        echo "Continuing without CivitAI API Key."
-    fi
-fi
-
-if [ $(stat -c "%U" $CONFIG_JSON_PATH) != $USER ]; then
-    sudo chown $USER:$USER $CONFIG_JSON_PATH
-fi
-
-docker compose --profile auto up
-cd $THIS_DIR_PATH
-
------new_file-----
- /permathings/scripts/stable_diffusion/run_comfyUI_alt1.sh (608.00 B):
-THIS_DIR_PATH=$(dirname $(realpath $0))
-SCRIPTS_DIR_PATH=$(dirname $THIS_DIR_PATH)
-PERMATHINGS_DIR_PATH=$(dirname $SCRIPTS_DIR_PATH)
-LIBRARIES_DIR_PATH=$PERMATHINGS_DIR_PATH/libs
-ML_PROJECT_DIR_PATH=$(dirname $PERMATHINGS_DIR_PATH)
-EPHEMERA_DIR_PATH=$ML_PROJECT_DIR_PATH/ephemera
-SHARED_CACHES_DIR_PATH=$EPHEMERA_DIR_PATH/shared_caches
-COMFY_CACHE=$SHARED_CACHES_DIR_PATH/stable_diffusion/comfy
-if [ ! -d $COMFY_CACHE ]; then
-    mkdir -p $COMFY_CACHE
-fi
-
-docker run -it --rm \
-  --name comfyui \
-  --gpus all \
-  -p 8188:8188 \
-  -v $COMFY_CACHE:/home/runner \
-  -e CLI_ARGS="" \
-  yanwk/comfyui-boot:cu121
-
-
------new_file-----
- /permathings/scripts/stable_diffusion/run_comfyUI_alt2.sh (732.00 B):
-THIS_DIR_PATH=$(dirname $(realpath $0))
-SCRIPTS_DIR_PATH=$(dirname $THIS_DIR_PATH)
-PERMATHINGS_DIR_PATH=$(dirname $SCRIPTS_DIR_PATH)
-LIBRARIES_DIR_PATH=$PERMATHINGS_DIR_PATH/libs
-ML_PROJECT_DIR_PATH=$(dirname $PERMATHINGS_DIR_PATH)
-EPHEMERA_DIR_PATH=$ML_PROJECT_DIR_PATH/ephemera
-SHARED_CACHES_DIR_PATH=$EPHEMERA_DIR_PATH/shared_caches
-COMFY_REPO=$SHARED_CACHES_DIR_PATH/stable_diffusion/comfy_alt2
-if [ ! -d $COMFY_REPO ]; then
-    mkdir -p $COMFY_REPO
-fi
-#https://github.com/calhounpaul/ComfyUI-Docker
-if [ ! -d $COMFY_REPO/ComfyUI-Docker ]; then
-    git clone https://github.com/calhounpaul/ComfyUI-Docker.git $COMFY_REPO/ComfyUI-Docker
-fi
-cd $COMFY_REPO/ComfyUI-Docker/cu124-megapak
-
-docker compose up --build
-
-cd $THIS_DIR_PATH
-
------new_file-----
- /permathings/scripts/textgen_webui/build_docker.sh (1.91 KB):
-#!/bin/bash
-
-THIS_DIR_PATH=$(dirname $(realpath $0))
-SCRIPTS_DIR_PATH=$(dirname $THIS_DIR_PATH)
-PERMATHINGS_DIR_PATH=$(dirname $SCRIPTS_DIR_PATH)
-LIBS_DIR_PATH=$PERMATHINGS_DIR_PATH/libs
-ML_PROJECT_DIR_PATH=$(dirname $PERMATHINGS_DIR_PATH)
-EPHEMERA_DIR_PATH=$ML_PROJECT_DIR_PATH/ephemera
-INPUTS_DIR_PATH=$EPHEMERA_DIR_PATH/inputs
-OUTPUTS_DIR_PATH=$EPHEMERA_DIR_PATH/outputs
-EBOOK_ANALYSES_DIR_PATH=$OUTPUTS_DIR_PATH/ebook_analyses
-INPUT_EBOOKS_DIR_PATH=$INPUTS_DIR_PATH/ebooks
-SHARED_CACHES_DIR_PATH=$EPHEMERA_DIR_PATH/shared_caches
-SECRETS_FILE_PATH=$EPHEMERA_DIR_PATH/secrets.json
-
-cd $LIBS_DIR_PATH
-HF_TOKEN=$(python3 -c "from secretary import get_secret; print(get_secret('HF_TOKEN'))")
-cd $THIS_DIR_PATH
-
-# This script builds the vllm_server docker image
-TEXT_GET_WEBUI_CACHE_FOLDER_PATH=$SHARED_CACHES_DIR_PATH/tgwui
-if [ ! -d $TEXT_GET_WEBUI_CACHE_FOLDER_PATH ]; then
-    mkdir -p $TEXT_GET_WEBUI_CACHE_FOLDER_PATH
-fi
-
-cd $TEXT_GET_WEBUI_CACHE_FOLDER_PATH
-
-#if "vllm_server" dir is not present, create it
-if [ ! -d "tgwui_docker" ]; then
-    mkdir -p tgwui_docker
-fi
-cd tgwui_docker
-
-#remove text-generation-webui if it exists
-#if [ -d "text-generation-webui-docker" ]; then
-#    rm -rf text-generation-webui-docker
-#fi
-
-#if vllm dir is not present, clone it
-if [ ! -d "text-generation-webui" ]; then
-    git clone https://github.com/Atinoda/text-generation-webui-docker
-fi
-cd text-generation-webui-docker
-
-mv docker-compose.yml docker-compose.yml.bak
-mv docker-compose.build.yml docker-compose.yml
-
-sed -i 's/        - VERSION_TAG="v1.5"/        - VERSION_TAG="nightly"/g' docker-compose.yml
-sed -i 's/      target: default/      target: default-nvidia/g' docker-compose.yml
-
-#sed -i 's/                device_ids: \['0'\]/                device_ids: \['0', '1'\]/g' docker-compose.yml
-#HF_TOKEN=$(jq -r '.HF_TOKEN' $SECRETS_FILE_PATH) docker compose up --build
-#run compose build detach with secrets
-HF_TOKEN=$HF_TOKEN docker compose up --build -d
-
-
------new_file-----
- /permathings/scripts/textgen_webui/run.sh (875.00 B):
-#!/bin/bash
-
-THIS_DIR_PATH=$(dirname $(realpath $0))
-SCRIPTS_DIR_PATH=$(dirname $THIS_DIR_PATH)
-PERMATHINGS_DIR_PATH=$(dirname $SCRIPTS_DIR_PATH)
-LIBS_DIR_PATH=$PERMATHINGS_DIR_PATH/libs
-ML_PROJECT_DIR_PATH=$(dirname $PERMATHINGS_DIR_PATH)
-EPHEMERA_DIR_PATH=$ML_PROJECT_DIR_PATH/ephemera
-INPUTS_DIR_PATH=$EPHEMERA_DIR_PATH/inputs
-OUTPUTS_DIR_PATH=$EPHEMERA_DIR_PATH/outputs
-EBOOK_ANALYSES_DIR_PATH=$OUTPUTS_DIR_PATH/ebook_analyses
-INPUT_EBOOKS_DIR_PATH=$INPUTS_DIR_PATH/ebooks
-SHARED_CACHES_DIR_PATH=$EPHEMERA_DIR_PATH/shared_caches
-SECRETS_FILE_PATH=$EPHEMERA_DIR_PATH/secrets.json
-
-cd $LIBS_DIR_PATH
-HF_TOKEN=$(python3 -c "from secretary import get_secret; print(get_secret('HF_TOKEN'))")
-
-TEXT_GEN_WEBUI_FOLDER_PATH=$SHARED_CACHES_DIR_PATH/tgwui/tgwui_docker/text-generation-webui-docker
-
-cd $TEXT_GEN_WEBUI_FOLDER_PATH
-HF_TOKEN=$HF_TOKEN docker compose up -d
-# --build -d
-
------new_file-----
- /permathings/scripts/tformers_template/Dockerfile (2.76 KB):
-FROM nvidia/cuda:11.8.0-cudnn8-devel-ubuntu20.04
+ permathings/scripts/document_processing/Dockerfile (1.79 KB):
+FROM nvidia/cuda:12.1.0-cudnn8-devel-ubuntu20.04
 LABEL maintainer="Hugging Face"
 
 ARG DEBIAN_FRONTEND=noninteractive
 
-# Use login shell to read variables from `~/.profile` (to pass dynamic created variables between RUN commands)
-SHELL ["sh", "-lc"]
-
-# The following `ARG` are mainly used to specify the versions explicitly & directly in this docker file, and not meant
-# to be used as arguments for docker build (so far).
-
-ARG PYTORCH='2.2.1'
-# Example: `cu102`, `cu113`, etc.
-ARG CUDA='cu118'
-
 RUN apt update
-RUN apt install -y git libsndfile1-dev tesseract-ocr espeak-ng python python3-pip ffmpeg
+RUN apt install -y git libsndfile1-dev tesseract-ocr espeak-ng python3 python3-pip ffmpeg
 RUN python3 -m pip install --no-cache-dir --upgrade pip
 
 ARG REF=main
 RUN git clone https://github.com/huggingface/transformers && cd transformers && git checkout $REF
 
-RUN [ ${#PYTORCH} -gt 0 ] && VERSION='torch=='$PYTORCH'.*' ||  VERSION='torch'; echo "export VERSION='$VERSION'" >> ~/.profile
-RUN echo torch=$VERSION
-# `torchvision` and `torchaudio` should be installed along with `torch`, especial...[truncated middle 825 characters]...ng
-RUN python3 -m pip install --no-cache-dir git+https://github.com/huggingface/optimum@main#egg=optimum
+# If set to nothing, will install the latest version
+ARG PYTORCH='2.4.0'
+ARG TORCH_VISION=''
+ARG TORCH_AUDIO=''
+# Example: `cu102`, `cu113`, etc.
+ARG CUDA='cu121'
 
-# Add aqlm for quantization testing
-RUN python3 -m pip install --no-cache-dir aqlm[gpu]==1.0.2
+RUN [ ${#PYTORCH} -gt 0 ] && VERSION='torch=='$PYTORCH'.*' ||  VERSION='torch'; python3 -m pip install --no-cache-dir -U $VERSION --extra-index-url https://download.pytorch.org/whl/$CUDA
+RUN [ ${#TORCH_VISION} -gt 0 ] && VERSION='torchvision=='TORCH_VISION'.*' ||  VERSION='torchvision'; python3 -m pip install --no-cache-dir -U $VERSION --extra-index-url https://download.pytorch.org/whl/$CUDA
+RUN [ ${#TORCH_AUDIO} -gt 0 ] && VERSION='torchaudio=='TORCH_AUDIO'.*' ||  VERSION='torchaudio'; python3 -m pip install --no-cache-dir -U $VERSION --extra-index-url https://download.pytorch.org/whl/$CUDA
 
-# Add hqq for quantization testing
-RUN python3 -m pip install --no-cache-dir hqq
+RUN python3 -m pip install --no-cache-dir -e ./transformers[dev-torch,testing,video]
 
-# For GGUF tests
-RUN python3 -m pip install --no-cache-dir gguf
+RUN python3 -m pip uninstall -y tensorflow flax
 
-# Add autoawq for quantization testing
-# >=v0.2.3 needed for compatibility with torch 2.2.1
-RUN python3 -m pip install --no-cache-dir https://github.com/casper-hansen/AutoAWQ/releases/download/v0.2.3/autoawq-0.2.3+cu118-cp38-cp38-linux_x86_64.whl
-
-# Add quanto for quantization testing
-RUN python3 -m pip install --no-cache-dir quanto
-
-# Add eetq for quantization testing
-RUN python3 -m pip install git+https://github.com/NetEase-FuXi/EETQ.git
+RUN python3 -m pip install --no-cache-dir git+https://github.com/facebookresearch/detectron2.git pytesseract
+RUN python3 -m pip install -U flash_attn
+RUN python3 -m pip install -U bitsandbytes accelerate
+RUN apt install libvips-dev --no-install-recommends -y
+RUN python3 -m pip install -U wget pyvips
+RUN python3 -m pip install -U docker
 
 # When installing in editable mode, `transformers` is not recognized as a package.
 # this line must be added in order for python to be aware of transformers.
@@ -2516,8 +2111,65 @@ RUN cd transformers && python3 setup.py develop
 
 
 -----new_file-----
- /permathings/scripts/tformers_template/run.sh (1.35 KB):
-THIS_DOCKER_CONTAINER_NAME="transformers-quantization-latest-gpu"
+ permathings/scripts/document_processing/init_data.py (2.14 KB):
+from PIL import Image
+import requests, json, wget, zipfile, random, time, re
+from bs4 import BeautifulSoup
+import os
+import sys
+#import pyvips
+from urllib.parse import urlparse
+
+#import os, sys, json, re, time, datetime, random, string, docker, atexit
+
+this_dir = os.path.dirname(os.path.abspath(__file__))
+scripts_dir = os.path.dirname(this_dir)
+permathings_dir = os.path.dirname(scripts_dir)
+root_dir = os.path.dirname(permathings_dir)
+ephemeral_dir = os.path.join(root_dir, "ephemera")
+outputs_dir = os.path.join(ephemeral_dir, "outputs")
+cache_dir = os.path.join(ephemeral_dir, "shared_caches/transformers-gpu")
+cached_pdfs_and_images_dir = os.path.join(cache_dir, "cached_pdfs_and_images")
+
+libs_dir = os.path.join(permathings_dir, "libs")
+sys.path.append(libs_dir)
+
+from selenium_tools import init_selenium_docker, stop_and_remove_selenium_docker, init_selenium_driver_inside_docker
+
+THIS_FILE_PATH = os.path.abspath(__file__)
+THIS_FILE_DIR = os.path.dirname(THIS_FILE_PATH)
+
+def grab_page_sour...[truncated middle 191 characters]...ver.page_source
+    stop_and_remove_selenium_docker(container)
+    return source
+
+def obtain_ikea_pdf_urls():
+    source = grab_page_source("https://duckduckgo.com/?q=https%3A%2F%2Fwww.ikea.com%2Fus%2Fen%2Fassembly_instructions%2F&t=h_&ia=web")
+    soup = BeautifulSoup(source, "html.parser")
+    #find all elements with value data-testid="result-title-a"
+    urls = [a["href"] for a in soup.find_all("a", {"data-testid": "result-title-a"}) if a["href"].endswith(".pdf")]
+    return urls
+
+def download_ikea_pdfs():
+    urls = obtain_ikea_pdf_urls()
+    cache_path = cached_pdfs_and_images_dir
+    if not os.path.exists(cache_path):
+        os.makedirs(cache_path)
+    for url in urls:
+        filename = url.split("/")[-1]
+        pdf_path = os.path.join(cache_path, filename)
+        if not os.path.exists(pdf_path):
+            print(f"Downloading {filename}...")
+            wget.download(url, pdf_path)
+    return cache_path
+
+if __name__ == "__main__":
+    download_ikea_pdfs()
+    print("Done.")
+
+-----new_file-----
+ permathings/scripts/document_processing/run.sh (943.00 B):
+THIS_DOCKER_CONTAINER_NAME="transformers-gpu"
 
 THIS_DIR_PATH=$(dirname $(realpath $0))
 SCRIPTS_DIR_PATH=$(dirname $THIS_DIR_PATH)
@@ -2526,19 +2178,7 @@ ML_PROJECT_DIR_PATH=$(dirname $PERMATHINGS_DIR_PATH)
 EPHEMERA_DIR_PATH=$ML_PROJECT_DIR_PATH/ephemera
 SHARED_CACHES_DIR_PATH=$EPHEMERA_DIR_PATH/shared_caches
 
-if [ ! -f ./Dockerfile ]; then
-    wget https://raw.githubusercontent.com/huggingface/transformers/main/docker/transformers-quantization-latest-gpu/Dockerfile 
-fi
-
 docker build -t $THIS_DOCKER_CONTAINER_NAME .
-
-#if [ ! "$(docker ps -q -f name=$THIS_DOCKER_CONTAINER_NAME)" == "" ]; then
-#    docker stop $THIS_DOCKER_CONTAINER_NAME
-#fi
-
-#if [ "$(docker ps -aq -f status=exited -f name=$THIS_DOCKER_CONTAINER_NAME)" ]; then
-#    docker rm $THIS_DOCKER_CONTAINER_NAME
-#fi
 
 if [ ! -d $SHARED_CACHES_DIR_PATH ]; then
     mkdir -p $SHARED_CACHES_DIR_PATH
@@ -2563,8 +2203,423 @@ docker run -it --gpus all --rm \
 
 
 -----new_file-----
- /permathings/scripts/tts_webui/build_docker.sh (1.79 KB):
-#!/bin/bash
+ permathings/scripts/document_processing/workspace/run_manual_test.py (5.76 KB):
+from PIL import Image
+import requests, json, wget, zipfile, random, docker
+from transformers import AutoModelForCausalLM, AutoProcessor
+import os
+import sys
+import pyvips
+from urllib.parse import urlparse
+
+THIS_FILE_PATH = os.path.abspath(__file__)
+THIS_FILE_DIR = os.path.dirname(THIS_FILE_PATH)
+MAX_IMAGES_COUNT = 9
+
+def initialize_model_and_processor(model_id):
+    model = AutoModelForCausalLM.from_pretrained(
+        model_id,
+        device_map="cuda",
+        trust_remote_code=True,
+        torch_dtype="auto",
+        _attn_implementation='flash_attention_2',
+        load_in_8bit=True,
+    )
+    processor = AutoProcessor.from_pretrained(
+        model_id,
+        trust_remote_code=True,
+        num_crops=4
+    )
+    return model, processor
+
+def generate_response(model, processor, messages, images):
+    prompt = processor.tokenizer.apply_chat_template(
+        messages,
+        tokenize=False,
+        add_generation_prompt=True
+    )
+    inputs = processor(prompt, images, return_ten...[truncated middle 3902 characters]...IMAGES_COUNT:
+            images_count = len(images)
+            third_of_max=MAX_IMAGES_COUNT // 3
+            exact_middle_index = images_count // 2
+            first_images = images[:third_of_max]
+            middle_images = images[exact_middle_index - third_of_max//2-1:exact_middle_index + third_of_max//2-1]
+            last_images = images[-third_of_max:]
+            images = first_images + middle_images + last_images
+        prompt = """What is this instruction manual about?"""
+        messages = process_images_and_text(images, prompt)
+        model, processor = initialize_model_and_processor(model_id)
+        response = generate_response(model, processor, messages, images)
+        print("#" * 50)
+        print("####",path)
+        print("####",response)
+        print("#" * 50)
+        paths_and_replies.append({"manual_filename": path.split("/")[-1], "p35v_description": response})
+    json.dump(paths_and_replies, open("furniture_assembly_manual_descriptions.json", "w"), indent=2)
+
+-----new_file-----
+ permathings/scripts/OpenDevin/run.sh (639.00 B):
+OPENDEVIN_WORKSPACE=$(pwd)/workspace
+export WORKSPACE_BASE=$(pwd)/workspace
+docker run -it --rm \
+    --pull=always \
+    -e SANDBOX_USER_ID=$(id -u) \
+    -e PERSIST_SANDBOX="true" \
+    -e SSH_PASSWORD="temp_pass" \
+    -e WORKSPACE_MOUNT_PATH=$OPENDEVIN_WORKSPACE \
+    -v $OPENDEVIN_WORKSPACE:/opt/workspace_base \
+    -v /var/run/docker.sock:/var/run/docker.sock \
+    -p 3000:3000 \
+    --add-host host.docker.internal:host-gateway \
+    -e LLM_API_KEY="ollama" \
+    -e LLM_BASE_URL="http://host.docker.internal:11434" \
+    --name opendevin-app-$(date +%Y%m%d%H%M%S) \
+    ghcr.io/opendevin/opendevin:0.6
+
+#command-r-plus:104b-q2_K
+
+-----new_file-----
+ permathings/scripts/LLaVA-NeXT/run_docker.sh (1.24 KB):
+THIS_DOCKER_CONTAINER_NAME="transformers-llava-next"
+
+THIS_DIR_PATH=$(dirname $(realpath $0))
+SCRIPTS_DIR_PATH=$(dirname $(dirname $THIS_DIR_PATH))
+TEMPLATE_DIR_PATH=$SCRIPTS_DIR_PATH/tformers_template
+TEMPLATE_IMAGE_NAME="transformers-quantization-latest-gpu"
+PERMATHINGS_DIR_PATH=$(dirname $SCRIPTS_DIR_PATH)
+ML_PROJECT_DIR_PATH=$(dirname $PERMATHINGS_DIR_PATH)
+EPHEMERA_DIR_PATH=$ML_PROJECT_DIR_PATH/ephemera
+SHARED_CACHES_DIR_PATH=$EPHEMERA_DIR_PATH/shared_caches
+
+#docker build -t $TEMPLATE_IMAGE_NAME $TEMPLATE_DIR_PATH
+docker build -t $THIS_DOCKER_CONTAINER_NAME .
+
+if [ ! -d $SHARED_CACHES_DIR_PATH ]; then
+    mkdir -p $SHARED_CACHES_DIR_PATH
+fi
+
+THIS_CACHE=$SHARED_CACHES_DIR_PATH/$THIS_DOCKER_CONTAINER_NAME
+
+if [ ! -d $THIS_CACHE ]; then
+    mkdir -p $THIS_CACHE
+fi
+
+WORKDIR_PATH=$THIS_DIR_PATH/workspace
+
+if [ ! -d $WORKDIR_PATH ]; then
+    mkdir -p $WORKDIR_PATH
+fi
+
+docker kill $THIS_DOCKER_CONTAINER_NAME
+docker rm $THIS_DOCKER_CONTAINER_NAME
+sleep 2
+docker kill $THIS_DOCKER_CONTAINER_NAME
+docker rm $THIS_DOCKER_CONTAINER_NAME
+sleep 2
+
+docker run --gpus all -it --rm \
+    --name $THIS_DOCKER_CONTAINER_NAME \
+    -v $THIS_CACHE:/root/.cache \
+    -v $WORKDIR_PATH:/workspace \
+    -w /workspace \
+    -p 7860:7860 \
+    $THIS_DOCKER_CONTAINER_NAME
+
+
+-----new_file-----
+ permathings/scripts/LLaVA-NeXT/Dockerfile (806.00 B):
+FROM nvidia/cuda:12.5.0-devel-ubuntu22.04
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+RUN apt update
+RUN apt install -y git
+RUN apt install -y curl
+RUN apt install -y wget
+RUN apt install -y python3.10-full
+RUN apt install -y python3-pip python3-dev python3-venv
+RUN python3 -m pip install --no-cache-dir --upgrade pip
+RUN apt install -y tesseract-ocr libtesseract-dev
+
+WORKDIR /app
+RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.3/install.sh | bash
+RUN git clone https://github.com/OpenAdaptAI/OpenAdapt.git
+WORKDIR /app/OpenAdapt
+ENV PYTHONPATH "${PYTHONPATH}:/app/OpenAdapt"
+RUN python3 -m pip install --no-cache-dir poetry
+RUN poetry install
+RUN poetry run install-dashboard
+RUN python3 -m pip install --no-cache-dir .[all]
+WORKDIR /app/OpenAdapt/openadapt
+RUN alembic upgrade head
+RUN pytest
+
+-----new_file-----
+ permathings/scripts/LLaVA-NeXT/workspace/run.sh (0.00 B):
+
+
+-----new_file-----
+ permathings/scripts/langchain/Dockerfile (50.00 B):
+FROM transformers-quantization-latest-gpu
+
+RUN apt
+
+-----new_file-----
+ permathings/scripts/langchain/run.sh (1.08 KB):
+THIS_DOCKER_CONTAINER_NAME="transformers-quantization-latest-gpu"
+
+THIS_DIR_PATH=$(dirname $(realpath $0))
+SCRIPTS_DIR_PATH=$(dirname $THIS_DIR_PATH)
+PERMATHINGS_DIR_PATH=$(dirname $SCRIPTS_DIR_PATH)
+ML_PROJECT_DIR_PATH=$(dirname $PERMATHINGS_DIR_PATH)
+EPHEMERA_DIR_PATH=$ML_PROJECT_DIR_PATH/ephemera
+SHARED_CACHES_DIR_PATH=$EPHEMERA_DIR_PATH/shared_caches
+
+if [ ! -f ./Dockerfile ]; then
+    wget https://raw.githubusercontent.com/huggingface/transformers/main/docker/transformers-quantization-latest-gpu/Dockerfile 
+fi
+
+docker build -t $THIS_DOCKER_CONTAINER_NAME .
+
+if [ ! -d $SHARED_CACHES_DIR_PATH ]; then
+    mkdir -p $SHARED_CACHES_DIR_PATH
+fi
+
+if [ ! -d $SHARED_CACHES_DIR_PATH/$THIS_DOCKER_CONTAINER_NAME ]; then
+    mkdir -p $SHARED_CACHES_DIR_PATH/$THIS_DOCKER_CONTAINER_NAME
+fi
+
+WORKDIR_PATH=$THIS_DIR_PATH/workspace
+
+if [ ! -d $WORKDIR_PATH ]; then
+    mkdir -p $WORKDIR_PATH
+fi
+
+docker run -it --gpus all --rm \
+    --name $THIS_DOCKER_CONTAINER_NAME \
+    -v $SHARED_CACHES_DIR_PATH/$THIS_DOCKER_CONTAINER_NAME:/root/.cache \
+    -v $WORKDIR_PATH:/workspace \
+    $THIS_DOCKER_CONTAINER_NAME
+
+
+-----new_file-----
+ permathings/scripts/webscraping/run.py (491.00 B):
+import os, sys, json, re, time, datetime, random, string, docker, atexit
+
+this_dir = os.path.dirname(os.path.abspath(__file__))
+scripts_dir = os.path.dirname(this_dir)
+permathings_dir = os.path.dirname(scripts_dir)
+root_dir = os.path.dirname(permathings_dir)
+ephemeral_dir = os.path.join(root_dir, "ephemera")
+outputs_dir = os.path.join(ephemeral_dir, "outputs")
+libs_dir = os.path.join(permathings_dir, "libs")
+sys.path.append(libs_dir)
+
+from selenium_tools import test_tools
+
+test_tools()
+
+
+-----new_file-----
+ permathings/scripts/finetuning: Empty folder or all files filtered
+
+-----new_file-----
+ permathings/scripts/finetuning/simple_ft/merge_run.sh (846.00 B):
+THIS_DIR_PATH=$(dirname $(realpath $0))
+SCRIPTS_DIR_PATH=$(dirname $(dirname $THIS_DIR_PATH))
+PERMATHINGS_DIR_PATH=$(dirname $SCRIPTS_DIR_PATH)
+LIBRARIES_DIR_PATH=$PERMATHINGS_DIR_PATH/libs
+ML_PROJECT_DIR_PATH=$(dirname $PERMATHINGS_DIR_PATH)
+EPHEMERA_DIR_PATH=$ML_PROJECT_DIR_PATH/ephemera
+SHARED_CACHES_DIR_PATH=$EPHEMERA_DIR_PATH/shared_caches
+
+#execute print(get_secret("HF_TOKEN")) from secretary in python
+cd $LIBRARIES_DIR_PATH
+HF_TOKEN=$(python3 -c "from secretary import get_secret; print(get_secret('HF_TOKEN'))")
+cd $THIS_DIR_PATH
+
+HF_CACHE_FOLDER_PATH=$SHARED_CACHES_DIR_PATH/huggingface
+
+#docker run --rm --gpus '"device=0,1"' \
+docker run --rm --gpus '"device=1"' \
+    -e HF_TOKEN=$HF_TOKEN \
+    -v ./workdir:/workdir \
+    -w /workdir \
+    -v $HF_CACHE_FOLDER_PATH:/root/.cache/huggingface \
+    --name merge \
+    -it finetune 
+
+-----new_file-----
+ permathings/scripts/finetuning/simple_ft/build.sh (26.00 B):
+docker build -t finetune .
+
+-----new_file-----
+ permathings/scripts/finetuning/simple_ft: 4 file(s) skipped in this folder (total size: 8.39 KB)
+
+-----new_file-----
+ permathings/scripts/finetuning/simple_ft/workdir/finetune_swift.py (4.94 KB):
+import json, os
+import torch
+from datasets import Dataset
+from transformers import AutoTokenizer, AutoModelForCausalLM, TrainingArguments, Trainer, DataCollatorForLanguageModeling
+from peft import LoraConfig, get_peft_model,prepare_model_for_kbit_training
+from bitsandbytes.optim import Adam8bit
+import datetime
+import transformers
+import bitsandbytes
+from transformers.integrations import CodeCarbonCallback
+
+import torch
+from transformers import AutoConfig, AutoModelForCausalLM, AutoTokenizer, logging
+from accelerate import init_empty_weights, infer_auto_device_map, load_checkpoint_and_dispatch
+
+RESUME_IF_CKPT = False
+
+# Load dataset from JSON file
+#YYMMDD_support_test
+#TOKENIZERS_PARALLELISM=false
+os.environ["TOKENIZERS_PARALLELISM"] = "false"
+#disable warnings
+torch.autograd.set_detect_anomaly(True)
+transformers.logging.set_verbosity_error()
+
+import warnings
+warnings.filterwarnings('ignore')
+
+
+out_directory_name = "/workdir/"+datetime.datetime.now().strftime("%y%m%d") + "_swift2/"
+trai...[truncated middle 3055 characters]...ting=True,
+    num_train_epochs=1,
+    learning_rate=learning_rate,
+    #fp16=True,
+    #bf16=True,
+    logging_steps=1,
+    save_strategy="steps",
+    save_steps=40,
+    save_total_limit=10,
+    overwrite_output_dir=True,
+    evaluation_strategy= "no",
+    report_to="none",
+)
+
+optimizer = Adam8bit(model.parameters(), lr=learning_rate)
+
+#clear cache before training
+torch.cuda.empty_cache()
+
+# Set up Trainer
+trainer = Trainer(
+    model=model,
+    args=training_args,
+    train_dataset=full_dataset,
+    data_collator=data_collator,
+)
+
+trainer.remove_callback(CodeCarbonCallback)
+
+resume_from_checkpoint = False
+if os.path.exists(ckpt_dir) and RESUME_IF_CKPT:
+    resume_from_checkpoint = True
+# Fine-tune model
+trainer.train(resume_from_checkpoint=resume_from_checkpoint)
+
+output_dir = os.path.join(out_dir_path, "output")
+
+# Save fine-tuned model
+
+try:
+    model.save_pretrained(output_dir)
+    tokenizer.save_pretrained(output_dir)
+except:
+    print("Error saving model and tokenizer")
+    pass
+
+-----new_file-----
+ permathings/scripts/finetuning/simple_ft/workdir/finetune_depr.py (3.90 KB):
+import json, os
+import torch
+from datasets import Dataset
+from transformers import AutoTokenizer, AutoModelForCausalLM, TrainingArguments, Trainer, DataCollatorForLanguageModeling
+from peft import LoraConfig, get_peft_model,prepare_model_for_kbit_training
+from bitsandbytes.optim import Adam8bit
+import datetime
+import transformers
+import bitsandbytes
+from transformers.integrations import CodeCarbonCallback
+
+RESUME_IF_CKPT = False
+
+# Load dataset from JSON file
+#YYMMDD_support_test
+#TOKENIZERS_PARALLELISM=false
+os.environ["TOKENIZERS_PARALLELISM"] = "false"
+#disable warnings
+torch.autograd.set_detect_anomaly(True)
+transformers.logging.set_verbosity_error()
+
+import warnings
+warnings.filterwarnings('ignore')
+
+
+out_directory_name = datetime.datetime.now().strftime("%y%m%d") + "_support_bot/"
+training_data_path = "/dataset.json"
+
+with open(training_data_path, "r") as f:
+    train_data = json.load(f)
+
+full_dataset = Dataset.from_dict({"text": train_data})
+
+q4_config = transformers.BitsAndByte...[truncated middle 1996 characters]...    #gradient_checkpointing=True,
+    num_train_epochs=1,
+    learning_rate=learning_rate,
+    fp16=True,
+    #bf16=True,
+    logging_steps=1,
+    save_strategy="steps",
+    save_steps=40,
+    save_total_limit=10,
+    overwrite_output_dir=True,
+    evaluation_strategy= "no",
+)
+
+optimizer = Adam8bit(model.parameters(), lr=learning_rate)
+
+#clear cache before training
+torch.cuda.empty_cache()
+
+# Set up Trainer
+trainer = Trainer(
+    model=model,
+    args=training_args,
+    train_dataset=full_dataset,
+    data_collator=data_collator,
+)
+
+trainer.remove_callback(CodeCarbonCallback)
+
+resume_from_checkpoint = False
+if os.path.exists(ckpt_dir) and RESUME_IF_CKPT:
+    resume_from_checkpoint = True
+# Fine-tune model
+trainer.train(resume_from_checkpoint=resume_from_checkpoint)
+
+output_dir = os.path.join(out_dir_path, "output")
+
+# Save fine-tuned model
+
+try:
+    model.save_pretrained(output_dir)
+    tokenizer.save_pretrained(output_dir)
+except:
+    print("Error saving model and tokenizer")
+    pass
+
+-----new_file-----
+ permathings/scripts/finetuning/simple_ft/workdir: 4 file(s) skipped in this folder (total size: 11.75 MB)
+
+-----new_file-----
+ permathings/scripts/ebook_processing/run_docker.sh (1.81 KB):
+THIS_DOCKER_CONTAINER_NAME="transformers-ebook-processing"
 
 THIS_DIR_PATH=$(dirname $(realpath $0))
 SCRIPTS_DIR_PATH=$(dirname $THIS_DIR_PATH)
@@ -2581,245 +2636,53 @@ SECRETS_FILE_PATH=$EPHEMERA_DIR_PATH/secrets.json
 
 HWID=$(hwid | cut -d ' ' -f 2)
 
-cd $LIBS_DIR_PATH
-HF_TOKEN=$(python3 -c "from secretary import get_secret; print(get_secret('HF_TOKEN'))")
-cd $THIS_DIR_PATH
-
-# This script builds the vllm_server docker image
-TEXT_GET_WEBUI_CACHE_FOLDER_PATH=$SHARED_CACHES_DIR_PATH/ttswui
-if [ ! -d $TEXT_GET_WEBUI_CACHE_FOLDER_PATH ]; then
-    mkdir -p $TEXT_GET_WEBUI_CACHE_FOLDER_PATH
+if [ ! -d $OUTPUTS_DIR_PATH ]; then
+    mkdir -p $OUTPUTS_DIR_PATH
 fi
-
-cd $TEXT_GET_WEBUI_CACHE_FOLDER_PATH
-
-#remove text-generation-webui if it exists
-#if [ -d "text-generation-webui-docker" ]; then
-#    rm -rf text-generation-webui-docker
-#fi
-
-if [ ! -d "tts-generation-webui" ]; then
-    git clone https://github.com/rsxdalv/tts-generation-webui
+if [ ! -f $EBOOK_ANALYSES_DIR_PATH ]; then
+    mkdir -p $EBOOK_ANALYSES_DIR_PATH
 fi
-cd tts-generation-webui
-
-#mv docker-compose.yml docker-compose.yml.bak
-#mv docker-compose.build.yml docker-compose.yml
-
-#sed -i 's/        - VERSION_TAG="v1.5"/        - VERSION_TAG="nightly"/g' docker-compose.yml
-#sed -i 's/      target: default/      target: default-nvidia/g' docker-compose.yml
-
-#sed -i 's/                device_ids: \['0'\]/                device_ids: \['0', '1'\]/g' docker-compose.yml
-#HF_TOKEN=$(jq -r '.HF_TOKEN' $SECRETS_FILE_PATH) docker compose up --build
-#run compose build detach with secrets
-HF_TOKEN=$HF_TOKEN docker build -t rsxdalv/tts-generation-webui .
-
------new_file-----
- /permathings/scripts/tts_webui/run.sh (855.00 B):
-#!/bin/bash
-
-THIS_DIR_PATH=$(dirname $(realpath $0))
-SCRIPTS_DIR_PATH=$(dirname $THIS_DIR_PATH)
-PERMATHINGS_DIR_PATH=$(dirname $SCRIPTS_DIR_PATH)
-LIBS_DIR_PATH=$PERMATHINGS_DIR_PATH/libs
-ML_PROJECT_DIR_PATH=$(dirname $PERMATHINGS_DIR_PATH)
-EPHEMERA_DIR_PATH=$ML_PROJECT_DIR_PATH/ephemera
-INPUTS_DIR_PATH=$EPHEMERA_DIR_PATH/inputs
-OUTPUTS_DIR_PATH=$EPHEMERA_DIR_PATH/outputs
-EBOOK_ANALYSES_DIR_PATH=$OUTPUTS_DIR_PATH/ebook_analyses
-INPUT_EBOOKS_DIR_PATH=$INPUTS_DIR_PATH/ebooks
-SHARED_CACHES_DIR_PATH=$EPHEMERA_DIR_PATH/shared_caches
-SECRETS_FILE_PATH=$EPHEMERA_DIR_PATH/secrets.json
 
 cd $LIBS_DIR_PATH
-HF_TOKEN=$(python3 -c "from secretary import get_secret; print(get_secret('HF_TOKEN'))")
-
-TEXT_GEN_WEBUI_FOLDER_PATH=$SHARED_CACHES_DIR_PATH/ttswui/tts-generation-webui
-
-cd $TEXT_GEN_WEBUI_FOLDER_PATH
-HF_TOKEN=$HF_TOKEN docker compose up -d
-# --build -d
-
------new_file-----
- /permathings/scripts/utils/digest_git.sh (662.00 B):
-THIS_DIR_PATH=$(dirname $(realpath $0))
-SCRIPTS_DIR_PATH=$(dirname $THIS_DIR_PATH)
-PERMATHINGS_DIR_PATH=$(dirname $SCRIPTS_DIR_PATH)
-LIBRARIES_DIR_PATH=$PERMATHINGS_DIR_PATH/libs
-ML_PROJECT_DIR_PATH=$(dirname $PERMATHINGS_DIR_PATH)
-EPHEMERA_DIR_PATH=$ML_PROJECT_DIR_PATH/ephemera
-GIT_AGGREGATES_PATH=$EPHEMERA_DIR_PATH/git_aggregates
-
-if [ ! -d $EPHEMERA_DIR_PATH ]; then
-    mkdir $EPHEMERA_DIR_PATH
-fi
-if [ ! -d $GIT_AGGREGATES_PATH ]; then
-    mkdir $GIT_AGGREGATES_PATH
-fi
-
-if [ -z "$1" ]; then
-    REPO_URL="https://github.com/calhounpaul/ML"
-else
-    REPO_URL=$1
-fi
-
-cd $LIBRARIES_DIR_PATH
-python3 digest_git.py $REPO_URL --output_path $GIT_AGGREGATES_PATH
-
------new_file-----
- /permathings/scripts/utils/init_secrets.sh (464.00 B):
-THIS_DIR_PATH=$(dirname $(realpath $0))
-SCRIPTS_DIR_PATH=$(dirname $THIS_DIR_PATH)
-PERMATHINGS_DIR_PATH=$(dirname $SCRIPTS_DIR_PATH)
-LIBRARIES_DIR_PATH=$PERMATHINGS_DIR_PATH/libs
-ML_PROJECT_DIR_PATH=$(dirname $PERMATHINGS_DIR_PATH)
-EPHEMERA_DIR_PATH=$ML_PROJECT_DIR_PATH/ephemera
-
-if [ ! -d $EPHEMERA_DIR_PATH ]; then
-    mkdir $EPHEMERA_DIR_PATH
-fi
-
-cd $LIBRARIES_DIR_PATH
-python3 -c "from secretary import get_all_defaults; get_all_defaults()"
+python3 -c "from secretary import get_secret; n=get_secret('HF_TOKEN')"
 cd $THIS_DIR_PATH
 
+HF_TOKEN_ENCRYPTED=$(jq -r '.HF_TOKEN' $SECRETS_FILE_PATH)
 
------new_file-----
- /permathings/scripts/utils/set_power.sh (23.00 B):
-sudo nvidia-smi -pl 220
+HF_TOKEN=$(echo "$HF_TOKEN_ENCRYPTED" | openssl enc -d -aes-256-cbc -a -salt -pass pass:$HWID -pbkdf2)
 
------new_file-----
- /permathings/scripts/vllm/build_docker_api_server.sh (1.15 KB):
-#!/bin/bash
-
-THIS_DIR_PATH=$(dirname $(realpath $0))
-SCRIPTS_DIR_PATH=$(dirname $THIS_DIR_PATH)
-PERMATHINGS_DIR_PATH=$(dirname $SCRIPTS_DIR_PATH)
-LIBS_DIR_PATH=$PERMATHINGS_DIR_PATH/libs
-ML_PROJECT_DIR_PATH=$(dirname $PERMATHINGS_DIR_PATH)
-EPHEMERA_DIR_PATH=$ML_PROJECT_DIR_PATH/ephemera
-INPUTS_DIR_PATH=$EPHEMERA_DIR_PATH/inputs
-OUTPUTS_DIR_PATH=$EPHEMERA_DIR_PATH/outputs
-SHARED_CACHES_DIR_PATH=$EPHEMERA_DIR_PATH/shared_caches
-VLLM_REPO_CACHE_PATH=$SHARED_CACHES_DIR_PATH/vllm
-
-cd $LIBS_DIR_PATH
-HF_TOKEN=$(python3 -c "from secretary import get_secret; print(get_secret('HF_TOKEN'))")
-cd $THIS_DIR_PATH
+docker build -t $THIS_DOCKER_CONTAINER_NAME .
 
 if [ ! -d $SHARED_CACHES_DIR_PATH ]; then
     mkdir -p $SHARED_CACHES_DIR_PATH
 fi
 
-if [ ! -d $VLLM_REPO_CACHE_PATH ]; then
-    cd $SHARED_CACHES_DIR_PATH
-    git clone https://github.com/vllm-project/vllm
-    cd vllm
-    echo "typing-extensions" >> requirements-common.txt
-    #git checkout 919770957f26d71a5a6eda7a1a7443dfeb5ba0ee
-    sed -i 's/ENTRYPOINT \[/#ENTRYPOINT \[/g' Dockerfile
-    echo "ENTRYPOINT [\"python3\", \"-m\", \"outlines.serve.serve\"]" >> Dockerfile
+if [ ! -d $SHARED_CACHES_DIR_PATH/$THIS_DOCKER_CONTAINER_NAME ]; then
+    mkdir -p $SHARED_CACHES_DIR_PATH/$THIS_DOCKER_CONTAINER_NAME
 fi
 
-cd $VLLM_REPO_CACHE_PATH
+WORKDIR_PATH=$THIS_DIR_PATH/workspace
 
-docker build --build-arg RUN_WHEEL_CHECK=false -t outlines_vllm_server .
+if [ ! -d $WORKDIR_PATH ]; then
+    mkdir -p $WORKDIR_PATH
+fi
+
+#echo "HF_TOKEN $HF_TOKEN"
+docker run -it --gpus '"device=0"' --rm \
+    --name $THIS_DOCKER_CONTAINER_NAME \
+    -v $SHARED_CACHES_DIR_PATH/$THIS_DOCKER_CONTAINER_NAME:/ephemeral_cache \
+    -v $WORKDIR_PATH:/workspace \
+    -e HF_TOKEN=$HF_TOKEN \
+    -v $INPUT_EBOOKS_DIR_PATH:/ebooks \
+    -v $EBOOK_ANALYSES_DIR_PATH:/ebook_analyses \
+    -w /workspace \
+    $THIS_DOCKER_CONTAINER_NAME
+
 
 -----new_file-----
- /permathings/scripts/vllm/examples/recurrence_rule.py (15.51 KB):
-import os, sys, json, re, time, datetime, random, string, requests, hashlib, multiprocessing, traceback
-
-parent_dir = os.path.dirname(os.path.realpath(__file__))
-docker_data_dir = parent_dir
-
-
-def one_curl_request(prompt, max_tokens=4096,url="http://127.0.0.1:8000/generate",opts={}):
-    data = {
-        "prompt": prompt,
-        "max_tokens": max_tokens
-    }
-    data.update(opts)
-    headers = {
-        "Content-Type": "application/json"
-    }
-    response = requests.post(url, headers=headers, data=json.dumps(data))
-    return response.json()
-
-MISTRAL_FUNCTIONS = [
-    {
-        "type": "function",
-        "function": {
-            "name": "codify_recurrence",
-            "description": "Define the recurrence based on precise parameters",
-            "parameters": {
-                "type": "object",
-                "properties": {
-                    "freq": {
-                        "type": "string",
-                        "enum": [
-                            "each_year",
-        ...[truncated middle 13879 characters]...il 2, 2024 and ending on December 10, 2024.",
-        "Create a recurrence rule that runs every other Monday starting on May 6, 2024 and ending on December 30, 2024.",
-        "Provide a recurrence rule that starts on January 5, 2024, at 2:00 PM, repeats weekly on Fridays and Mondays, and ends on December 27, 2024.",
-        "Create a recurrence rule that starts on January 6, 2024, at 3:00 PM, repeats weekly on Saturdays and Tuesdays, and ends on December 28, 2024.",
-        "Create a recurrence rule that runs every third Wednesday of the month starting on June 19, 2024 and ending on December 18, 2024.",
-        "Create a recurrence rule that runs every alternate Tuesday starting on July 2, 2024 and ending on December 24, 2024.",
-        "Provide a recurrence rule that starts on January 7, 2024, at 4:00 PM, repeats weekly on Sundays and Wednesdays, and ends on December 29, 2024."
-    ]
-
-    for instruction in list_of_instructions:
-        print(instruction)
-        runtest(instruction)
-
------new_file-----
- /permathings/scripts/vllm/run_docker_api_server.sh (1.33 KB):
-#!/bin/bash
-
-THIS_DIR_PATH=$(dirname $(realpath $0))
-SCRIPTS_DIR_PATH=$(dirname $THIS_DIR_PATH)
-PERMATHINGS_DIR_PATH=$(dirname $SCRIPTS_DIR_PATH)
-LIBS_DIR_PATH=$PERMATHINGS_DIR_PATH/libs
-ML_PROJECT_DIR_PATH=$(dirname $PERMATHINGS_DIR_PATH)
-EPHEMERA_DIR_PATH=$ML_PROJECT_DIR_PATH/ephemera
-INPUTS_DIR_PATH=$EPHEMERA_DIR_PATH/inputs
-OUTPUTS_DIR_PATH=$EPHEMERA_DIR_PATH/outputs
-SHARED_CACHES_DIR_PATH=$EPHEMERA_DIR_PATH/shared_caches
-HF_CACHE_FOLDER_PATH=$SHARED_CACHES_DIR_PATH/huggingface
-VLLM_REPO_CACHE_PATH=$SHARED_CACHES_DIR_PATH/vllm
-
-if [ ! -f $EPHEMERA_DIR_PATH/secrets.json ]; then
-    echo "Secrets file not found. Running init_secrets.sh..."
-    $PERMATHINGS_DIR_PATH/scripts/utils/init_secrets.sh
-fi
-
-if [ ! -d $SHARED_CACHES_DIR_PATH ]; then
-    mkdir -p $SHARED_CACHES_DIR_PATH
-fi
-if [ ! -d $HF_CACHE_FOLDER_PATH ]; then
-    mkdir -p $HF_CACHE_FOLDER_PATH
-fi
-
-cd $LIBS_DIR_PATH
-HF_TOKEN=$(python3 -c "from secretary import get_secret; print(get_secret('HF_TOKEN'))")
-
-cd $VLLM_REPO_CACHE_PATH
-
-docker run --rm -it \
-    -v $HF_CACHE_FOLDER_PATH:/root/.cache/huggingface \
-    --gpus='"device=0"' \
-    -p 8000:8000 \
-    --env "HUGGING_FACE_HUB_TOKEN=$HF_TOKEN" \
-    --ipc=host \
-    -m 40g \
-    outlines_vllm_server \
-    --guided-decoding-backend outlines \
-    --dtype auto \
-    --max-model-len 8000 \
-    --model mistralai/Mistral-7B-Instruct-v0.3
-
------new_file-----
- /permathings/scripts/webscraping/run.py (491.00 B):
-import os, sys, json, re, time, datetime, random, string, docker, atexit
+ permathings/scripts/ebook_processing/compile_synthetic_data.py (7.89 KB):
+import os, sys, json, random, string, re, time
+import itertools
 
 this_dir = os.path.dirname(os.path.abspath(__file__))
 scripts_dir = os.path.dirname(this_dir)
@@ -2827,13 +2690,336 @@ permathings_dir = os.path.dirname(scripts_dir)
 root_dir = os.path.dirname(permathings_dir)
 ephemeral_dir = os.path.join(root_dir, "ephemera")
 outputs_dir = os.path.join(ephemeral_dir, "outputs")
-libs_dir = os.path.join(permathings_dir, "libs")
-sys.path.append(libs_dir)
+ebook_analyses_dir = os.path.join(outputs_dir, "ebook_analyses")
+swift_quotes_dir = os.path.join(ebook_analyses_dir, "swift_quotes")
 
-from selenium_tools import test_tools
+REPLACEMENTS = {
+    "\u2019": "'",
+    "\u2014": "-",
+    "\u201c": "\"",
+    "\u201d": "\"",
+    "\u2026": "...",
+    "\u2013": "-",
+    "\u00a0": " ",
+}
 
-test_tools()
+SKIP_STRINGS=[
+    "_",
+    "normalized",
+    "\\n",
+    "Z - nds",
+    "G -- ",
+    "d - l",
+    "This quote",
+    "----",
+    "si- lent",
+]
 
+SKIP_IF_NOT_EQUALLY_IN_BOTH = [
+    "---",
+    "[",
+    "]",
+    "...",
+    "#",
+    ".--"
+]
+
+REMOVE_IF_STARTS_WITH = [
+    ", ",
+    "-- ",
+    ": ",
+    ". ",
+]
+
+all_chunks_data = {}
+all_sentence_pairs = {}
+for...[truncated middle 6076 characters]...  input()
+        continue
+    start_from_sentence = max(1,len(sentences_swift)-10)
+    for i in range(start_from_sentence, len(sentences_swift)):
+        this_sentence = sentences_plain[i]
+        this_context = sentences_plain[:i]
+        converted_to = sentences_swift[i]
+        if this_sentence == converted_to:
+            continue
+        if len(this_sentence) < 10 or len(converted_to) < 10:
+            continue
+        this_line = SPECIAL_TOKENS["CONTEXT"] + " " + " ".join(this_context) + " " + SPECIAL_TOKENS["TO_CONVERT"] + " " + this_sentence + " " + SPECIAL_TOKENS["CONVERTED"] + " " + converted_to
+        all_lines.append(this_line)
+
+for datum in all_lines:
+    sample_of_other_lines = [datum,] + random.sample(all_lines, 10)
+    full_string = (" ").join(sample_of_other_lines)
+    final_dataset.append(full_string)
+
+random.shuffle(final_dataset)
+#save the dataset
+with open(os.path.join(ebook_analyses_dir, "final_dataset.json"), "w") as f:
+    json.dump(final_dataset, f, indent=4)
+
+-----new_file-----
+ permathings/scripts/ebook_processing/compile_synthetic_data_original.py (9.98 KB):
+import os, sys, json, random, string, re, time
+
+this_dir = os.path.dirname(os.path.abspath(__file__))
+scripts_dir = os.path.dirname(this_dir)
+permathings_dir = os.path.dirname(scripts_dir)
+root_dir = os.path.dirname(permathings_dir)
+ephemeral_dir = os.path.join(root_dir, "ephemera")
+outputs_dir = os.path.join(ephemeral_dir, "outputs")
+ebook_analyses_dir = os.path.join(outputs_dir, "ebook_analyses")
+swift_quotes_dir = os.path.join(ebook_analyses_dir, "swift_quotes")
+
+REPLACEMENTS = {
+    "\u2019": "'",
+    "\u2014": "-",
+    "\u201c": "\"",
+    "\u201d": "\"",
+    "\u2026": "...",
+    "\u2013": "-",
+    "\u00a0": " ",
+}
+
+SKIP_STRINGS=[
+    "_",
+    "normalized",
+    "\\n",
+    "Z - nds",
+    "G -- ",
+    "d - l",
+    "This quote",
+    "----",
+    "si- lent",
+]
+
+SKIP_IF_NOT_EQUALLY_IN_BOTH = [
+    "---",
+    "[",
+    "]",
+    "...",
+    "#",
+    ".--"
+]
+
+REMOVE_IF_STARTS_WITH = [
+    ", ",
+    "-- ",
+    ": ",
+    ". ",
+]
+
+all_chunks_data = {}
+all_sentence_pairs = {}
+for file in os.listd...[truncated middle 8223 characters]...E_SWIFTIFIED_END
+        full_block = prior_block1 + " " + sentence_block + " " + post_block + " " + SWIFTIFICATION_START + " " + swift_sentence + " " + SWIFTIFICATION_END
+        final_dataset.append(full_block)
+        full_block = prior_block1 + " " + sentence_block + " " + SWIFTIFICATION_START + " " + swift_sentence + " " + SWIFTIFICATION_END
+        final_dataset.append(full_block)
+        if prior_block1 != prior_block2:
+            full_block = prior_block2 + " " + sentence_block + " " + post_block + " " + SWIFTIFICATION_START + " " + swift_sentence + " " + SWIFTIFICATION_END
+            final_dataset.append(full_block)
+            full_block = prior_block2 + " " + sentence_block + " " + SWIFTIFICATION_START + " " + swift_sentence + " " + SWIFTIFICATION_END
+            final_dataset.append(full_block)
+            
+
+random.shuffle(final_dataset)
+#save the dataset
+with open(os.path.join(ebook_analyses_dir, "final_dataset.json"), "w") as f:
+    json.dump(final_dataset, f, indent=4)
+
+-----new_file-----
+ permathings/scripts/ebook_processing/Dockerfile (844.00 B):
+FROM nvidia/cuda:12.5.0-devel-ubuntu22.04
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+RUN apt update
+RUN apt install -y git
+RUN apt install -y curl
+RUN apt install -y wget
+RUN apt install -y python3.10-full
+RUN apt install -y python3-pip python3-dev python3-venv
+RUN python3 -m pip install --no-cache-dir --upgrade pip
+RUN python3 -m pip install --no-cache-dir --upgrade mistral-inference
+RUN python3 -m pip install --no-cache-dir transformers huggingface_hub
+RUN python3 -m pip install --no-cache-dir outlines
+RUN python3 -m pip install --no-cache-dir pydantic
+RUN python3 -m pip install --no-cache-dir protobuf
+RUN python3 -m pip install --no-cache-dir accelerate
+RUN python3 -m pip install --no-cache-dir bitsandbytes
+RUN python3 -m pip install --no-cache-dir sentence-splitter
+RUN python3 -m pip install --no-cache-dir Unidecode
+WORKDIR /workspace
+
+-----new_file-----
+ permathings/scripts/ebook_processing/convert_to_text.sh (1.03 KB):
+THIS_DIR_PATH=$(dirname $(realpath $0))
+SCRIPTS_DIR_PATH=$(dirname $THIS_DIR_PATH)
+PERMATHINGS_DIR_PATH=$(dirname $SCRIPTS_DIR_PATH)
+ML_PROJECT_DIR_PATH=$(dirname $PERMATHINGS_DIR_PATH)
+EPHEMERA_DIR_PATH=$ML_PROJECT_DIR_PATH/ephemera
+INPUTS_DIR_PATH=$EPHEMERA_DIR_PATH/inputs
+INPUT_EBOOKS_DIR_PATH=$INPUTS_DIR_PATH/ebooks
+if [ ! -d $INPUT_EBOOKS_DIR_PATH ]; then
+    mkdir -p $INPUT_EBOOKS_DIR_PATH
+fi
+
+for INPUT_EBOOK_PATH in $INPUT_EBOOKS_DIR_PATH/*.azw; do
+    OUTPUT_EBOOK_PATH=$(echo $INPUT_EBOOK_PATH | sed 's/\.azw$/\.txt/')
+    if [ -f $OUTPUT_EBOOK_PATH ]; then
+        continue
+    fi
+    ebook-convert $INPUT_EBOOK_PATH $OUTPUT_EBOOK_PATH --enable-heuristics --replace-scene-breaks SCENE__BREAK__SCENE__BREAK
+done
+
+
+for INPUT_EBOOK_PATH in $INPUT_EBOOKS_DIR_PATH/*.epub; do
+    OUTPUT_EBOOK_PATH=$(echo $INPUT_EBOOK_PATH | sed 's/\.epub$/\.txt/')
+    if [ -f $OUTPUT_EBOOK_PATH ]; then
+        continue
+    fi
+    ebook-convert $INPUT_EBOOK_PATH $OUTPUT_EBOOK_PATH --enable-heuristics --replace-scene-breaks SCENE__BREAK__SCENE__BREAK
+done
+
+-----new_file-----
+ permathings/scripts/ebook_processing: 1 file(s) skipped in this folder (total size: 1.81 KB)
+
+-----new_file-----
+ permathings/scripts/ebook_processing/workspace/verify_swiftian.py (13.36 KB):
+import os, sys, re, json, random, time
+from unidecode import unidecode
+
+#cuda visible devices= 0,1
+#os.environ["CUDA_VISIBLE_DEVICES"] = "0,1"
+os.environ["CUDA_VISIBLE_DEVICES"] = "0"
+
+from pydantic import BaseModel
+import torch
+from transformers import AutoConfig, AutoModelForCausalLM, AutoTokenizer, logging
+from accelerate import init_empty_weights, infer_auto_device_map, load_checkpoint_and_dispatch
+torch.cuda.empty_cache()
+import outlines
+
+
+MODEL_DIR_PATH="/ephemeral_cache/mistral-inst-v03"
+LOAD_MODEL = True
+
+
+ebook_dir = "/ebooks"
+ebook_analysis_dir = "/ebook_analyses"
+swift_quotes_dir = ebook_analysis_dir+"/swift_quotes"
+if not os.path.exists(swift_quotes_dir):
+    os.makedirs(swift_quotes_dir)
+jswift_book = "jswift.txt"
+jswift_path = os.path.join(ebook_dir, jswift_book)
+jswift_string = open(jswift_path).read()
+
+scene_split_lines = jswift_string.split("SCENE__BREAK__SCENE__BREAK")
+
+reduced_lines = []
+for line in scene_split_lines:
+    if len(line) < 6000:
+        continue
+    lin...[truncated middle 11681 characters]...ator = outlines.generate.json(model, function_params_string)
+        tools_string="[AVAILABLE_TOOLS] ["+this_function_string+"][/AVAILABLE_TOOLS]"
+        instruction_string="[INST] "+ instruction + " [/INST]"
+        prompt = tools_string + instruction_string + "[TOOL_CALLS]"
+        output = generator(prompt)
+        try:
+            output_json = json.loads(output)
+        except:
+            output_json = output
+        data_to_save = {
+            "prompt_string": prompt,
+            "given_info_as_json_dict": given_info_as_json_dict,
+            "function": this_function_json,
+            "output": output,
+            "output_json": output_json,
+        }
+        with open(save_path, "w") as f:
+            json.dump(data_to_save, f, indent=4)
+        print("Saved chunk", k, "to", save_path)
+    except Exception as e:
+        #if keyboard interrupt, save progress
+        if "KeyboardInterrupt" in str(e):
+            break
+        print(e)
+        print("Error processing chunk", k)
+
+-----new_file-----
+ permathings/scripts/ebook_processing/workspace/test_outlines_function_split.py (33.56 KB):
+import os
+
+#cuda visible devices= 0,1
+os.environ["CUDA_VISIBLE_DEVICES"] = "0,1"
+
+from pydantic import BaseModel
+import json
+import torch
+from transformers import AutoConfig, AutoModelForCausalLM, AutoTokenizer, logging
+from accelerate import init_empty_weights, infer_auto_device_map, load_checkpoint_and_dispatch
+torch.cuda.empty_cache()
+import outlines
+
+
+MODEL_DIR_PATH="/ephemeral_cache/mistral-inst-v03"
+
+
+function_json_string = '''{
+    "type": "function",
+    "function": {
+        "name": "define_section_splits",
+        "description": "Store data related to the sectional divisions of a text",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "section_divisions": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "division_type": {
+                                "type": "string",
+                            ...[truncated middle 32307 characters]...om_config(config)
+
+print("infer auto device map")
+
+max_memory = {0:"4.5GiB", 1:"4.5GiB","cpu":"0GiB"}
+
+
+print("max_memory", max_memory)
+
+device_map = infer_auto_device_map(
+        model,
+        max_memory=max_memory,
+        no_split_module_classes=["MistralDecoderLayer"],
+        dtype=torch.int8
+    )
+
+#print(device_map)
+
+print("load checkpoint and dispatch")
+model = outlines.models.transformers(
+        MODEL_DIR_PATH,
+        #device="cuda",   #why... https://github.com/outlines-dev/outlines/blob/a987159860a6dd3a83d2f2376f36ab28ef45decd/outlines/models/transformers.py#L229
+        device=None,
+        model_kwargs={
+            "torch_dtype": torch.bfloat16,
+            "device_map": device_map,
+            "load_in_8bit": True,
+            "config":config,
+        },
+    )
+generator = outlines.generate.json(model, function_params_string)
+output = generator(prompt)
+
+print(json.dumps(output, indent=2))
+
+with open('example_output.json', 'w') as f:
+    json.dump(output, f, indent=2)
+
+-----new_file-----
+ permathings/scripts/ebook_processing/workspace: 6 file(s) skipped in this folder (total size: 4.15 MB)
 
 -----new_file-----
  Total size of skipped files: 16.41 MB
