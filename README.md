@@ -31,6 +31,8 @@ This repository is a comprehensive toolkit for advanced machine learning and AI 
 - **Text Generation**: Includes scripts for running instances of text generation webUI and vLLM.
 - **Video Generation**: Uses the CogX-5b model to generate silent color video clips:
 # ![Jackalope GIF](permathings/persistent_output_examples/a_peculiar_creature__part_rabb.gif)
+# ![Shangri-La GIF](permathings/persistent_output_examples/in_the_hidden_valley_of_shangr.gif)
+
 - **Image Processing**: Tools for Stable Diffusion, Segment Anything Model (SAM), and other image segmentation tasks.
 - **LLM Integration**: Scripts for running various Large Language Models, including LLaVA and OpenDevin.
 - **Fine-tuning**: Tools for fine-tuning language models with different techniques.
