@@ -107,3 +107,15 @@ This repository is a comprehensive toolkit for advanced machine learning and AI 
 - **Multimodal AI**: Integration of text, image, and video generation capabilities.
 - **Adaptive Fine-tuning**: Scripts for fine-tuning models on custom datasets, including e-book content.
 - **Document Analysis**: Tools for processing and analyzing various document types, including e-books and instruction manuals.
+
+## Contributing
+
+Contributions to this repository are welcome. Please ensure you follow the existing code structure and document any new features or scripts you add.
+
+## License
+
+[Specify the license here]
+
+## Acknowledgments
+
+This project integrates various open-source tools and models. We thank the creators and maintainers of these projects for their valuable contributions to the AI and ML community.

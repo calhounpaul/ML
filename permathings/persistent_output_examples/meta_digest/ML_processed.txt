@@ -2,26 +2,28 @@ Repository: ML
 
 File Structure:
 ML-main/
-    README.md (2.78 KB)
+    README.md (4.46 KB)
     .gitignore (22.00 B)
     .gitignore (22.00 B)
     permathings/
         libs/
-            digest_git.py (10.79 KB)
+            digest_git.py (11.11 KB)
             secretary.py (3.05 KB)
             docker_tools.py (728.00 B)
             selenium_tools.py (1.54 KB)
         prereqs/
             3_install_other.sh (436.00 B)
             1_install_docker_engine.sh (919.00 B)
-            all.sh (202.00 B)
+            all.sh (307.00 B)
             0_install_cuda_12.6.sh (543.00 B)
             2_install_nvidia_container_toolkit.sh (598.00 B)
         persistent_output_examples/
+            furniture_assembly_manual_descriptions.json (1.58 KB)
+            in_the_hidden_valley_of_shangr.gif (3.30 MB)
+            a_peculiar_creature__part_rabb.gif (2.34 MB)
             meta_digest/
-                ML_processed.txt (84.17 KB)
-                furniture_assembly_manual_descriptions.json (1.58 KB)
-                claude_description_240906.md (3.55 KB)
+                ML_processed.txt (92.86 KB)
+                claude_description_240909.md (2.93 KB)
         scripts/
             stable_diffusion/
                 init_auto1111.sh (1.63 KB)
@@ -38,7 +40,7 @@ ML-main/
             utils/
                 set_power.sh (23.00 B)
                 init_secrets.sh (464.00 B)
-                digest_git.sh (662.00 B)
+                digest_git.sh (788.00 B)
             segmentation/
                 segment-track-anything/
                     grab_weights.sh (582.00 B)
@@ -90,14 +92,21 @@ ML-main/
                     run_manual_test.py (5.76 KB)
             OpenDevin/
                 run.sh (639.00 B)
+            cogx_video/
+                Dockerfile (1.86 KB)
+                run.sh (937.00 B)
+                workspace/
+                    generate.py (2.65 KB)
             LLaVA-NeXT/
                 run_docker.sh (1.24 KB)
                 Dockerfile (806.00 B)
                 workspace/
                     run.sh (0.00 B)
             langchain/
-                Dockerfile (50.00 B)
-                run.sh (1.08 KB)
+                Dockerfile (1.94 KB)
+                run.sh (1.30 KB)
+                workdir/
+                    test.py (2.00 KB)
             webscraping/
                 run.py (491.00 B)
             finetuning/
@@ -124,7 +133,7 @@ ML-main/
 File Contents:
 
 -----new_file-----
- README.md (2.78 KB):
+ README.md (4.46 KB):
 # ML Repository
 
 This repository is a comprehensive toolkit for advanced machine learning and AI tasks, focusing on natural language processing, image processing, model fine-tuning, and various AI-powered applications. It provides a well-organized structure of scripts, tools, and configurations to support various aspects of machine learning workflows.
@@ -137,7 +146,31 @@ This repository is a comprehensive toolkit for advanced machine learning and AI 
 - **Containerization**: Extensive use of Docker for reproducible and portable ML environments.
 - **Integration**: Works with popular platforms like Hugging Face and frameworks such as PyTorch and Transformers.
 - **Full Pipeline Support**: Includes tools for data processing, model training, and inference.
-- *...[truncated middle 845 characters]...n ub24.04 VM in XCP-ng, but it should also work with any cloud provider):
+
+##...[truncated middle 2567 characters]...vra Kuzminichna, and then he has to make tea for which of his relatives?
+
+Answer: Ignat has to make tea for his grandfather.
+```
+
+## Requirements
+
+- CUDA-compatible GPU
+- Ubuntu 24.04 (or compatible Linux distribution)
+- Docker
+- Python 3.x
+- Various Python libraries (requirements are specified in individual scripts)
+
+## Setup
+
+0. This repo is currently designed to be deployed inside a fresh Ubuntu 24.04 VM running on an XCP-ng server. It should also be compatible with an instance from a cloud provider like AWS.
+
+1. Clone the repository:
+   ```
+   git clone https://github.com/[username]/ML.git
+   cd ML
+   ```
+
+2. Set up the environment (tested on Ubuntu 24.04 VM in XCP-ng, but should work with any cloud provider):
    ```
    cd ML/permathings/prereqs
    bash ./all.sh
@@ -150,20 +183,6 @@ This repository is a comprehensive toolkit for advanced machine learning and AI 
    ```
 
 4. Choose a specific task or model from the `scripts/` directory and follow the instructions in the respective script or README.
-
-## Key Components
-
-- **Text Generation**: Includes scripts for running text generation web UIs and VLLM servers.
-- **Image Processing**: Tools for Stable Diffusion, Segment Anything Model (SAM), and other image segmentation tasks.
-- **LLM Integration**: Scripts for running various Large Language Models, including LLaVA and OpenDevin.
-- **Fine-tuning**: Tools for fine-tuning language models with different techniques.
-- **Data Processing**: Scripts for e-book processing and dataset creation.
-- **Web Interfaces**: Docker configurations for running web-based interfaces for various AI tasks.
-
-## Requirements
-
-- CUDA-compatible GPU
-- Ubuntu 24.04
 
 -----new_file-----
  .gitignore (22.00 B):
@@ -181,7 +200,7 @@ ephemera/*
  permathings: Empty folder or all files filtered
 
 -----new_file-----
- permathings/libs/digest_git.py (10.79 KB):
+ permathings/libs/digest_git.py (11.11 KB):
 import argparse
 import os
 import tempfile
@@ -215,7 +234,7 @@ def download_repo(url):
         logger.info(f"Main branch not found. Trying master: {url}")
         response = requests.get(url)
         if response.status_code != 200:
-...[truncated middle 9044 characters]...ing to use between files")
+...[truncated middle 9374 characters]...tring to use between files")
     parser.add_argument("--ignored_extensions", nargs="+", help="File extensions to ignore")
     parser.add_argument("--whitelisted_extensions", nargs="+", help="File extensions to include (if specified, only these will be processed)")
     parser.add_argument("--depth_augmented_limit_per_folder", type=int, default=40, help="Starting limit for files per folder, halved with each level of depth")
@@ -226,8 +245,6 @@ def download_repo(url):
     args = parser.parse_args()
     
     main(args.url_or_path, args.max_size_per_file, args.demarcation_string, args.ignored_extensions, args.whitelisted_extensions, args.depth_augmented_limit_per_folder, args.max_folder_depth, args.output_path)
-
-
 
 
 -----new_file-----
@@ -415,8 +432,12 @@ sudo usermod -aG docker $USER
 sudo systemctl restart docker
 
 -----new_file-----
- permathings/prereqs/all.sh (202.00 B):
+ permathings/prereqs/all.sh (307.00 B):
 #!/bin/bash
+
+####################
+# These prereq scripts are used to prep a new ubuntu 24.04 VM
+####################
 
 if [ "$(lspci | grep -i nvidia)" ]; then
   echo "Nvidia GPU detected"
@@ -472,79 +493,7 @@ sudo nvidia-ctk runtime configure --runtime=docker
 sudo systemctl restart docker
 
 -----new_file-----
- permathings/persistent_output_examples: Empty folder or all files filtered
-
------new_file-----
- permathings/persistent_output_examples/meta_digest/ML_processed.txt (84.17 KB):
-Repository: ML
-
-File Structure:
-ML-main/
-    README.md (2.92 KB)
-    .gitignore (22.00 B)
-    permathings/
-        libs/
-            digest_git.py (10.79 KB)
-            secretary.py (3.05 KB)
-            docker_tools.py (728.00 B)
-            selenium_tools.py (1.54 KB)
-        prereqs/
-            3_install_other.sh (431.00 B)
-            1_install_docker_engine.sh (919.00 B)
-            all.sh (202.00 B)
-            0_install_cuda_12.6.sh (543.00 B)
-            2_install_nvidia_container_toolkit.sh (598.00 B)
-        persistent_output_examples/
-            meta_digest/
-                ML_processed.txt (69.46 KB)
-                claude_description_240906.md (2.77 KB)
-        scripts/
-            stable_diffusion/
-                init_auto1111.sh (1.63 KB)
-                kill_auto1111.sh (696.00 B)
-                run_comfyUI_alt1.sh (608.00 B)
-                run_auto1111.sh (2.45 KB)
-                run_comfyUI_alt2.sh (732.00 B)
-            textgen_webui/
-                build_doc...[truncated middle 84195 characters]...PO_CACHE_PATH
-
-docker run --rm -it \
-    -v $HF_CACHE_FOLDER_PATH:/root/.cache/huggingface \
-    --gpus='"device=0"' \
-    -p 8000:8000 \
-    --env "HUGGING_FACE_HUB_TOKEN=$HF_TOKEN" \
-    --ipc=host \
-    -m 40g \
-    outlines_vllm_server \
-    --guided-decoding-backend outlines \
-    --dtype auto \
-    --max-model-len 8000 \
-    --model mistralai/Mistral-7B-Instruct-v0.3
-
------new_file-----
- /permathings/scripts/webscraping/run.py (491.00 B):
-import os, sys, json, re, time, datetime, random, string, docker, atexit
-
-this_dir = os.path.dirname(os.path.abspath(__file__))
-scripts_dir = os.path.dirname(this_dir)
-permathings_dir = os.path.dirname(scripts_dir)
-root_dir = os.path.dirname(permathings_dir)
-ephemeral_dir = os.path.join(root_dir, "ephemera")
-outputs_dir = os.path.join(ephemeral_dir, "outputs")
-libs_dir = os.path.join(permathings_dir, "libs")
-sys.path.append(libs_dir)
-
-from selenium_tools import test_tools
-
-test_tools()
-
-
------new_file-----
- Total size of skipped files: 16.41 MB
-
-
------new_file-----
- permathings/persistent_output_examples/meta_digest/furniture_assembly_manual_descriptions.json (1.58 KB):
+ permathings/persistent_output_examples/furniture_assembly_manual_descriptions.json (1.58 KB):
 [
   {
     "manual_filename": "brimnes-bed-frame-with-storage-white__AA-473492-22-100",
@@ -577,7 +526,82 @@ test_tools()
 ]
 
 -----new_file-----
- permathings/persistent_output_examples/meta_digest/claude_description_240906.md (3.55 KB):
+ permathings/persistent_output_examples/in_the_hidden_valley_of_shangr.gif (3.30 MB):
+(Binary file)
+
+-----new_file-----
+ permathings/persistent_output_examples/a_peculiar_creature__part_rabb.gif (2.34 MB):
+(Binary file)
+
+-----new_file-----
+ permathings/persistent_output_examples/meta_digest/ML_processed.txt (92.86 KB):
+Repository: ML
+
+File Structure:
+ML-main/
+    README.md (2.78 KB)
+    .gitignore (22.00 B)
+    .gitignore (22.00 B)
+    permathings/
+        libs/
+            digest_git.py (10.79 KB)
+            secretary.py (3.05 KB)
+            docker_tools.py (728.00 B)
+            selenium_tools.py (1.54 KB)
+        prereqs/
+            3_install_other.sh (436.00 B)
+            1_install_docker_engine.sh (919.00 B)
+            all.sh (202.00 B)
+            0_install_cuda_12.6.sh (543.00 B)
+            2_install_nvidia_container_toolkit.sh (598.00 B)
+        persistent_output_examples/
+            meta_digest/
+                ML_processed.txt (84.17 KB)
+                furniture_assembly_manual_descriptions.json (1.58 KB)
+                claude_description_240906.md (3.55 KB)
+        scripts/
+            stable_diffusion/
+                init_auto1111.sh (1.63 KB)
+                kill_auto1111.sh (696.00 B)
+                run_comfyUI_alt1.sh (608.00 B)
+                run_auto1111.sh (2.45 KB)
+    ...[truncated middle 93090 characters]...el,
+        max_memory=max_memory,
+        no_split_module_classes=["MistralDecoderLayer"],
+        dtype=torch.int8
+    )
+
+#print(device_map)
+
+print("load checkpoint and dispatch")
+model = outlines.models.transformers(
+        MODEL_DIR_PATH,
+        #device="cuda",   #why... https://github.com/outlines-dev/outlines/blob/a987159860a6dd3a83d2f2376f36ab28ef45decd/outlines/models/transformers.py#L229
+        device=None,
+        model_kwargs={
+            "torch_dtype": torch.bfloat16,
+            "device_map": device_map,
+            "load_in_8bit": True,
+            "config":config,
+        },
+    )
+generator = outlines.generate.json(model, function_params_string)
+output = generator(prompt)
+
+print(json.dumps(output, indent=2))
+
+with open('example_output.json', 'w') as f:
+    json.dump(output, f, indent=2)
+
+-----new_file-----
+ permathings/scripts/ebook_processing/workspace: 6 file(s) skipped in this folder (total size: 4.15 MB)
+
+-----new_file-----
+ Total size of skipped files: 16.41 MB
+
+
+-----new_file-----
+ permathings/persistent_output_examples/meta_digest/claude_description_240909.md (2.93 KB):
 # ML Repository
 
 This repository is a comprehensive toolkit for advanced machine learning and AI tasks, focusing on natural language processing, image processing, model fine-tuning, and various AI-powered applications. It provides a well-organized structure of scripts, tools, and configurations to support various aspects of machine learning workflows.
@@ -590,7 +614,11 @@ This repository is a comprehensive toolkit for advanced machine learning and AI 
 - **Containerization**: Extensive use of Docker for reproducible and portable ML environments.
 - **Integration**: Works with popular platforms like Hugging Face and frameworks such as PyTorch and Transformers.
 - **Full Pipeline Support**: Includes tools for data processing, model training, and inference.
-- *...[truncated middle 1633 characters]...ng web-based interfaces for various AI tasks.
+
+##...[truncated middle 1001 characters]...rious Large Language Models, including LLaVA and OpenDevin.
+- **Fine-tuning**: Tools for fine-tuning language models with different techniques.
+- **Data Processing**: Scripts for e-book processing and dataset creation.
+- **Web Interfaces**: Docker configurations for running web-based interfaces for various AI tasks.
 
 ## Requirements
 
@@ -600,23 +628,27 @@ This repository is a comprehensive toolkit for advanced machine learning and AI 
 - Python 3.x
 - Various Python libraries (requirements are specified in individual scripts)
 
-## Usage Notes
+## Setup
 
-- Many scripts use Docker to ensure consistent environments. Make sure Docker is properly installed and configured.
-- Some scripts require Hugging Face API tokens or other credentials. Use the `init_secrets.sh` script to set these up.
-- Pay attention to GPU memory requirements, especially for larger models or when running multiple containers.
+1. Clone the repository:
+   ```
+   git clone https://github.com/[username]/ML.git
+   cd ML
+   ```
 
-## Contributing
+2. Set up the environment (tested on Ubuntu 24.04 VM in XCP-ng, but should work with any cloud provider):
+   ```
+   cd ML/permathings/prereqs
+   bash ./all.sh
+   ```
 
-Contributions are welcome! Please feel free to submit a Pull Request.
+3. Initialize secrets:
+   ```
+   cd ../scripts/utils
+   bash ./init_secrets.sh
+   ```
 
-## License
-
-This project is open-source. Please ensure you comply with the licenses of all included tools and models.
-
-## Disclaimer
-
-This repository contains experimental code and models. Use at your own risk and ensure you comply with the licenses and terms of use for all third-party tools and models included.
+4. Choose a specific task or model from the `scripts/` directory and follow the instructions in the respective script or README.
 
 -----new_file-----
  permathings/scripts: Empty folder or all files filtered
@@ -980,7 +1012,7 @@ cd $THIS_DIR_PATH
 
 
 -----new_file-----
- permathings/scripts/utils/digest_git.sh (662.00 B):
+ permathings/scripts/utils/digest_git.sh (788.00 B):
 THIS_DIR_PATH=$(dirname $(realpath $0))
 SCRIPTS_DIR_PATH=$(dirname $THIS_DIR_PATH)
 PERMATHINGS_DIR_PATH=$(dirname $SCRIPTS_DIR_PATH)
@@ -1004,6 +1036,9 @@ fi
 
 cd $LIBRARIES_DIR_PATH
 python3 digest_git.py $REPO_URL --output_path $GIT_AGGREGATES_PATH
+
+# --max_size_per_file 1000 \
+#    --lower_bound_limit_per_folder 1 --max_folder_depth 3 --depth_augmented_limit_per_folder 5
 
 -----new_file-----
  permathings/scripts/segmentation: Empty folder or all files filtered
@@ -2279,6 +2314,127 @@ docker run -it --rm \
 #command-r-plus:104b-q2_K
 
 -----new_file-----
+ permathings/scripts/cogx_video/Dockerfile (1.86 KB):
+FROM nvidia/cuda:12.1.0-cudnn8-devel-ubuntu20.04
+LABEL maintainer="Hugging Face"
+
+ARG DEBIAN_FRONTEND=noninteractive
+
+RUN apt update
+RUN apt install -y git libsndfile1-dev tesseract-ocr espeak-ng python3 python3-pip ffmpeg
+RUN python3 -m pip install --no-cache-dir --upgrade pip
+
+ARG REF=main
+RUN git clone https://github.com/huggingface/transformers && cd transformers && git checkout $REF
+
+# If set to nothing, will install the latest version
+ARG PYTORCH='2.4.0'
+ARG TORCH_VISION=''
+ARG TORCH_AUDIO=''
+# Example: `cu102`, `cu113`, etc.
+ARG CUDA='cu121'
+
+RUN [ ${#PYTORCH} -gt 0 ] && VERSION='torch=='$PYTORCH'.*' ||  VERSION='torch'; python3 -m pip install --no-cache-dir -U $VERSION --extra-index-url https://download.pytorch.org/whl/$CUDA
+RUN [ ${#TORCH_VISION} -gt 0 ] && VERSION='torchvision=='TORCH_VISION'.*' ||  VERSION='torchvision'; python3 -m pip install --no-cache-dir -U $VERSION --extra-index-url https://download.pytorch.org/whl/$CUDA
+RUN [ ${#TORCH_AUDIO} -gt 0 ] && VERSION='torchaudio=='TORCH_AUDIO'.*' ||  VERSION='torchaudio'; python3 -m pip install --no-cache-dir -U $VERSION --extra-index-url https://download.pytorch.org/whl/$CUDA
+
+RUN python3 -m pip install --no-cache-dir -e ./transformers[dev-torch,testing,video]
+
+RUN python3 -m pip uninstall -y tensorflow flax
+
+RUN python3 -m pip install --no-cache-dir git+https://github.com/facebookresearch/detectron2.git pytesseract
+RUN python3 -m pip install -U flash_attn
+RUN python3 -m pip install -U bitsandbytes accelerate
+RUN python3 -m pip install -U imageio-ffmpeg
+RUN python3 -m pip install -U diffusers
+RUN python3 -m pip install -U opencv-python
+RUN python3 -m pip install -U git+https://github.com/kkroening/ffmpeg-python
+
+# When installing in editable mode, `transformers` is not recognized as a package.
+# this line must be added in order for python to be aware of transformers.
+RUN cd transformers && python3 setup.py develop
+
+
+-----new_file-----
+ permathings/scripts/cogx_video/run.sh (937.00 B):
+THIS_DOCKER_CONTAINER_NAME="cogx_video"
+
+THIS_DIR_PATH=$(dirname $(realpath $0))
+SCRIPTS_DIR_PATH=$(dirname $THIS_DIR_PATH)
+PERMATHINGS_DIR_PATH=$(dirname $SCRIPTS_DIR_PATH)
+ML_PROJECT_DIR_PATH=$(dirname $PERMATHINGS_DIR_PATH)
+EPHEMERA_DIR_PATH=$ML_PROJECT_DIR_PATH/ephemera
+SHARED_CACHES_DIR_PATH=$EPHEMERA_DIR_PATH/shared_caches
+
+docker build -t $THIS_DOCKER_CONTAINER_NAME .
+
+if [ ! -d $SHARED_CACHES_DIR_PATH ]; then
+    mkdir -p $SHARED_CACHES_DIR_PATH
+fi
+
+if [ ! -d $SHARED_CACHES_DIR_PATH/$THIS_DOCKER_CONTAINER_NAME ]; then
+    mkdir -p $SHARED_CACHES_DIR_PATH/$THIS_DOCKER_CONTAINER_NAME
+fi
+
+WORKDIR_PATH=$THIS_DIR_PATH/workspace
+
+if [ ! -d $WORKDIR_PATH ]; then
+    mkdir -p $WORKDIR_PATH
+fi
+
+docker run -it --gpus all --rm \
+    --name $THIS_DOCKER_CONTAINER_NAME \
+    -v $SHARED_CACHES_DIR_PATH/$THIS_DOCKER_CONTAINER_NAME:/root/.cache \
+    -v $WORKDIR_PATH:/workspace \
+    -w /workspace \
+    $THIS_DOCKER_CONTAINER_NAME
+
+
+-----new_file-----
+ permathings/scripts/cogx_video/workspace/generate.py (2.65 KB):
+import torch
+from diffusers import CogVideoXPipeline
+from diffusers.utils import export_to_video
+import ffmpeg
+
+#prompts by Claude 3.5
+prompts = [
+  "In the misty depths of Loch Ness, the legendary Nessie gracefully glides through the dark waters. Her long, serpentine neck arches above the surface, revealing glimpses of glistening, prehistoric scales. As she moves, ripples spread across the loch, disturbing the reflections of the ancient Scottish highlands. The creature's eyes, wise and ancient, scan the shoreline, a living relic from a time long past.",
+
+  "The elusive Yeti trudges through the snow-capped peaks of the Himalayas, leaving behind massive footprints that quickly fill with fresh powder. Its shaggy white fur blends seamlessly with the surrounding snow, making it nearly invisible against the stark landscape. The creature's breath forms clouds in the frigid air as it surveys its domain, a living legend of the world's highest mountains.",
+
+  "In the hidden valley of Shangri-La...[truncated middle 717 characters]...a hare. Its twitching nose and whiskers betray its lagomorph nature, while small, branching antlers sprout incongruously from its head. For a brief moment, this impossible hybrid embodies the fantastical folklore of the American West.",
+]
+
+pipe = CogVideoXPipeline.from_pretrained(
+    "THUDM/CogVideoX-5b",
+    torch_dtype=torch.bfloat16
+)
+pipe.enable_model_cpu_offload()
+pipe.vae.enable_tiling()
+
+for prompt in prompts:
+    video = pipe(
+        prompt=prompt,
+        num_videos_per_prompt=1,
+        num_inference_steps=50,
+        num_frames=24,
+        guidance_scale=6,
+        generator=torch.Generator(device="cuda").manual_seed(42),
+    ).frames[0]
+
+    filename = "".join([c if c.isalnum() else "_" for c in prompt[:30].lower()]) + ".mp4"
+    print(f"Exporting video to {filename}")
+
+    export_to_video(video, filename, fps=8)
+
+    stream = ffmpeg.input(filename)
+    gif_filename = filename.replace(".mp4", ".gif")
+    stream = ffmpeg.output(stream, gif_filename)
+    ffmpeg.run(stream)
+
+
+-----new_file-----
  permathings/scripts/LLaVA-NeXT/run_docker.sh (1.24 KB):
 THIS_DOCKER_CONTAINER_NAME="transformers-llava-next"
 
@@ -2359,21 +2515,65 @@ RUN pytest
 
 
 -----new_file-----
- permathings/scripts/langchain/Dockerfile (50.00 B):
-FROM transformers-quantization-latest-gpu
+ permathings/scripts/langchain/Dockerfile (1.94 KB):
+FROM nvidia/cuda:12.1.0-cudnn8-devel-ubuntu20.04
+LABEL maintainer="Hugging Face"
 
-RUN apt
+ARG DEBIAN_FRONTEND=noninteractive
+
+RUN apt update
+RUN apt install -y git libsndfile1-dev tesseract-ocr espeak-ng python3 python3-pip ffmpeg
+RUN python3 -m pip install --no-cache-dir --upgrade pip
+
+ARG REF=main
+RUN git clone https://github.com/huggingface/transformers && cd transformers && git checkout $REF
+
+# If set to nothing, will install the latest version
+ARG PYTORCH='2.4.0'
+ARG TORCH_VISION=''
+ARG TORCH_AUDIO=''
+# Example: `cu102`, `cu113`, etc.
+ARG CUDA='cu121'
+
+RUN [ ${#PYTORCH} -gt 0 ] && VERSION='torch=='$PYTORCH'.*' ||  VERSION='torch'; python3 -m pip install --no-cache-dir -U $VERSION --extra-index-url https://download.pytorch.org/whl/$CUDA
+RUN [ ${#TORCH_VISION} -gt 0 ] && VERSION='torchvision=='TORCH_VISION'.*' ||  VERSION='torchvision'; python3 -m pip install --no-cache-dir -U $VERSION --extra-index-url https://download.pytorch.org/whl/$CUDA
+RUN [ ${#TORCH_AUDIO} -gt 0 ] && VERSION='torchaudio=='TORCH_AUDIO'.*' ||  VERSION='torchaudio'; python3 -m pip install --no-cache-dir -U $VERSION --extra-index-url https://download.pytorch.org/whl/$CUDA
+
+RUN python3 -m pip install --no-cache-dir -e ./transformers[dev-torch,testing,video]
+
+RUN python3 -m pip uninstall -y tensorflow flax
+
+RUN python3 -m pip install --no-cache-dir git+https://github.com/facebookresearch/detectron2.git pytesseract
+RUN python3 -m pip install -U "itsdangerous<2.1.0"
+RUN python3 -m pip install -U bitsandbytes accelerate
+RUN python3 -m pip install -U langchain langchain-community langchain-experimental langchain_huggingface
+RUN python3 -m pip install -U chromadb sentence-transformers
+
+RUN python3 -m pip install -U wget
+
+RUN apt install -y sqlite3
+RUN python3 -m pip install -U pysqlite3-binary
+
+# When installing in editable mode, `transformers` is not recognized as a package.
+# this line must be added in order for python to be aware of transformers.
+RUN cd transformers && python3 setup.py develop
+
 
 -----new_file-----
- permathings/scripts/langchain/run.sh (1.08 KB):
-THIS_DOCKER_CONTAINER_NAME="transformers-quantization-latest-gpu"
+ permathings/scripts/langchain/run.sh (1.30 KB):
+THIS_DOCKER_CONTAINER_NAME="transformers-langchain-local"
 
 THIS_DIR_PATH=$(dirname $(realpath $0))
 SCRIPTS_DIR_PATH=$(dirname $THIS_DIR_PATH)
 PERMATHINGS_DIR_PATH=$(dirname $SCRIPTS_DIR_PATH)
+LIBRARIES_DIR_PATH=$PERMATHINGS_DIR_PATH/libs
 ML_PROJECT_DIR_PATH=$(dirname $PERMATHINGS_DIR_PATH)
 EPHEMERA_DIR_PATH=$ML_PROJECT_DIR_PATH/ephemera
 SHARED_CACHES_DIR_PATH=$EPHEMERA_DIR_PATH/shared_caches
+
+cd $LIBRARIES_DIR_PATH
+HF_TOKEN=$(python3 -c "from secretary import get_secret; print(get_secret('HF_TOKEN'))")
+cd $THIS_DIR_PATH
 
 if [ ! -f ./Dockerfile ]; then
     wget https://raw.githubusercontent.com/huggingface/transformers/main/docker/transformers-quantization-latest-gpu/Dockerfile 
@@ -2389,7 +2589,7 @@ if [ ! -d $SHARED_CACHES_DIR_PATH/$THIS_DOCKER_CONTAINER_NAME ]; then
     mkdir -p $SHARED_CACHES_DIR_PATH/$THIS_DOCKER_CONTAINER_NAME
 fi
 
-WORKDIR_PATH=$THIS_DIR_PATH/workspace
+WORKDIR_PATH=$THIS_DIR_PATH/workdir
 
 if [ ! -d $WORKDIR_PATH ]; then
     mkdir -p $WORKDIR_PATH
@@ -2398,8 +2598,70 @@ fi
 docker run -it --gpus all --rm \
     --name $THIS_DOCKER_CONTAINER_NAME \
     -v $SHARED_CACHES_DIR_PATH/$THIS_DOCKER_CONTAINER_NAME:/root/.cache \
-    -v $WORKDIR_PATH:/workspace \
+    -v $WORKDIR_PATH:/root/workdir \
+    -w /root/workdir \
+    -e HF_TOKEN=$HF_TOKEN \
     $THIS_DOCKER_CONTAINER_NAME
+
+
+-----new_file-----
+ permathings/scripts/langchain/workdir/test.py (2.00 KB):
+__import__('pysqlite3')
+import sys
+sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
+
+import os
+from langchain_huggingface.llms import HuggingFacePipeline
+from langchain.llms import LlamaCpp
+from langchain.embeddings import HuggingFaceEmbeddings
+from langchain.vectorstores import Chroma
+from langchain.text_splitter import RecursiveCharacterTextSplitter
+from langchain.chains import RetrievalQA
+from langchain.document_loaders import TextLoader
+import wget
+
+# Initialize the Llama model
+llm = HuggingFacePipeline.from_model_id(
+    model_id="meta-llama/Meta-Llama-3.1-8B",
+    task="text-generation",
+    pipeline_kwargs={"max_new_tokens": 30},
+    model_kwargs={"load_in_8bit": True}
+)
+
+# Initialize the embedding model
+embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
+
+if not os.path.exists("/root/.cache/warandpeace.txt"):
+    wget.download("https://archive.org/download/warandpeace030164mbp/warandpeace030164mbp_djvu.txt", "/root/.cache/warandpeace.txt")
+loader = TextLoader...[truncated middle 53 characters]...oad()
+
+text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=200)
+texts = text_splitter.split_documents(documents)
+
+# Create and persist the vector store
+vectorstore = Chroma.from_documents(documents=texts, embedding=embeddings, persist_directory="/root/.cache/chroma_db")
+vectorstore.persist()
+
+# Create a retrieval chain
+retriever = vectorstore.as_retriever(search_kwargs={"k": 6})
+qa_chain = RetrievalQA.from_chain_type(llm=llm, chain_type="stuff", retriever=retriever)
+
+# Function to handle user queries
+def process_query(query):
+    result = qa_chain({"query": query})
+    return result["result"]
+
+# Example usage
+user_query = "Ignat is caught grinning in front of a mirror by Mavra Kuzminichna, and then he has to make tea for which of his relatives?"
+
+print("Initial query:", user_query)
+
+while True:
+    if user_query.lower() == 'quit':
+        break
+    response = process_query(user_query)
+    print("Answer:", response)
+    user_query = input("Enter your query: ")
 
 
 -----new_file-----
