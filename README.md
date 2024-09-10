@@ -17,6 +17,7 @@ This repository is a comprehensive toolkit for advanced machine learning and AI 
   - `libs/`: Utility libraries (e.g., `digest_git.py`, `secretary.py`)
   - `prereqs/`: Setup scripts for CUDA, Docker, and other dependencies
   - `scripts/`: Various ML task-specific scripts
+    - `langchain/`: Langchain setup and examples.
     - `stable_diffusion/`: Scripts for running Stable Diffusion models
     - `textgen_webui/`: Text generation web UI setup
     - `tts_webui/`: Text-to-Speech web UI setup
@@ -52,11 +53,14 @@ This repository is a comprehensive toolkit for advanced machine learning and AI 
 
 "neiden-bed-frame__AA-2044866-4_pub"
 "p35v_description": "This instruction manual is about assembling a bed frame, specifically a 'NEIDEN' bed frame by IKEA."
-
-"askvoll-bed-frame__AA-942096-6_pub"
-"This instruction manual is about assembling a furniture piece, specifically a bed frame, as indicated by the title 'ASKVOLL' and the illustrations showing the assembly process."
 ```
 - **Web Interfaces**: Docker configurations for running web-based interfaces for various AI tasks.
+- **Langchain**: A docker environment and basic RAG example:
+```
+Question: Ignat is caught grinning in front of a mirror by Mavra Kuzminichna, and then he has to make tea for which of his relatives?
+
+Answer: Ignat has to make tea for his grandfather.
+```
 
 ## Requirements
 
