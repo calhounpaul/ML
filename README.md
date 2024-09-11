@@ -81,7 +81,7 @@ This repository is a comprehensive toolkit for advanced machine learning and AI 
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/[username]/ML.git
+   git clone https://github.com/calhounpaul/ML.git
    cd ML
    ```
 
