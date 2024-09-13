@@ -10,6 +10,7 @@ This repository is a comprehensive toolkit for advanced machine learning and AI 
 - **Containerization**: Extensive use of Docker for reproducible and portable ML environments.
 - **Integration**: Works with popular platforms like Hugging Face and frameworks such as PyTorch and Transformers.
 - **Full Pipeline Support**: Includes tools for data processing, model training, and inference.
+- **Multimodal AI**: Capabilities for processing and generating text, images, and videos.
 
 ## Repository Structure
 
@@ -36,6 +37,7 @@ This repository is a comprehensive toolkit for advanced machine learning and AI 
     - `ebook_processing/`: Tools for processing and analyzing e-books
     - `document_processing/`: Document analysis tools
     - `OpenDevin/`: OpenDevin model runner
+    - `gemma2_RIG/`: Scripts for running the Gemma2 model with Retrieval-Induced Generation
 - `persistent_output_examples/`: Sample outputs and analyses
 
 ## Key Components
@@ -45,7 +47,7 @@ This repository is a comprehensive toolkit for advanced machine learning and AI 
   ![Jackalope GIF](permathings/persistent_output_examples/a_peculiar_creature__part_rabb.gif)
   ![Shangri-La GIF](permathings/persistent_output_examples/in_the_hidden_valley_of_shangr.gif)
 - **Image Processing**: Tools for Stable Diffusion, Segment Anything Model (SAM), and other image segmentation tasks.
-- **LLM Integration**: Scripts for running various Large Language Models, including LLaVA, OpenDevin, and Ollama models.
+- **LLM Integration**: Scripts for running various Large Language Models, including LLaVA, OpenDevin, Ollama models, and Gemma2 with RIG (Retrieval-Induced Generation).
 - **Fine-tuning**: Tools for fine-tuning language models with different techniques, including LoRA and QLoRA.
 - **Data Processing**: Scripts for e-book and multimodal document processing, including furniture assembly manual analysis:
   ```json
@@ -62,9 +64,7 @@ This repository is a comprehensive toolkit for advanced machine learning and AI 
 
   ![collection of objects](permathings/scripts/vllm_pixtral/objects.jpg)
 
-    ```
-    "The image showcases a diverse assortment of small objects spread over a white surface. Some notable items include a colorful frog toy, a pool ball with the number "2", a toy octopus, several keys, a ladybug figurine, a toy shark, a pair of sunglasses, dice, a wooden clothespin, and various buttons and trinkets. Additionally, there are numbers, letters, and an assortment of other miscellaneous items. The background is plain white, which emphasizes the vibrant colors and varied textures of the objects."
-    ```
+    *"The image showcases a diverse assortment of small objects spread over a white surface. Some notable items include a colorful frog toy, a pool ball with the number "2", a toy octopus, several keys, a ladybug figurine, a toy shark, a pair of sunglasses, dice, a wooden clothespin, and various buttons and trinkets. Additionally, there are numbers, letters, and an assortment of other miscellaneous items. The background is plain white, which emphasizes the vibrant colors and varied textures of the objects."*
 
 - **Web Interfaces**: Docker configurations for running web-based interfaces for various AI tasks.
 - **Langchain**: A docker environment and basic RAG example:
@@ -73,6 +73,7 @@ This repository is a comprehensive toolkit for advanced machine learning and AI 
 
   Answer: Ignat has to make tea for his grandfather.
   ```
+- **JSON Outline Generation**: Utilizes vLLM with Mistral to generate structured JSON outlines for various tasks, as demonstrated in the `vllm_json_outlines` scripts.
 
 ## Requirements
 
@@ -105,6 +106,24 @@ This repository is a comprehensive toolkit for advanced machine learning and AI 
    ```
 
 4. Choose a specific task or model from the `scripts/` directory and follow the instructions in the respective script or README.
+
+Note: Some scripts may require significant GPU memory. Adjust configurations as needed based on your available hardware.
+
+## Usage Examples
+
+1. Generate a JSON outline for a recurrence rule:
+   ```bash
+   cd permathings/scripts/vllm_json_outlines
+   ./run_docker_api_server.sh
+   python examples/recurrence_rule.py
+   ```
+
+2. Run Gemma2 with RIG:
+   ```bash
+   cd permathings/scripts/gemma2_RIG
+   ./run.sh
+   python workspace/test.py
+   ```
 
 ## Additional Features
 
