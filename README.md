@@ -44,7 +44,6 @@ This repository is a comprehensive toolkit for advanced machine learning and AI 
 - **Video Generation**: Uses the CogX-5b model to generate silent color video clips:
   ![Jackalope GIF](permathings/persistent_output_examples/a_peculiar_creature__part_rabb.gif)
   ![Shangri-La GIF](permathings/persistent_output_examples/in_the_hidden_valley_of_shangr.gif)
-
 - **Image Processing**: Tools for Stable Diffusion, Segment Anything Model (SAM), and other image segmentation tasks.
 - **LLM Integration**: Scripts for running various Large Language Models, including LLaVA, OpenDevin, and Ollama models.
 - **Fine-tuning**: Tools for fine-tuning language models with different techniques, including LoRA and QLoRA.
@@ -59,6 +58,14 @@ This repository is a comprehensive toolkit for advanced machine learning and AI 
     "p35v_description": "This instruction manual is about assembling a MITTZON desk."
   }
   ```
+    and Pixtral-12b inference:
+
+  ![collection of objects](permathings/scripts/vllm_pixtral/objects.jpg)
+
+    ```
+    "The image showcases a diverse assortment of small objects spread over a white surface. Some notable items include a colorful frog toy, a pool ball with the number "2", a toy octopus, several keys, a ladybug figurine, a toy shark, a pair of sunglasses, dice, a wooden clothespin, and various buttons and trinkets. Additionally, there are numbers, letters, and an assortment of other miscellaneous items. The background is plain white, which emphasizes the vibrant colors and varied textures of the objects."
+    ```
+
 - **Web Interfaces**: Docker configurations for running web-based interfaces for various AI tasks.
 - **Langchain**: A docker environment and basic RAG example:
   ```

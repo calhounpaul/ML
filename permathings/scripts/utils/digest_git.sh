@@ -20,7 +20,8 @@ else
 fi
 
 cd $LIBRARIES_DIR_PATH
-python3 digest_git.py $REPO_URL --output_path $GIT_AGGREGATES_PATH
-
-# --max_size_per_file 1000 \
-#    --lower_bound_limit_per_folder 1 --max_folder_depth 3 --depth_augmented_limit_per_folder 5
+python3 digest_git.py $REPO_URL --output_path $GIT_AGGREGATES_PATH \
+    --lower_bound_limit_per_folder 2 \
+    --max_folder_depth 5 \
+    --depth_augmented_limit_per_folder 8 \
+    --max_size_per_file 2000
