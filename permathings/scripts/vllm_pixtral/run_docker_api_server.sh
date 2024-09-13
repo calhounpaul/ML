@@ -27,17 +27,23 @@ fi
 cd $LIBS_DIR_PATH
 HF_TOKEN=$(python3 -c "from secretary import get_secret; print(get_secret('HF_TOKEN'))")
 
-cd $VLLM_REPO_CACHE_PATH
+cd $THIS_DIR_PATH
+
+#vllm serve mistralai/Pixtral-12B-2409 --tokenizer_mode mistral --limit_mm_per_prompt 'image=4' --max_num_batched_tokens 16384
 
 docker run --rm -it \
     -v $HF_CACHE_FOLDER_PATH:/root/.cache/huggingface \
     --gpus='"device=0"' \
     -p 8000:8000 \
     --env "HUGGING_FACE_HUB_TOKEN=$HF_TOKEN" \
+    -v ./examples:/vllm-workspace/examples \
+    -w /vllm-workspace/examples \
     --ipc=host \
     -m 40g \
-    pixtral_vllm_server \
-    --guided-decoding-backend outlines \
-    --dtype auto \
-    --max-model-len 8000 \
-    --model mistralai/Mistral-7B-Instruct-v0.3
+    pixtral_vllm_server
+# \
+#    vllm serve mistralai/Pixtral-12B-2409 --tokenizer_mode mistral --limit_mm_per_prompt 'image=4'
+
+#    --dtype auto \
+#    --max-model-len 8000 \
+#    --model mistralai/Pixtral-12B-2409
