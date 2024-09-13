@@ -10,7 +10,7 @@ INPUTS_DIR_PATH=$EPHEMERA_DIR_PATH/inputs
 OUTPUTS_DIR_PATH=$EPHEMERA_DIR_PATH/outputs
 SHARED_CACHES_DIR_PATH=$EPHEMERA_DIR_PATH/shared_caches
 HF_CACHE_FOLDER_PATH=$SHARED_CACHES_DIR_PATH/huggingface
-VLLM_REPO_CACHE_PATH=$SHARED_CACHES_DIR_PATH/vllm
+VLLM_REPO_CACHE_PATH=$SHARED_CACHES_DIR_PATH/vllm-pixtral
 
 if [ ! -f $EPHEMERA_DIR_PATH/secrets.json ]; then
     echo "Secrets file not found. Running init_secrets.sh..."
@@ -36,7 +36,7 @@ docker run --rm -it \
     --env "HUGGING_FACE_HUB_TOKEN=$HF_TOKEN" \
     --ipc=host \
     -m 40g \
-    outlines_vllm_server \
+    pixtral_vllm_server \
     --guided-decoding-backend outlines \
     --dtype auto \
     --max-model-len 8000 \

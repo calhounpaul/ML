@@ -28,6 +28,9 @@ RUN python3 -m pip uninstall -y tensorflow flax
 RUN python3 -m pip install --no-cache-dir git+https://github.com/facebookresearch/detectron2.git pytesseract
 RUN python3 -m pip install -U "itsdangerous<2.1.0"
 
-# When installing in editable mode, `transformers` is not recognized as a package.
-# this line must be added in order for python to be aware of transformers.
+
+RUN python3.10 -m pip install -U --no-cache-dir git+https://github.com/datacommonsorg/llm-tools.git
+RUN python3.10 -m pip install -U bitsandbytes accelerate
+RUN python3.10 -m pip install -U data_gemma
+
 RUN cd transformers && python3 setup.py develop

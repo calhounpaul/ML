@@ -24,11 +24,9 @@ if [ ! -d $VLLM_REPO_CACHE_PATH ]; then
     git clone https://github.com/vllm-project/vllm
     cd vllm
     echo "typing-extensions" >> requirements-common.txt
-    #git checkout 919770957f26d71a5a6eda7a1a7443dfeb5ba0ee
-    sed -i 's/ENTRYPOINT \[/#ENTRYPOINT \[/g' Dockerfile
-    echo "ENTRYPOINT [\"python3\", \"-m\", \"outlines.serve.serve\"]" >> Dockerfile
+    echo "mistral_common" >> requirements-common.txt
 fi
 
 cd $VLLM_REPO_CACHE_PATH
 
-docker build --build-arg RUN_WHEEL_CHECK=false -t outlines_vllm_server .
+docker build --build-arg RUN_WHEEL_CHECK=false -t pixtral_vllm_server .
