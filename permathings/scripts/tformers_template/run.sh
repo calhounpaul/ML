@@ -40,4 +40,5 @@ docker run -it --gpus all --rm \
     -v $SHARED_CACHES_DIR_PATH/$THIS_DOCKER_CONTAINER_NAME:/root/.cache \
     -v $WORKDIR_PATH:/workspace \
     -w /workspace \
+    -p 7860:7860 \
     $THIS_DOCKER_CONTAINER_NAME
