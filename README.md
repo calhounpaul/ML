@@ -68,11 +68,10 @@ This repository is a comprehensive toolkit for advanced machine learning and AI 
 
 - **Web Interfaces**: Docker configurations for running web-based interfaces for various AI tasks.
 - **Langchain**: A docker environment and basic RAG example:
-  ```
-  Question: Ignat is caught grinning in front of a mirror by Mavra Kuzminichna, and then he has to make tea for which of his relatives?
-
-  Answer: Ignat has to make tea for his grandfather.
-  ```
+  
+  > *Question: Ignat is caught grinning in front of a mirror by Mavra Kuzminichna, and then he has to make tea for which of his relatives?*
+  > *Answer: Ignat has to make tea for his grandfather.*
+  
 - **JSON Outline Generation**: Utilizes vLLM with Mistral to generate structured JSON outlines for various tasks, as demonstrated in the `vllm_json_outlines` scripts.
 
 ## Requirements
