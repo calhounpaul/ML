@@ -19,6 +19,7 @@ llm = HuggingFacePipeline.from_model_id(
     pipeline_kwargs={"max_new_tokens": 30},
     model_kwargs={"load_in_8bit": True}
 )
+llm.pipeline.tokenizer.pad_token = llm.pipeline.tokenizer.eos_token
 
 # Initialize the embedding model
 embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
