@@ -14,7 +14,7 @@ import wget
 
 # Initialize the Llama model
 llm = HuggingFacePipeline.from_model_id(
-    model_id="meta-llama/Meta-Llama-3.1-8B",
+    model_id="meta-llama/Meta-Llama-3.1-8B-Instruct",
     task="text-generation",
     pipeline_kwargs={"max_new_tokens": 30},
     model_kwargs={"load_in_8bit": True}
