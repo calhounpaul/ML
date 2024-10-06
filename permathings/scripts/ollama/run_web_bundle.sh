@@ -11,7 +11,7 @@ docker kill open-webui
 docker rm open-webui
 sleep 3
 
-docker run -d -p 3000:8080 --gpus '"device=0,1"' -v $OLLAMA_CACHE_FOLDER_PATH:/root/.ollama \
+docker run -d -p 3000:8080 -p 11434:11434 --gpus '"device=0"' -v $OLLAMA_CACHE_FOLDER_PATH:/root/.ollama \
     -v $OLLAMA_WEB_FOLDER_PATH:/app/backend/data --name open-webui --restart always \
     -e OLLAMA_HOST=0.0.0.0 \
     ghcr.io/open-webui/open-webui:ollama
