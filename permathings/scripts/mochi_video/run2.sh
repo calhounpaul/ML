@@ -1,4 +1,4 @@
-THIS_DOCKER_CONTAINER_NAME="mochi-video-2"
+THIS_DOCKER_CONTAINER_NAME="mochi-video"
 
 THIS_DIR_PATH=$(dirname $(realpath $0))
 SCRIPTS_DIR_PATH=$(dirname $THIS_DIR_PATH)
@@ -6,26 +6,38 @@ PERMATHINGS_DIR_PATH=$(dirname $SCRIPTS_DIR_PATH)
 ML_PROJECT_DIR_PATH=$(dirname $PERMATHINGS_DIR_PATH)
 EPHEMERA_DIR_PATH=$ML_PROJECT_DIR_PATH/ephemera
 SHARED_CACHES_DIR_PATH=$EPHEMERA_DIR_PATH/shared_caches
-COMFY_CACHE=$SHARED_CACHES_DIR_PATH/$THIS_DOCKER_CONTAINER_NAME
+DATA_CACHES_PATH=$SHARED_CACHES_DIR_PATH/$THIS_DOCKER_CONTAINER_NAME
+HF_CACHE_PATH=$DATA_CACHES_PATH/hf_cache
+IO_CACHE_PATH=$DATA_CACHES_PATH/io_cache
+LIBRARIES_DIR_PATH=$PERMATHINGS_DIR_PATH/libs
 
-docker build -t $THIS_DOCKER_CONTAINER_NAME .
+docker build -t $THIS_DOCKER_CONTAINER_NAME -f Dockerfile.diffusers .
 
-if [ ! -d $SHARED_CACHES_DIR_PATH ]; then
-    mkdir -p $SHARED_CACHES_DIR_PATH
+if [ ! -d $HF_CACHE_PATH ]; then
+    mkdir -p $HF_CACHE_PATH
 fi
-if [ ! -d $COMFY_CACHE ]; then
-    mkdir -p $COMFY_CACHE
+if [ ! -d $IO_CACHE_PATH ]; then
+    mkdir -p $IO_CACHE_PATH
 fi
 
-WORKDIR_PATH=$THIS_DIR_PATH/workspace
+cd $LIBRARIES_DIR_PATH
+HF_TOKEN=$(python3 -c "from secretary import get_secret; print(get_secret('HF_TOKEN'))")
+cd $THIS_DIR_PATH
+
+
+
+WORKDIR_PATH=$THIS_DIR_PATH/workdir
 
 if [ ! -d $WORKDIR_PATH ]; then
     mkdir -p $WORKDIR_PATH
 fi
 
-docker run -it --gpus '"device=1"' --rm \
+#docker run -it --gpus device=1 --cpus="8.0" --rm \
+docker run -it --gpus all --cpus="8.0" --rm \
     --name $THIS_DOCKER_CONTAINER_NAME \
-    -v $COMFY_CACHE:/root \
-    -e CLI_ARGS="" \
-    -p 8189:8188 \
+    -v $HF_CACHE_PATH:/root/.cache \
+    -v $IO_CACHE_PATH:/eph \
+    -v $WORKDIR_PATH:/workdir \
+    -w /workdir \
+    -e HF_TOKEN=$HF_TOKEN \
     $THIS_DOCKER_CONTAINER_NAME
