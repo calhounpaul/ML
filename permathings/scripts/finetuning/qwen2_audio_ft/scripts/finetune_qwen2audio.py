@@ -14,10 +14,17 @@ from transformers import (
 )
 from peft import get_peft_model, LoraConfig, TaskType, prepare_model_for_kbit_training
 import librosa
+from sklearn.model_selection import train_test_split
 from typing import List, Dict, Any
 import numpy as np
 
 DRY_RUN = False
+
+# Global Constants
+RANDOM_SEED = 42
+EVAL_SPLIT_RATIO = 0.01
+SAVE_STEPS = 1
+SAVE_TOTAL_LIMIT = 5
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -30,7 +37,7 @@ class AudioTrainingConfig:
     cache_dir: str = "./dataset_cache"
     num_train_epochs: int = 2
     per_device_train_batch_size: int = 4
-    gradient_accumulation_steps: int = 32
+    gradient_accumulation_steps: int = 4
     learning_rate: float = 5e-6
     max_grad_norm: float = 1.0
     warmup_ratio: float = 0.1
@@ -39,18 +46,12 @@ class AudioTrainingConfig:
     target_mel_frames: int = 3000
 
 class RawAudioDataset(Dataset):
-    def __init__(self, data_path: str, processor: Any, target_sr: int = 16000):
+    def __init__(self, data: List[Dict[str, Any]], processor: Any, target_sr: int = 16000):
         self.processor = processor
         self.target_sr = target_sr
         self.target_mel_frames = 3000
-        
-        try:
-            with open(data_path, 'r') as f:
-                self.data = json.load(f)
-            logger.info(f"Loaded {len(self.data)} examples from dataset")
-        except Exception as e:
-            logger.error(f"Error loading dataset from {data_path}: {str(e)}")
-            raise
+        self.data = data
+        logger.info(f"Initialized dataset with {len(self.data)} examples")
 
     def __len__(self):
         return len(self.data)
@@ -91,14 +92,11 @@ class RawAudioDataset(Dataset):
     def __getitem__(self, idx: int) -> Dict[str, torch.Tensor]:
         try:
             item = self.data[idx]
-            
-            # Load and combine audio if multiple files
             audios = [self.load_audio(path) for path in item["audio_file_paths"]]
             if len(audios) > 1:
                 combined_audio = np.concatenate(audios)
                 audios = [combined_audio]
-            
-            # Process inputs with raw text format
+
             model_inputs = self.processor(
                 text=item["text"],
                 audios=audios,
@@ -109,12 +107,11 @@ class RawAudioDataset(Dataset):
 
             model_inputs = {k: v.squeeze(0) for k, v in model_inputs.items()}
             model_inputs["input_features"] = self.process_audio_features(model_inputs["input_features"])
-            
+
             if len(model_inputs["feature_attention_mask"].shape) > 1:
                 model_inputs["feature_attention_mask"] = model_inputs["feature_attention_mask"].view(-1)
             model_inputs["feature_attention_mask"] = model_inputs["feature_attention_mask"][:self.target_mel_frames]
-            
-            # Create labels for the entire sequence
+
             labels = model_inputs["input_ids"].clone()
             model_inputs["labels"] = labels
 
@@ -136,7 +133,7 @@ def collate_fn(batch: List[Dict[str, torch.Tensor]]) -> Dict[str, torch.Tensor]:
         "input_features": torch.zeros((batch_size, 128, target_mel_frames), dtype=torch.float),
         "feature_attention_mask": torch.zeros((batch_size, target_mel_frames), dtype=torch.long),
     }
-    
+
     for i, item in enumerate(batch):
         input_len = item["input_ids"].size(0)
         collated["input_ids"][i, :input_len] = item["input_ids"]
@@ -149,44 +146,50 @@ def collate_fn(batch: List[Dict[str, torch.Tensor]]) -> Dict[str, torch.Tensor]:
 
 def train():
     config = AudioTrainingConfig()
-    
+
     processor = AutoProcessor.from_pretrained(
         config.model_name,
         trust_remote_code=True
     )
-    
-    dataset = RawAudioDataset(config.dataset_path, processor)
-    
+
+    with open(config.dataset_path, 'r') as f:
+        data = json.load(f)
+
+    train_data, eval_data = train_test_split(data, test_size=EVAL_SPLIT_RATIO, random_state=RANDOM_SEED)
+
+    train_dataset = RawAudioDataset(train_data, processor)
+    eval_dataset = RawAudioDataset(eval_data, processor)
+
     if DRY_RUN:
         logger.info("Running in DRY_RUN mode - will decode and display model inputs")
-        debug_loader = DataLoader(dataset, batch_size=2, collate_fn=collate_fn)
+        debug_loader = DataLoader(train_dataset, batch_size=2, collate_fn=collate_fn)
         test_batch = next(iter(debug_loader))
-        
+
         logger.info("\nBatch shapes:")
         for k, v in test_batch.items():
             logger.info(f"{k}: {v.shape}")
-        
+
         logger.info("\nDecoded sequences:")
         for i in range(len(test_batch["input_ids"])):
             decoded = processor.tokenizer.decode(test_batch["input_ids"][i])
             logger.info(f"\nSequence {i+1}:\n{decoded}")
-        
+
         logger.info("\nDRY_RUN complete - exiting before model loading and training")
         return
-    
+
     max_memory = {
         0: config.gpu_memory_limit,
         1: config.gpu_memory_limit,
         "cpu": config.cpu_memory_limit
     }
-    
+
     bnb_config = BitsAndBytesConfig(
         load_in_4bit=True,
         bnb_4bit_quant_type="nf4",
         bnb_4bit_compute_dtype=torch.bfloat16,
         bnb_4bit_use_double_quant=True,
     )
-    
+
     model = Qwen2AudioForConditionalGeneration.from_pretrained(
         config.model_name,
         device_map="auto",
@@ -194,26 +197,26 @@ def train():
         quantization_config=bnb_config,
         trust_remote_code=True
     )
-    
+
     model.tie_weights()
     model.gradient_checkpointing_enable()
     model = prepare_model_for_kbit_training(model)
-    
+
     peft_config = LoraConfig(
         task_type=TaskType.CAUSAL_LM,
         inference_mode=False,
         r=256,
         lora_alpha=512,
-        lora_dropout=0.1,
+        lora_dropout=0,
         target_modules=[
             "q_proj", "k_proj", "v_proj", "o_proj",
             "gate_proj", "up_proj", "down_proj"
         ]
     )
-    
+
     model = get_peft_model(model, peft_config)
     model.print_trainable_parameters()
-    
+
     training_args = TrainingArguments(
         output_dir=config.output_dir,
         num_train_epochs=config.num_train_epochs,
@@ -224,7 +227,10 @@ def train():
         warmup_ratio=config.warmup_ratio,
         logging_dir='./logs',
         logging_steps=1,
-        save_strategy="epoch",
+        save_steps=SAVE_STEPS,
+        save_total_limit=SAVE_TOTAL_LIMIT,
+        evaluation_strategy="steps",
+        eval_steps=SAVE_STEPS,
         fp16=False,
         bf16=True,
         gradient_checkpointing=True,
@@ -232,14 +238,15 @@ def train():
         ddp_find_unused_parameters=False,
         report_to="wandb"
     )
-    
+
     trainer = Trainer(
         model=model,
         args=training_args,
-        train_dataset=dataset,
+        train_dataset=train_dataset,
+        eval_dataset=eval_dataset,
         data_collator=collate_fn,
     )
-    
+
     trainer.train()
     model.save_pretrained(config.output_dir)
 
