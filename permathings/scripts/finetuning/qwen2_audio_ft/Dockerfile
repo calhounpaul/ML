@@ -38,5 +38,6 @@ RUN python3 -m pip uninstall numpy -y
 RUN python3 -m pip install numpy==1.24.3
 RUN python3 -m pip install -U librosa
 RUN python3 -m pip install -U 'ms-swift[all]'
-#pip install transformers torch trl peft datasets wandb librosa
+
 RUN python3 -m pip install -U wandb trl datasets librosa
+RUN python3 -m pip install -U peft

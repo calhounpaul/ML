@@ -26,11 +26,11 @@ RANDOM_SEED = 42
 EVAL_SPLIT_RATIO = 0.02
 SAVE_STEPS = 20
 SAVE_TOTAL_LIMIT = 5
-LOAD_IN_4BIT = False
-LOAD_IN_8BIT = True
+LOAD_IN_4BIT = True
+LOAD_IN_8BIT = False
 FULL_PRECISION = not (LOAD_IN_4BIT or LOAD_IN_8BIT)
-NUM_TRAIN_EPOCHS = 2
-PER_DEVICE_TRAIN_BATCH_SIZE = 4
+NUM_TRAIN_EPOCHS = 0.5
+PER_DEVICE_TRAIN_BATCH_SIZE = 8
 GRADIENT_ACCUMULATION_STEPS = 32
 LEARNING_RATE = 1e-5
 MAX_GRAD_NORM = 1.0
@@ -48,8 +48,8 @@ CPU_MEMORY_LIMIT = "48GiB"
 OPTIMIZER = "paged_adamw_32bit"
 TORCH_DTYPE = torch.bfloat16
 MODEL_ID = "Qwen/Qwen2-Audio-7B"
-OUTPUT_DIR = f"./qwen2audio-finetuned-{datetime.now().strftime('%y%m%d_%H%M%S')}"
-DATASET_PATH = "/workdir/scripts/speaker_count_dataset_2/raw_pretrained_dataset.json"
+OUTPUT_DIR = f"/workdir/qwen2audio-finetuned-{datetime.now().strftime('%y%m%d_%H%M%S')}"
+DATASET_PATH = "/workdir/diarized_speaker_dataset/formatted_dataset.json"
 
 assert not (LOAD_IN_4BIT and LOAD_IN_8BIT), "Both 4-bit and 8-bit quantization cannot be enabled simultaneously."
 

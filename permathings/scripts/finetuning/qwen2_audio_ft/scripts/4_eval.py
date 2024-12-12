@@ -18,8 +18,8 @@ logger = logging.getLogger(__name__)
 @dataclass
 class EvalConfig:
     base_model_name: str = "Qwen/Qwen2-Audio-7B"
-    adapter_path: str = "./qwen2audio-finetuned-241211_185205"
-    test_data_path: str = "/workdir/scripts/speaker_count_dataset_2/raw_pretrained_dataset.json"
+    adapter_path: str = "/workdir/qwen2audio-finetuned-241211_185205"
+    test_data_path: str = "/workdir/diarized_speaker_dataset/formatted_dataset.json"
     num_eval_samples: int = 100
     target_sr: int = 16000
     device: str = "cuda" if torch.cuda.is_available() else "cpu"
@@ -185,7 +185,8 @@ class ModelEvaluator:
             "accuracy": accuracy,
             "total_samples": total_evaluated,
             "correct_counts": correct_counts,
-            "detailed_results": results
+            "detailed_results": results,
+            "correct_singular_vs_many": correct_singular_vs_many,
         }
         
         output_file = output_dir / "evaluation_results.json"
