@@ -18,7 +18,7 @@ logger = logging.getLogger(__name__)
 @dataclass
 class EvalConfig:
     base_model_name: str = "Qwen/Qwen2-Audio-7B"
-    adapter_path: str = "/workdir/qwen2audio-finetuned-241211_185205"
+    adapter_path: str = "/workdir/qwen2audio-finetuned-241213_163911"
     test_data_path: str = "/workdir/diarized_speaker_dataset/formatted_dataset.json"
     num_eval_samples: int = 100
     target_sr: int = 16000

@@ -8,9 +8,9 @@ import argparse
 
 # Global Configuration
 BASE_MODEL_NAME = "Qwen/Qwen2-Audio-7B"
-ADAPTER_PATH = "/workdir/qwen2audio-finetuned-241211_185205"
-OUTPUT_PATH = "/workdir/qwen2audio-finetuned-241211_185205-merged"
-REPO_ID = None
+ADAPTER_PATH = "/workdir/qwen2audio-finetuned-241213_163911"
+OUTPUT_PATH = "/workdir/qwen2audio-finetuned-241213_163911-merged"
+REPO_ID = "pcalhoun/Qwen2-Audio-7B-SpeakerCount-LoRA"
 DEVICE_MAP = "auto"
 TORCH_DTYPE = torch.float16
 TRUST_REMOTE_CODE = True

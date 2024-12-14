@@ -48,7 +48,7 @@ class DatasetConfig:
     combined_dir: str = "combined_audio"
     cache_dir: str = "processing_cache"
     min_duration: float = 2.0
-    max_duration: float = 20.0
+    max_duration: float = 25.0
     min_overlap: float = 0.1
     max_overlap: float = 3.5
     sample_rate: int = 16000
@@ -62,7 +62,7 @@ class AudioSegment(NamedTuple):
     speaker: str
     duration: float
     source_id: str
-    audio: np.ndarray
+    audio: np.ndarrayd
     sr: int
 
 class DiarizedAudioProcessor:

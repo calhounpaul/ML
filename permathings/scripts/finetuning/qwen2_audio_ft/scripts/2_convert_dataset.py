@@ -10,7 +10,7 @@ from dataclasses import dataclass
 class ReformatterConfig:
     """Configuration for dataset reformatting."""
     input_cache_path: str = "/workdir/diarized_speaker_dataset/diarized_dataset.json"
-    output_dir: str = "diarized_speaker_dataset"
+    output_dir: str = "/workdir/diarized_speaker_dataset/"
     cache_dir: str = "processing_cache"
     output_filename: str = "formatted_dataset.json"
 
