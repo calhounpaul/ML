@@ -30,3 +30,4 @@ RUN python3 -m pip install -U torch torchvision transformers tiktoken verovio ac
 
 RUN python3 -m pip install -U diarizationlm
 RUN python3 -m pip install -U pyannote.audio
+RUN python3 -m pip install -U peft

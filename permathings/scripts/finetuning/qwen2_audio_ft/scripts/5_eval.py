@@ -11,6 +11,9 @@ from transformers import AutoProcessor, Qwen2AudioForConditionalGeneration
 from peft import PeftModel
 import soundfile as sf
 import random
+import time
+
+random.seed(time.time())
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -18,9 +21,9 @@ logger = logging.getLogger(__name__)
 @dataclass
 class EvalConfig:
     base_model_name: str = "Qwen/Qwen2-Audio-7B"
-    adapter_path: str = "/workdir/qwen2audio-finetuned-241213_163911"
-    test_data_path: str = "/workdir/diarized_speaker_dataset/formatted_dataset.json"
-    num_eval_samples: int = 100
+    adapter_path: str = "/workdir/qwen2audio-finetuned-241216_030223"
+    test_data_path: str = "/workdir/voxceleb_cache/dataset.json"
+    num_eval_samples: int = 50
     target_sr: int = 16000
     device: str = "cuda" if torch.cuda.is_available() else "cpu"
     max_new_tokens: int = 10
@@ -38,7 +41,7 @@ class ModelEvaluator:
         self.model = Qwen2AudioForConditionalGeneration.from_pretrained(
             config.base_model_name,
             device_map="auto",
-            torch_dtype=torch.float16,
+            torch_dtype=torch.bfloat16,
             trust_remote_code=True
         )
         

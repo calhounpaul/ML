@@ -23,15 +23,15 @@ import numpy as np
 # Global Configuration
 DRY_RUN = False
 RANDOM_SEED = 42
-EVAL_SPLIT_RATIO = 0.02
-SAVE_STEPS = 20
+EVAL_SPLIT_RATIO = 0.03
+SAVE_STEPS = 100
 SAVE_TOTAL_LIMIT = 5
 LOAD_IN_4BIT = True
 LOAD_IN_8BIT = False
 FULL_PRECISION = not (LOAD_IN_4BIT or LOAD_IN_8BIT)
 NUM_TRAIN_EPOCHS = 1
 PER_DEVICE_TRAIN_BATCH_SIZE = 8
-GRADIENT_ACCUMULATION_STEPS = 64
+GRADIENT_ACCUMULATION_STEPS = 32
 LEARNING_RATE = 5e-5
 MAX_GRAD_NORM = 1.0
 WARMUP_RATIO = 0.1
@@ -39,18 +39,21 @@ DROPOUT_RATE = 0.08
 TARGET_MEL_FRAMES = 3000
 LORA_RANK = 256
 LORA_ALPHA = 512
+EVAL_ACCUMULATION_STEPS = 1
 TARGET_MODULES = [
     "q_proj", "k_proj", "v_proj", "o_proj",
     "gate_proj", "up_proj", "down_proj"
 ]
 GPU_MEMORY_LIMIT = "24GiB"
 CPU_MEMORY_LIMIT = "48GiB"
-#OPTIMIZER = "paged_adamw_32bit"
-OPTIMIZER="paged_adamw_8bit"
+OPTIMIZER = "paged_adamw_32bit"
+#OPTIMIZER="paged_adamw_8bit"
 TORCH_DTYPE = torch.bfloat16
 MODEL_ID = "Qwen/Qwen2-Audio-7B"
+#OUTPUT_DIR = f"/workdir/qwen2audio-finetuned-{datetime.now().strftime('%y%m%d_%H%M%S')}"
 OUTPUT_DIR = f"/workdir/qwen2audio-finetuned-{datetime.now().strftime('%y%m%d_%H%M%S')}"
-DATASET_PATH = "/workdir/diarized_speaker_dataset/formatted_dataset.json"
+RESUME_FROM_CHECKPOINT = None
+DATASET_PATH = "/workdir/voxceleb_cache/dataset.json"
 
 assert not (LOAD_IN_4BIT and LOAD_IN_8BIT), "Both 4-bit and 8-bit quantization cannot be enabled simultaneously."
 
@@ -193,6 +196,17 @@ def collate_fn(batch: List[Dict[str, torch.Tensor]]) -> Dict[str, torch.Tensor]:
 
     return collated
 
+class MemoryEfficientTrainer(Trainer):
+    def evaluate(self, eval_dataset=None, ignore_keys=None, metric_key_prefix="eval"):
+        print("Switching to eval mode")
+        self.model.eval()
+        print("Switched to eval mode")
+        print("Evaluating")
+        eval_results = super().evaluate(eval_dataset, ignore_keys, metric_key_prefix)
+        print("Evaluated")
+        self.model.train()
+
+        return eval_results
 
 def train():
     config = AudioTrainingConfig()
@@ -247,7 +261,7 @@ def train():
         )
 
     model = Qwen2AudioForConditionalGeneration.from_pretrained(
-        config.model_name,
+        config.model_name if RESUME_FROM_CHECKPOINT is None else RESUME_FROM_CHECKPOINT,
         device_map="auto",
         max_memory=max_memory,
         quantization_config=bnb_config if bnb_config else None,
@@ -290,15 +304,19 @@ def train():
         gradient_checkpointing=True,
         optim=OPTIMIZER,
         ddp_find_unused_parameters=False,
-        report_to="wandb"
+        report_to="wandb",
+        #eval_accumulation_steps=EVAL_ACCUMULATION_STEPS,
+        #torch_empty_cache_steps=1,
     )
 
-    trainer = Trainer(
+    trainer = MemoryEfficientTrainer(
         model=model,
         args=training_args,
         train_dataset=train_dataset,
         eval_dataset=eval_dataset,
         data_collator=collate_fn,
+        #resume_from_checkpoint=RESUME_FROM_CHECKPOINT  # Resume if checkpoint is specified
+        
     )
 
     trainer.train()

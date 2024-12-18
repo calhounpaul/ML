@@ -21,8 +21,8 @@ HF_CACHE_FOLDER_PATH=$SHARED_CACHES_DIR_PATH/huggingface
 
 #docker run --rm --gpus '"device=0,1"' \
 #docker run --rm --runtime=nvidia --gpus all ubuntu nvidia-smi
-#docker run --rm --runtime=nvidia --gpus '"device=0"' \
-docker run --rm --runtime=nvidia --gpus all \
+#docker run --rm --runtime=nvidia --gpus all --cpus 8 \
+docker run --rm --runtime=nvidia --gpus '"device=0,1"' --cpus 8 \
     -e HF_TOKEN=$HF_TOKEN \
     -v $FINETUNING_WORKDIR:/workdir \
     -v $SCRIPTS_DIR:/workdir/scripts \
